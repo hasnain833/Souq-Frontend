@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://souq-fashion-staging-web.netlify.app/sitemap.xml

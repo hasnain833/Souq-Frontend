@@ -81,7 +81,7 @@ const ChatRoomSplit = ({ chat, onBack, getProductDetailsFromChats, onChatDeleted
 
   const currentUser = JSON.parse(localStorage.getItem('user'));
   const baseURL = import.meta.env.VITE_API_BASE_URL;
-  const normalizedURL = baseURL.endsWith('/') ? baseURL.slice(0, -1) : baseURL;
+  // const normalizedURL = baseURL.endsWith('/') ? baseURL.slice(0, -1) : baseURL;
   const navigate = useNavigate();
 
   // Update matched product details when chat or getProductDetailsFromChats changes

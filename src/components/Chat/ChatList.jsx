@@ -23,7 +23,7 @@ function ChatList({
   const navigate = useNavigate()
   const { t } = useTranslation()
   const baseURL = import.meta.env.VITE_API_BASE_URL
-  const normalizedURL = baseURL.endsWith('/') ? baseURL.slice(0, -1) : baseURL
+  // const normalizedURL = baseURL.endsWith('/') ? baseURL.slice(0, -1) : baseURL
 
   // Format chat data for display
   const formatChatData = (chat) => {

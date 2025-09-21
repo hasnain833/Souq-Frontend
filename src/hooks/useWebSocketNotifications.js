@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { getSharedSocket, releaseSharedSocket } from './sharedSocket';
+import { getAccessToken } from '../utils/TokenStorage';
 
 export const useWebSocketNotifications = ({
   onNewNotification,
@@ -8,28 +9,35 @@ export const useWebSocketNotifications = ({
   onNotificationsRefresh
 }) => {
   useEffect(() => {
+    // Avoid initializing sockets when there is no auth token yet
+    const token = getAccessToken();
+    if (!token) {
+      console.warn(' Skipping notification socket init: no access token');
+      return;
+    }
+
     const socket = getSharedSocket();
     if (!socket) return;
 
-    console.log('🔔 Initializing notification listeners');
+    console.log(' Initializing notification listeners');
 
     const handleNewNotification = (notification) => {
-      console.log('🔔 New notification received:', notification);
+      console.log(' New notification received:', notification);
       onNewNotification?.(notification);
     };
 
     const handleUnreadCountUpdate = (data) => {
-      console.log('🔔 Unread count updated:', data.unreadCount);
+      console.log(' Unread count updated:', data.unreadCount);
       onUnreadCountUpdate?.(data.unreadCount);
     };
 
     const handleNotificationDeleted = (data) => {
-      console.log('🔔 Notification deleted:', data.notificationId);
+      console.log(' Notification deleted:', data.notificationId);
       onNotificationDeleted?.(data.notificationId);
     };
 
     const handleNotificationsRefresh = () => {
-      console.log('🔔 Notifications refresh requested');
+      console.log(' Notifications refresh requested');
       onNotificationsRefresh?.();
     };
 
@@ -39,7 +47,7 @@ export const useWebSocketNotifications = ({
     socket.on('notifications_refresh', handleNotificationsRefresh);
 
     return () => {
-      console.log('🔔 Cleaning up notification listeners');
+      console.log(' Cleaning up notification listeners');
       socket.off('new_notification', handleNewNotification);
       socket.off('unread_count_updated', handleUnreadCountUpdate);
       socket.off('notification_deleted', handleNotificationDeleted);
@@ -49,6 +57,6 @@ export const useWebSocketNotifications = ({
   }, [onNewNotification, onUnreadCountUpdate, onNotificationDeleted, onNotificationsRefresh]);
 
   return {
-    connected: !!getSharedSocket()?.connected
+    connected: !!getAccessToken() && !!getSharedSocket()?.connected
   };
 };

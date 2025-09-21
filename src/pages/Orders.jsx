@@ -35,7 +35,7 @@ const Orders = () => {
 
   // Base URL configuration for images
   const baseURL = import.meta.env.VITE_API_BASE_URL;
-  const normalizedBaseURL = baseURL.endsWith('/') ? baseURL : `${baseURL}/`;
+  // const normalizedBaseURL = baseURL.endsWith('/') ? baseURL : `${baseURL}/`;
 
   const loadOrders = async () => {
     try {

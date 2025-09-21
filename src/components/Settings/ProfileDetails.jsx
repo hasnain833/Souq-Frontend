@@ -20,7 +20,7 @@ const ProfileDetails = ({ profileData, apiRefresh, seApiRefresh }) => {
     // const [profileData, setProfileData] = useState("");
     const [selectedCountry, setSelectedCountry] = useState(null);
     const [selectedCity, setSelectedCity] = useState(null);
-    const baseURL = import.meta.env.VITE_API_BASE_URL.replace(/\/$/, '');
+    // const baseURL = import.meta.env.VITE_API_BASE_URL.replace(/\/$/, '');
     const dispatch = useDispatch()
     const { t } = useTranslation()
 

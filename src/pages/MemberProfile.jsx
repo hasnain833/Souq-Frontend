@@ -21,7 +21,7 @@ import { Helmet } from "react-helmet";
 
 export default function MemberProfile() {
     const [profileData, setProfileData] = useState(null); // store user profile
-    const baseURL = import.meta.env.VITE_API_BASE_URL.replace(/\/$/, '');
+    // const baseURL = import.meta.env.VITE_API_BASE_URL.replace(/\/$/, '');
     const [isLoadingProducts, setIsLoadingProducts] = useState(true);
     const { t } = useTranslation();
     const navigate = useNavigate();
@@ -53,23 +53,23 @@ export default function MemberProfile() {
     const rating = profileData?.ratings?.averageRating || 0;
     const totalRatings = profileData?.ratings?.totalRatings || 0;
 
-    // useEffect(() => {
-    //     if (profileData?.id) {
-    //         setIsLoadingProducts(true); // Start loading
-    //         getProduct()
-    //             .then((res) => {
-    //                 const items = res?.data?.data?.items || [];
-    //                 setProduct(items);
-    //                 setUser(profileData);
-    //             })
-    //             .catch((err) => {
-    //                 console.log(err, "err");
-    //             })
-    //             .finally(() => {
-    //                 setIsLoadingProducts(false); // Stop loading
-    //             });
-    //     }
-    // }, [profileData?.id]);
+    useEffect(() => {
+        if (profileData?.id) {
+            setIsLoadingProducts(true); // Start loading
+            getProduct()
+                .then((res) => {
+                    const items = res?.data?.data?.items || [];
+                    setProduct(items);
+                    setUser(profileData);
+                })
+                .catch((err) => {
+                    console.log(err, "err");
+                })
+                .finally(() => {
+                    setIsLoadingProducts(false); // Stop loading
+                });
+        }
+    }, [profileData?.id]);
 
     const [showLoadMoreButton, setShowLoadMoreButton] = useState(false);
     const isFetchingRef = useRef(false);

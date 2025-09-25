@@ -53,7 +53,7 @@ export default function CheckoutPage() {
     const [shippingLoading, setShippingLoading] = useState(false);
 
     const baseURL = import.meta.env.VITE_API_BASE_URL;
-    const normalizedBaseURL = baseURL.endsWith("/") ? baseURL : `${baseURL}/`;
+    // const normalizedBaseURL = baseURL.endsWith("/") ? baseURL : `${baseURL}/`;
 
 
     const shipping = product?.shipping_cost;

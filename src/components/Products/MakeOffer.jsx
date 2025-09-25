@@ -13,7 +13,7 @@ export default function MakeOfferModal({ product, onClose, isOpen, chatId, onOff
     const [error, setError] = useState("");
     const navigate = useNavigate();
     const baseURL = import.meta.env.VITE_API_BASE_URL;
-    const normalizedBaseURL = baseURL.endsWith("/") ? baseURL : `${baseURL}/`;
+    // const normalizedBaseURL = baseURL.endsWith("/") ? baseURL : `${baseURL}/`;
 
     useEffect(() => {
         if (isOpen && product) {

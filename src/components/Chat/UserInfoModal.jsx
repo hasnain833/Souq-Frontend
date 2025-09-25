@@ -33,8 +33,8 @@ const UserInfoModal = ({
     { value: 'other', label: 'Other' }
   ];
 
-  const baseURL = import.meta.env.VITE_API_BASE_URL;
-  const normalizedURL = baseURL.endsWith('/') ? baseURL.slice(0, -1) : baseURL;
+  // const baseURL = import.meta.env.VITE_API_BASE_URL;
+  // const normalizedURL = baseURL.endsWith('/') ? baseURL.slice(0, -1) : baseURL;
 
   if (!isOpen) return null;
 

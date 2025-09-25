@@ -2,7 +2,6 @@ import React, { createContext, useState, useContext, useEffect } from "react";
 import { NotificationService } from "../api/NotificationService";
 import { useWebSocketNotifications } from "../hooks/useWebSocketNotifications";
 import { toast } from "react-toastify";
-
 const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {

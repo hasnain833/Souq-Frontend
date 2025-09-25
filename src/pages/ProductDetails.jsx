@@ -42,8 +42,8 @@ const ProductDetailPage = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [apiRefresh, setApiRefresh] = useState("")
   const baseURL = import.meta.env.VITE_API_BASE_URL;
-  const normalizedBaseURL = baseURL.endsWith("/") ? baseURL : `${baseURL}/`;
-  const normalizedURL = baseURL.endsWith('/') ? baseURL.slice(0, -1) : baseURL;
+  // const normalizedBaseURL = baseURL.endsWith("/") ? baseURL : `${baseURL}/`;
+  // const normalizedURL = baseURL.endsWith('/') ? baseURL.slice(0, -1) : baseURL;
   const authUser = JSON.parse(localStorage.getItem("user"));
   const [products, setProducts] = useState([])
   const [user, setUser] = useState("")

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Cookie, Info, Settings, Clock } from 'lucide-react';
-import AuthModal from '../components/Auth/AuthModal';
+// import AuthModal from '../components/Auth/AuthModal';
 import LoginModal from '../components/Auth/LoginModal';
 import ForgotPasswordModal from '../components/Auth/ForgotPasswordModal';
 import SignUpModal from '../components/Auth/SignUpModal';

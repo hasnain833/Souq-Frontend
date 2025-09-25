@@ -8,7 +8,7 @@ import shopping2 from "../public/images/shopping-step2.png"
 import shopping3 from "../public/images/shopping-step3.png"
 import { useNavigate } from "react-router-dom";
 import { useAppContext } from "../context/AppContext";
-import AuthModal from "../components/Auth/AuthModal";
+// import AuthModal from "../components/Auth/AuthModal";
 import LoginModal from "../components/Auth/LoginModal";
 import ForgotPasswordModal from "../components/Auth/ForgotPasswordModal";
 import SignUpModal from "../components/Auth/SignUpModal";

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import ProductGrid from "../components/Products/ProductGrid";
-import ReviewSection from "../components/Profile/ReviewSection";
+// import ReviewSection from "../components/Profile/ReviewSection";
 import {
     FaBoxOpen,
     FaMapMarkerAlt,
@@ -10,7 +10,7 @@ import {
     FaStar
 } from "react-icons/fa";
 import { FiMoreHorizontal } from "react-icons/fi"; // horizontal three-dot icon
-import AuthModal from "../components/Auth/AuthModal";
+// import AuthModal from "../components/Auth/AuthModal";
 import { useAppContext } from "../context/AppContext";
 import LoginModal from "../components/Auth/LoginModal";
 import ForgotPasswordModal from "../components/Auth/ForgotPasswordModal";
@@ -24,7 +24,7 @@ import { follow, getUserProduct, getUserProductBuyerProduct, unFollow } from "..
 import LoadingSpinner from "../components/common/LoadingSpinner";
 import { useTranslation } from "react-i18next";
 import MemberProfileSkeleton from "../components/Skeleton/MemberProfileSkeleton";
-import RateProductModal from "../components/Profile/RateProductModal";
+// import RateProductModal from "../components/Profile/RateProductModal";
 import { blockUser, reportUser } from "../api/ChatService";
 import { X, User, Shield, Flag, Trash2 } from 'lucide-react';
 import { toast } from 'react-toastify';

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Search, ChevronDown, ChevronRight, MessageCircle, Mail, Phone, Book } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import AuthModal from '../components/Auth/AuthModal';
+// import AuthModal from '../components/Auth/AuthModal';
 import LoginModal from '../components/Auth/LoginModal';
 import ForgotPasswordModal from '../components/Auth/ForgotPasswordModal';
 import SignUpModal from '../components/Auth/SignUpModal';
@@ -233,7 +233,7 @@ const Help = () => {
                     <h3 className="text-xl font-semibold mb-3">{option.title}</h3>
                     <p className="text-gray-600 mb-4">{option.description}</p>
                     <p className="text-sm text-gray-500 mb-6">{option.available}</p>
-                    <button className="bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition-colors w-full transform transition-all duration-200 hover:scale-105">
+                    <button className="bg-teal-600 text-white px-6 py-3 rounded-lg hover:bg-teal-700 w-full transform transition-all duration-200 hover:scale-105">
                       {option.action}
                     </button>
                   </div>

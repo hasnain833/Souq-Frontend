@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import AuthModal from '../components/Auth/authModal';
+// import AuthModal from '../components/Auth/authModal';
 import ProductGrid from '../components/Products/ProductGrid';
 import { useAppContext } from '../context/AppContext';
 import LoginModal from '../components/Auth/LoginModal';

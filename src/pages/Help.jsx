@@ -23,11 +23,11 @@ const Help = () => {
         },
         {
           question: "How do I verify my account?",
-          answer: "After registration, check your email for a verification link from SOUQ. Click the link to verify your account. If you don't receive the email, check your spam folder or request a new verification email from your account settings."
+          answer: "After registration, check your email for a verification link from Habibi ماركت. Click the link to verify your account. If you don't receive the email, check your spam folder or request a new verification email from your account settings."
         },
         {
-          question: "Is SOUQ free to use?",
-          answer: "Creating an account and browsing items on SOUQ is completely free. We charge a small commission fee only when you successfully sell an item. There are no listing fees or monthly charges for basic users."
+          question: "Is Habibi ماركت free to use?",
+          answer: "Creating an account and browsing items on Habibi ماركت is completely free. We charge a small commission fee only when you successfully sell an item. There are no listing fees or monthly charges for basic users."
         }
       ]
     },
@@ -44,7 +44,7 @@ const Help = () => {
         },
         {
           question: "What payment methods are accepted?",
-          answer: "SOUQ supports various payment methods including credit/debit cards, PayPal, bank transfers, and cash on delivery (where available). The available payment options will be shown during checkout."
+          answer: "Habibi ماركت supports various payment methods including credit/debit cards, PayPal, bank transfers, and cash on delivery (where available). The available payment options will be shown during checkout."
         },
         {
           question: "How do I report a suspicious listing?",
@@ -61,7 +61,7 @@ const Help = () => {
         },
         {
           question: "How much does it cost to sell?",
-          answer: "Listing items is free. SOUQ charges a small commission fee (typically 3-5%) only when your item sells successfully. The exact fee depends on the item category and will be clearly shown before you list."
+          answer: "Listing items is free. Habibi ماركت charges a small commission fee (typically 3-5%) only when your item sells successfully. The exact fee depends on the item category and will be clearly shown before you list."
         },
         {
           question: "How do I edit or delete my listing?",
@@ -82,7 +82,7 @@ const Help = () => {
         },
         {
           question: "How do I stay safe while buying/selling?",
-          answer: "Meet in public places for item exchanges, verify items before payment, use SOUQ's messaging system for communication, trust your instincts, and report suspicious behavior. Never share personal financial information outside our platform."
+          answer: "Meet in public places for item exchanges, verify items before payment, use Habibi ماركت's messaging system for communication, trust your instincts, and report suspicious behavior. Never share personal financial information outside our platform."
         },
         {
           question: "What should I do if I'm scammed?",
@@ -132,7 +132,7 @@ const Help = () => {
   return (
     <>
       <Helmet>
-        <title>Help Center - Souq</title>
+        <title>Help Center - Habibi ماركت</title>
         <meta
           name="description"
           content="Welcome to My Website. We provide the best services for your needs."

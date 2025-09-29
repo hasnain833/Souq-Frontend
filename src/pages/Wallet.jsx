@@ -6,10 +6,10 @@ const WalletPage = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Helmet>
-        <title>Wallet - Souq</title>
+        <title>Wallet - Habibi ماركت</title>
         <meta
           name="description"
-          content="Welcome to My Website. We provide the best services for your needs."
+          content="Welcome to Habibi ماركت. We provide the best services for your needs."
         />
       </Helmet>
       <div className="container mx-auto py-8 px-4">

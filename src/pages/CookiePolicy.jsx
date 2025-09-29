@@ -60,7 +60,7 @@ const CookiePolicy = () => {
             <section className="mb-12">
               <h2 className="text-2xl font-bold text-gray-800 mb-4">1. Introduction</h2>
               <p className="text-gray-600 leading-relaxed">
-                This Cookie Policy explains how SOUQ ("we," "our," or "us") uses cookies and similar technologies
+                This Cookie Policy explains how Habibi ماركت ("we," "our," or "us") uses cookies and similar technologies
                 to recognize you when you visit our website and use our services. It explains what these technologies
                 are and why we use them, as well as your rights to control our use of them.
               </p>
@@ -71,7 +71,7 @@ const CookiePolicy = () => {
               <p className="text-gray-600 leading-relaxed">
                 Cookies are small data files that are placed on your computer or mobile device when you visit a website.
                 Cookies are widely used by website owners to make their websites work, or to work more efficiently,
-                as well as to provide reporting information. Cookies set by the website owner (in this case, SOUQ)
+                as well as to provide reporting information. Cookies set by the website owner (in this case, Habibi ماركت)
                 are called "first-party cookies." Cookies set by parties other than the website owner are called
                 "third-party cookies." Third-party cookies enable third-party features or functionality to be provided
                 on or through the website (e.g., advertising, interactive content, and analytics).

@@ -78,7 +78,7 @@ export default function EmailVerification() {
     return (
         <div className="min-h-screen bg-gray-100 py-12 px-4">
             <Helmet>
-                <title>Email verify - Souq</title>
+                <title>Email verify - Habibi ماركت</title>
                 <meta
                     name="description"
                     content="Welcome to My Website. We provide the best services for your needs."

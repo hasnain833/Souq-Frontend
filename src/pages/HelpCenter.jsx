@@ -22,12 +22,12 @@ const HelpCenter = () => {
 
   const faqs = [
     {
-      question: 'How do I create an account on SOUQ?',
+      question: 'How do I create an account on Habibi ماركت?',
       answer: 'You can create an account by clicking the "Sign Up" button and filling in your details, or by using Google/Facebook login for quick registration.'
     },
     {
-      question: 'Is it safe to buy on SOUQ?',
-      answer: 'Yes, SOUQ provides buyer protection, secure payment processing, and verified seller profiles to ensure safe transactions.'
+      question: 'Is it safe to buy on Habibi ماركت?',
+      answer: 'Yes, Habibi ماركت provides buyer protection, secure payment processing, and verified seller profiles to ensure safe transactions.'
     },
     {
       question: 'How do I list an item for sale?',

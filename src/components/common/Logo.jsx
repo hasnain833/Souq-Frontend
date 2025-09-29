@@ -19,8 +19,8 @@ const Logo = () => {
 
   return (
     <Link to="/" className="flex items-center gap-1" onClick={handleClick}>
-      <img src={logo} alt="Souq Logo" className="h-8 w-auto" />
-      <span className="text-xl font-bold text-teal-600">{t("souq")}</span>
+      <img src={logo} alt="Habibi Market Logo" className="h-8 w-auto" />
+      <span className="text-xl font-bold text-teal-600">{t("Habibi ماركت")}</span>
     </Link>
   );
 };

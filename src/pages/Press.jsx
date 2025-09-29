@@ -12,19 +12,19 @@ const Press = () => {
   const pressReleases = [
     {
       date: 'March 15, 2024',
-      title: 'SOUQ Reaches 1 Million Active Users Milestone',
+      title: 'Habibi ماركت Reaches 1 Million Active Users Milestone',
       excerpt: 'Leading marketplace platform celebrates significant growth in sustainable fashion trading.',
       downloadLink: '#'
     },
     {
       date: 'February 28, 2024',
-      title: 'SOUQ Launches Enhanced Security Features',
+      title: 'Habibi ماركت Launches Enhanced Security Features',
       excerpt: 'New buyer protection and verification systems strengthen marketplace safety.',
       downloadLink: '#'
     },
     {
       date: 'January 20, 2024',
-      title: 'SOUQ Expands to New Markets',
+      title: 'Habibi ماركت Expands to New Markets',
       excerpt: 'Platform announces expansion plans for Q2 2024 across multiple regions.',
       downloadLink: '#'
     }

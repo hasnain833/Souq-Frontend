@@ -77,7 +77,7 @@ const Followers = () => {
         <>
             <div className="bg-white min-h-[600px] p-6 flex flex-col">
                 <Helmet>
-                    <title>Followers - Souq</title>
+                    <title>Followers - Habibi ماركت</title>
                     <meta
                         name="description"
                         content="Welcome to My Website. We provide the best services for your needs."

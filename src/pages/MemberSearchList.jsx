@@ -42,7 +42,7 @@ const MemberSearchList = () => {
     return (
         <div className="container mx-auto p-4">
             <Helmet>
-                <title>Member list - Souq</title>
+                <title>Member list - Habibi ماركت</title>
                 <meta
                     name="description"
                     content="Welcome to My Website. We provide the best services for your needs."

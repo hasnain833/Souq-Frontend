@@ -186,7 +186,7 @@ export default function CheckoutPage() {
                     const perKgRate = providerData?.pricing?.perKg || 0;
                     const originalCurrency = providerData?.pricing?.currency || 'AED';
 
-                    // Force USD currency for SOUQ project as per requirements
+                    // Force USD currency for Habibi ماركت project as per requirements
                     const currency = 'USD';
 
                     // Convert AED to USD (approximate rate: 1 USD = 3.67 AED)
@@ -369,7 +369,7 @@ export default function CheckoutPage() {
     return (
         <div className="p-6 bg-gray-50 min-h-screen">
             <Helmet>
-                <title>Checkout - Souq</title>
+                <title>Checkout - Habibi ماركت</title>
                 <meta
                     name="description"
                     content="Welcome to My Website. We provide the best services for your needs."

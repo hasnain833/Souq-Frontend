@@ -84,7 +84,7 @@ const About = () => {
   return (
     <>
       <Helmet>
-        <title>About - Souq</title>
+        <title>About - Habibi ماركت</title>
         <meta
           name="description"
           content="Welcome to My Website. We provide the best services for your needs."

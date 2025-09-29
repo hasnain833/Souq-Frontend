@@ -196,7 +196,7 @@ const EscrowPaymentForm = ({ clientSecret, transactionId, cardData, autoProcess 
       <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
         <div className="flex items-center justify-center text-gray-600 text-sm">
           <Lock className="w-4 h-4 mr-2" />
-          <span>Secured by Stripe • Escrow Protection by SOUQ</span>
+          <span>Secured by Stripe • Escrow Protection by Habibi ماركت</span>
         </div>
       </div>
     </form>

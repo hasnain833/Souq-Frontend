@@ -173,7 +173,7 @@ const HomePage = () => {
     <>
       {/* Banner Section */}
       <Helmet>
-        <title>Home - Souq</title>
+        <title>Home - Habibi ماركت</title>
         <meta
           name="description"
           content="Welcome to My Website. We provide the best services for your needs."

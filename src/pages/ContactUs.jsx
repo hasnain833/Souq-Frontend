@@ -66,7 +66,7 @@ const ContactUs = () => {
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-4xl font-bold mb-4">{t('contact_us')}</h1>
             <p className="text-xl">
-              Your experience on SOUQ matters to us. Whether it’s about listings, payments, shipping, or feedback, feel free to reach out - we’re always ready to assist.
+              Your experience on Habibi ماركت matters to us. Whether it’s about listings, payments, shipping, or feedback, feel free to reach out - we’re always ready to assist.
             </p>
           </div>
         </div>

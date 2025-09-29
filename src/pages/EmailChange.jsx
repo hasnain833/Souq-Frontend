@@ -59,7 +59,7 @@ const EmailChange = () => {
     return (
         <div className="min-h-screen bg-gray-100 py-12 px-4">
             <Helmet>
-                <title>Email change - Souq</title>
+                <title>Email change - Habibi ماركت</title>
                 <meta
                     name="description"
                     content="Welcome to My Website. We provide the best services for your needs."

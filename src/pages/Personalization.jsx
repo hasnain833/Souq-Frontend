@@ -101,10 +101,10 @@ export default function Personalization() {
     return (
         <div className="flex flex-col md:flex-row min-h-screen container mx-auto">
             <Helmet>
-                <title>Personalization - Souq</title>
+                <title>Personalization - Habibi ماركت</title>
                 <meta
                     name="description"
-                    content="Welcome to My Website. We provide the best services for your needs."
+                    content="Welcome to Habibi ماركت. We provide the best services for your needs."
                 />
             </Helmet>
             {/* Sidebar */}

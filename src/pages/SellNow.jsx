@@ -172,10 +172,10 @@ const SellNowPage = () => {
   return (
     <div className="bg-gray-100">
       <Helmet>
-        <title>Sell now - Souq</title>
+        <title>Sell now - Habibi ماركت</title>
         <meta
           name="description"
-          content="Welcome to My Website. We provide the best services for your needs."
+          content="Welcome to Habibi ماركت. We provide the best services for your needs."
         />
       </Helmet>
       <div className="max-w-7xl mx-auto p-4 sm:p-6 md:p-8">

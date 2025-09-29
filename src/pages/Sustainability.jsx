@@ -22,7 +22,7 @@ const Sustainability = () => {
       <div className="bg-green-600 text-white py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">Sustainability at SOUQ</h1>
+            <h1 className="text-4xl md:text-5xl font-bold mb-6">Sustainability at Habibi ماركت</h1>
             <p className="text-xl md:text-2xl opacity-90">
               Building a circular fashion economy for a better tomorrow
             </p>
@@ -37,7 +37,7 @@ const Sustainability = () => {
             <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">Our Environmental Mission</h2>
             <p className="text-lg text-gray-600 leading-relaxed mb-8">
               The fashion industry is one of the world's largest polluters, responsible for 10% of global carbon emissions
-              and 20% of wastewater. At SOUQ, we're committed to changing this narrative by promoting circular fashion
+              and 20% of wastewater. At Habibi ماركت, we're committed to changing this narrative by promoting circular fashion
               and extending the lifecycle of clothing items.
             </p>
             <p className="text-lg text-gray-600 leading-relaxed">
@@ -126,7 +126,7 @@ const Sustainability = () => {
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-3xl font-bold text-gray-800 mb-6">Join the Sustainable Fashion Movement</h2>
             <p className="text-lg text-gray-600 mb-8">
-              Every purchase and sale on SOUQ contributes to a more sustainable fashion industry.
+              Every purchase and sale on Habibi ماركت contributes to a more sustainable fashion industry.
               Together, we can make a difference.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

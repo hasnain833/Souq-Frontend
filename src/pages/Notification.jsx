@@ -267,7 +267,7 @@ const Notifications = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Helmet>
-        <title>Notification - Souq</title>
+        <title>Notification - Habibi ماركت</title>
         <meta
           name="description"
           content="Welcome to My Website. We provide the best services for your needs."

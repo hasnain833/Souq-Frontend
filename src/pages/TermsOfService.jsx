@@ -33,7 +33,7 @@ const TermsOfService = () => {
             <section className="mb-12">
               <h2 className="text-2xl font-bold text-gray-800 mb-4">1. Introduction</h2>
               <p className="text-gray-600 leading-relaxed">
-                Welcome to SOUQ. These Terms of Service ("Terms") govern your access to and use of the SOUQ
+                Welcome to Habibi ماركت. These Terms of Service ("Terms") govern your access to and use of the Habibi ماركت
                 website, mobile applications, and services (collectively, the "Services"). By accessing or using
                 our Services, you agree to be bound by these Terms. If you do not agree to these Terms, you may
                 not access or use the Services.
@@ -80,7 +80,7 @@ const TermsOfService = () => {
                 before purchasing, and completing payment for items you agree to buy.
               </p>
               <p className="text-gray-600 leading-relaxed">
-                SOUQ facilitates transactions between buyers and sellers but is not a party to any transaction.
+                Habibi ماركت facilitates transactions between buyers and sellers but is not a party to any transaction.
                 We do not guarantee the quality, safety, or legality of items listed, the truth or accuracy of
                 listings, or the ability of sellers to sell items or buyers to pay for items.
               </p>
@@ -103,7 +103,7 @@ const TermsOfService = () => {
               <h2 className="text-2xl font-bold text-gray-800 mb-4">6. Intellectual Property</h2>
               <p className="text-gray-600 leading-relaxed mb-4">
                 The Services and all content and materials included on the Services, including text, graphics,
-                logos, images, and software, are the property of SOUQ or our licensors and are protected by
+                logos, images, and software, are the property of Habibi ماركت or our licensors and are protected by
                 copyright, trademark, and other intellectual property laws.
               </p>
               <p className="text-gray-600 leading-relaxed">
@@ -117,11 +117,11 @@ const TermsOfService = () => {
             <section className="mb-12">
               <h2 className="text-2xl font-bold text-gray-800 mb-4">7. Limitation of Liability</h2>
               <p className="text-gray-600 leading-relaxed">
-                To the maximum extent permitted by law, SOUQ and its officers, directors, employees, and agents
+                To the maximum extent permitted by law, Habibi ماركت and its officers, directors, employees, and agents
                 shall not be liable for any indirect, incidental, special, consequential, or punitive damages,
                 including lost profits, arising out of or in connection with your use of the Services, whether
                 based on warranty, contract, tort (including negligence), or any other legal theory, even if
-                SOUQ has been informed of the possibility of such damage.
+                Habibi ماركت has been informed of the possibility of such damage.
               </p>
             </section>
 
@@ -202,7 +202,7 @@ const TermsOfService = () => {
                   <AlertTriangle className="text-amber-500 flex-shrink-0 mt-1" size={20} />
                   <div>
                     <h3 className="font-semibold text-gray-800 mb-1">Marketplace Role</h3>
-                    <p className="text-gray-600">SOUQ is a platform that facilitates transactions but is not a party to any transaction between users.</p>
+                    <p className="text-gray-600">Habibi ماركت is a platform that facilitates transactions but is not a party to any transaction between users.</p>
                   </div>
                 </div>
               </div>

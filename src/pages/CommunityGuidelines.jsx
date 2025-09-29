@@ -30,7 +30,7 @@ const CommunityGuidelines = () => {
       title: 'Stay Safe',
       description: 'Protect yourself and others in the community',
       dos: [
-        'Use SOUQ\'s secure payment system',
+        'Use Habibi ماركت\'s secure payment system',
         'Report suspicious activity',
         'Verify items before purchasing'
       ],
@@ -86,12 +86,12 @@ const CommunityGuidelines = () => {
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">Our Community Values</h2>
             <p className="text-lg text-gray-600 leading-relaxed mb-8">
-              SOUQ is more than just a marketplace - it's a community of fashion enthusiasts who believe in
+              Habibi ماركت is more than just a marketplace - it's a community of fashion enthusiasts who believe in
               sustainable shopping and selling. These guidelines help ensure that everyone has a positive
               and safe experience on our platform.
             </p>
             <p className="text-lg text-gray-600 leading-relaxed">
-              By using SOUQ, you agree to follow these community guidelines. Violations may result in
+              By using Habibi ماركت, you agree to follow these community guidelines. Violations may result in
               warnings, temporary suspensions, or permanent account closure.
             </p>
           </div>
@@ -165,7 +165,7 @@ const CommunityGuidelines = () => {
             <div className="bg-red-50 border border-red-200 rounded-lg p-6">
               <div className="flex items-center gap-3 mb-4">
                 <AlertCircle className="text-red-600" size={24} />
-                <h3 className="text-xl font-semibold text-red-800">The following are not allowed on SOUQ:</h3>
+                <h3 className="text-xl font-semibold text-red-800">The following are not allowed on Habibi ماركت:</h3>
               </div>
               <ul className="space-y-2">
                 {prohibitedItems.map((item, index) => (
@@ -187,7 +187,7 @@ const CommunityGuidelines = () => {
             <h2 className="text-3xl font-bold text-gray-800 mb-8">Help Us Maintain Our Community</h2>
             <p className="text-lg text-gray-600 mb-8">
               If you see content or behavior that violates our community guidelines, please report it.
-              Your reports help us keep SOUQ safe for everyone.
+              Your reports help us keep Habibi ماركت safe for everyone.
             </p>
             <button className="bg-purple-600 text-white px-8 py-3 rounded-md hover:bg-purple-700 transition-colors">
               Report a Violation

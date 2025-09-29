@@ -7,10 +7,10 @@ const SettingsPage = () => {
   return (
     <div className="container mx-auto flex flex-col md:flex-row min-h-screen bg-white">
       <Helmet>
-        <title>Settings - Souq</title>
+        <title>Settings - Habibi ماركت</title>
         <meta
           name="description"
-          content="Welcome to My Website. We provide the best services for your needs."
+          content="Welcome to Habibi ماركت. We provide the best services for your needs."
         />
       </Helmet>
       <SettingsTabs />

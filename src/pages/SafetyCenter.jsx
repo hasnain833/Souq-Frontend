@@ -37,7 +37,7 @@ const SafetyCenter = () => {
       category: 'For Buyers',
       tips: [
         'Always check seller ratings and reviews before making a purchase',
-        'Use SOUQ\'s secure payment system - never pay outside the platform',
+        'Use Habibi ماركت\'s secure payment system - never pay outside the platform',
         'Read item descriptions carefully and ask questions if needed',
         'Report suspicious listings or behavior immediately'
       ]
@@ -125,7 +125,7 @@ const SafetyCenter = () => {
                 <h3 className="text-xl font-semibold text-red-800">Be Cautious If:</h3>
               </div>
               <ul className="space-y-2 text-red-700">
-                <li>• Someone asks you to pay outside of SOUQ's platform</li>
+                <li>• Someone asks you to pay outside of Habibi ماركت's platform</li>
                 <li>• Prices seem too good to be true</li>
                 <li>• Seller refuses to provide additional photos or information</li>
                 <li>• Communication seems rushed or pressuring</li>

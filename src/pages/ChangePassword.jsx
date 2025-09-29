@@ -52,7 +52,7 @@ const ChangePassword = () => {
   return (
     <div className="min-h-screen bg-gray-100 py-12 px-4">
       <Helmet>
-        <title>Change password - Souq</title>
+        <title>Change password - Habibi ماركت</title>
         <meta
           name="description"
           content="Welcome to My Website. We provide the best services for your needs."

@@ -308,7 +308,7 @@ const Orders = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Helmet>
-        <title>Orders - Souq</title>
+        <title>Orders - Habibi ماركت</title>
         <meta
           name="description"
           content="Welcome to My Website. We provide the best services for your needs."

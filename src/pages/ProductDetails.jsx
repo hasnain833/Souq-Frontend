@@ -433,10 +433,10 @@ const ProductDetailPage = () => {
   return (
     <div className="bg-white min-h-screen p-4 max-w-[1200px] mx-auto">
       <Helmet>
-        <title>Product details - Souq</title>
+        <title>Product details - Habibi ماركت</title>
         <meta
           name="description"
-          content="Welcome to My Website. We provide the best services for your needs."
+          content="Welcome to Habibi ماركت. We provide the best services for your needs."
         />
       </Helmet>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

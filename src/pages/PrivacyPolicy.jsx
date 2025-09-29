@@ -15,10 +15,10 @@ const PrivacyPolicy = () => {
   return (
     <>
       <Helmet>
-        <title>Privacy Policy - Souq</title>
+        <title>Privacy Policy - Habibi ماركت</title>
         <meta
           name="description"
-          content="Welcome to My Website. We provide the best services for your needs."
+          content="Welcome to Habibi ماركت. We provide the best services for your needs."
         />
       </Helmet>
       <div className="min-h-screen bg-gray-50">

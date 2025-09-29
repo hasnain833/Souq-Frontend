@@ -299,10 +299,10 @@ export default function UserProfile() {
     return (
         <div className="container mx-auto p-4">
             <Helmet>
-                <title>Member profile - Souq</title>
+                <title>Member profile - Habibi ماركت</title>
                 <meta
                     name="description"
-                    content="Welcome to My Website. We provide the best services for your needs."
+                    content="Welcome to Habibi ماركت. We provide the best services for your needs."
                 />
             </Helmet>
             <div className="flex flex-col md:flex-row md:items-start gap-8">

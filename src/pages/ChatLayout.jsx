@@ -359,7 +359,7 @@ function ChatLayout() {
   return (
     <div className="flex mx-auto max-w-[1200px] border border-gray-200 mt-5 mb-5 bg-white min-h-[750px] max-h-[800px] overflow-y-auto">
       <Helmet>
-        <title>Chat - Souq</title>
+        <title>Chat - Habibi ماركت</title>
         <meta
           name="description"
           content="Welcome to My Website. We provide the best services for your needs."

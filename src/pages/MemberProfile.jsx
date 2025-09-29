@@ -155,7 +155,7 @@ export default function MemberProfile() {
     return (
         <div className="container mx-auto p-4">
             <Helmet>
-                <title>Profile - Souq</title>
+                <title>Profile - Habibi ماركت</title>
                 <meta
                     name="description"
                     content="Welcome to My Website. We provide the best services for your needs."

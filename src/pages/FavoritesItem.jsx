@@ -93,7 +93,7 @@ const FavoritesItem = () => {
     return (
         <div className="container mx-auto px-4 sm:px-6 py-8">
             <Helmet>
-                <title>Favorites item - Souq</title>
+                <title>Favorites item - Habibi ماركت</title>
                 <meta
                     name="description"
                     content="Welcome to My Website. We provide the best services for your needs."

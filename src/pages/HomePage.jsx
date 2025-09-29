@@ -277,7 +277,7 @@ const HomePage = () => {
           </div>
         </div>
         <FilterModal isOpen={isFilterOpen} onClose={() => setIsFilterOpen(false)} />
-        <AuthModal />
+        {/* <AuthModal /> */}
         <LoginModal />
         <ForgotPasswordModal />
         <SignUpModal />

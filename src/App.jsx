@@ -68,13 +68,12 @@ import Sustainability from "./pages/Sustainability";
 import SafetyCenter from "./pages/SafetyCenter";
 import CommunityGuidelines from "./pages/CommunityGuidelines";
 import ContactUs from "./pages/ContactUs";
-// import { useTranslation } from "react-i18next";
 import HowItWorks from "./pages/HowItWorks";
 // Admin pages
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 // Auth modals mounted globally so Header buttons work everywhere
-import AuthModal from "./components/Auth/AuthModal";
+import AuthModal from "./components/Auth/Authmodal";
 import LoginModal from "./components/Auth/LoginModal";
 import ForgotPasswordModal from "./components/Auth/ForgotPasswordModal";
 import SignUpModal from "./components/Auth/SignUpModal";

@@ -3,12 +3,12 @@ import { FaApple, FaFacebookSquare } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
 import { X } from 'lucide-react';
 import { useAppContext } from '../../context/AppContext';
-// import LoginModal from './LoginModal';
+import LoginModal from './LoginModal';
 import { useTranslation } from 'react-i18next';
 
 const AuthModal = () => {
-  const { isAuthModalOpen, setIsAuthModalOpen, authMode, setAuthMode, setShowEmailLogin, showSignUp, setShowSignUp } = useAppContext();
-  // const [showEmailLogin, setShowEmailLogin] = useState(false);
+  const { isAuthModalOpen, setIsAuthModalOpen, authMode, setAuthMode, showSignUp, setShowSignUp } = useAppContext();
+  const [showEmailLogin, setShowEmailLogin] = useState(false);
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === 'ar';
   if (!isAuthModalOpen) return null;

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Search, Menu, X, ChevronDown, ChevronUp, XCircle } from 'lucide-react';
+import AuthModal from '../Auth/AuthModal';
 import { useAppContext } from '../../context/AppContext';
 import MegaMenu from './MegaMenu';
 import HeaderCategories from './HeaderCategories';
@@ -12,9 +13,9 @@ import {
   LuSettings,
   LuWallet,
   LuPackage,
-  LuGift,
+  // LuGift,
   LuLogOut,
-  LuUsers,
+  // LuUsers,
   LuSparkles,
   LuMail,
 } from "react-icons/lu";
@@ -32,7 +33,7 @@ import { persistor } from '../../redux/store';
 
 const Header = () => {
   const {
-    isAuthModalOpen,
+    // isAuthModalOpen,
     setIsAuthModalOpen,
     setAuthMode,
     isMobileMenuOpen,
@@ -57,7 +58,6 @@ const Header = () => {
   const [searchValue, setSearchValue] = useState('');
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  // const [categoryData, setCategoryData] = useState([])
 
   const unreadCount = mockNotifications.filter(n => !n.isRead).length;
 
@@ -385,15 +385,15 @@ const Header = () => {
                 <svg className="w-5 h-5 text-gray-600 cursor-pointer" fill="none" stroke="currentColor" viewBox="0 0 24 24" onClick={() => navigate("/chat-layout")}>
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                 </svg>
-                {/* <LuMail className="w-5 h-5 text-gray-600 cursor-pointer" onClick={() => navigate("/chat-layout")} /> */}
-                {/* <LuBell className="w-5 h-5 text-gray-600 cursor-pointer" onClick={toggleNotifications} />
+                <LuMail className="w-5 h-5 text-gray-600 cursor-pointer" onClick={() => navigate("/chat-layout")} />
+                <LuBell className="w-5 h-5 text-gray-600 cursor-pointer" onClick={toggleNotifications} />
                 <NotificationDropdown
                   notifications={mockNotifications}
                   isOpen={isNotificationOpen}
                   onClose={() => setIsNotificationOpen(false)}
                   showAll={showAllNotifications}
                   onToggleShowAll={handleToggleShowAll}
-                /> */}
+                />
                 <NotificationDropdown />
                 <LuHeart className="w-5 h-5 text-gray-600 cursor-pointer" onClick={() => navigate("/favorites-item")} />
 
@@ -427,12 +427,12 @@ const Header = () => {
                         >
                           <LuPackage /> {t("my_orders")}
                         </li>
-                        {/* <li className="px-4 py-2 hover:bg-gray-100 flex items-center gap-2 cursor-pointer">
+                        <li className="px-4 py-2 hover:bg-gray-100 flex items-center gap-2 cursor-pointer">
                           <LuGift /> {t("donation")}
                         </li>
                         <li className="px-4 py-2 hover:bg-gray-100 flex items-center gap-2 cursor-pointer">
                           <LuUsers /> {t("invite_friends")}
-                        </li> */}
+                        </li>
                         <li
                           onClick={handleLogout}
                           className="px-4 py-2 hover:bg-red-50 text-red-500 flex items-center gap-2 cursor-pointer border-t first:rounded-t-lg last:rounded-b-lg "

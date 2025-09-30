@@ -375,11 +375,9 @@ const StripePayment = () => {
     async function startCheckoutRedirect() {
       let endpoint = '';
       if (paymentType === 'escrow') {
-        // endpoint = 'http://localhost:5000/api/user/escrow/stripe/checkout';
-        endpoint = `${import.meta.env.VITE_API_BASE_URL}/api/user/escrow/stripe/checkout`;
+        endpoint = '/api/user/escrow/stripe/checkout';
       } else if (paymentType === 'standard') {
-        // endpoint = 'http://localhost:5000/api/user/payments/stripe/checkout';
-        endpoint = `${import.meta.env.VITE_API_BASE_URL}/api/user/payments/stripe/checkout`;
+        endpoint = '/api/user/payments/stripe/checkout';
       } else {
         toast.error('Invalid payment type');
         return;
@@ -387,14 +385,13 @@ const StripePayment = () => {
 
       try {
         const token = localStorage.getItem('accessToken'); // 👈 Get your auth token
-        const FRONTEND_URL = import.meta.env.VITE_FRONTEND_URL;
         const response = await axios.post(
           endpoint,
           {
             transactionId,
             paymentType,
-            successUrl: `${FRONTEND_URL}/payment-success?transaction=${transactionId}&type=${paymentType}`,
-            cancelUrl: `${FRONTEND_URL}/payment-cancelled?transaction=${transactionId}&type=${paymentType}`
+            successUrl: `${window.location.origin}/payment-success?transaction=${transactionId}&type=${paymentType}`,
+            cancelUrl: `${window.location.origin}/payment-cancelled?transaction=${transactionId}&type=${paymentType}`
           },
           {
             headers: {

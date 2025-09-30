@@ -36,8 +36,10 @@ const LoginModal = () => {
             if (response.success) {
                 const { accessToken, refreshToken, user } = response.data.data;
                 if (user.profile) {
-                    // const imageUrl = `${baseURL}${user.profile}`;
-                    const imageUrl = user.profile
+                    // If backend returns absolute URL, use as-is; else ensure it starts with '/'
+                    const imageUrl = user.profile.startsWith('http')
+                      ? user.profile
+                      : (user.profile.startsWith('/') ? user.profile : `/${user.profile}`);
                     dispatch(setProfileImage(imageUrl))
                 }
                 i18n.changeLanguage(user.language);

@@ -6,10 +6,12 @@ import {
   clearTokens,
 } from '../utils/TokenStorage';
 
-// Determine baseURL with a sensible fallback for dev
-const resolvedBaseURL =
-  import.meta.env.VITE_API_BASE_URL ||
-  (import.meta.env.DEV ? 'http://localhost:5000' : window.location.origin);
+// Base URL strategy:
+// - Dev: use same-origin so Vite proxy forwards requests to backend
+// - Prod (Vercel): use VITE_API_BASE_URL to point to backend origin
+const resolvedBaseURL = import.meta.env.PROD
+  ? (import.meta.env.VITE_API_BASE_URL || '/')
+  : '/';
 
 const axiosInstance = axios.create({
   baseURL: resolvedBaseURL,

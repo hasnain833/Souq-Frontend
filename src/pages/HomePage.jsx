@@ -1,10 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
-// import AuthModal from '../components/Auth/authModal';
 import ProductGrid from '../components/Products/ProductGrid';
 import { useAppContext } from '../context/AppContext';
-import LoginModal from '../components/Auth/LoginModal';
-import ForgotPasswordModal from '../components/Auth/ForgotPasswordModal';
-import SignUpModal from '../components/Auth/SignUpModal';
 import Filter from '../components/Navigation/Filter';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { getAllProduct } from '../api/ProductService';
@@ -17,6 +13,7 @@ import ProductCardSkeleton from '../components/Skeleton/ProductCardSkeleton';
 import SouqBanner from "../public/images/souqbanner.jpg"
 import SouqBannerMobile from "../public/images/souqbanner-1.jpg"
 import { Helmet } from 'react-helmet';
+import { products as mockProducts } from '../data/products';
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -83,6 +80,19 @@ const HomePage = () => {
     }
   };
 
+  // Transform mock products into API-like shape expected by ProductCard/ProductGrid
+  const mapMockToApiShape = (list) =>
+    list.map((p) => ({
+      id: p.id,
+      title: p.title,
+      price: p.price,
+      size: p.size,
+      brand: p.brand,
+      favoriteCount: 0,
+      status: 'active',
+      product_photos: p.imageUrl ? [p.imageUrl] : [],
+    }));
+
   const loadMoreProducts = async () => {
     if (isFetching.current || !hasNextPage) return;
 
@@ -112,9 +122,17 @@ const HomePage = () => {
     pageRef.current = 1;
     const { items, hasNextPage: next } = await fetchProducts({ page: 1, limit });
 
-    setProducts(items);
-    setHasNextPage(next);
-    pageRef.current = 2; // Set next page correctly
+    if (items.length > 0) {
+      setProducts(items);
+      setHasNextPage(next);
+      pageRef.current = 2; // next page
+    } else {
+      // Fallback to mock data if API returns nothing or fails
+      const mocks = mapMockToApiShape(mockProducts);
+      setProducts(mocks);
+      setHasNextPage(false);
+      pageRef.current = 2;
+    }
 
     setIsLoading(false);
     setInitialLoad(false);
@@ -277,10 +295,6 @@ const HomePage = () => {
           </div>
         </div>
         <FilterModal isOpen={isFilterOpen} onClose={() => setIsFilterOpen(false)} />
-        {/* <AuthModal /> */}
-        <LoginModal />
-        <ForgotPasswordModal />
-        <SignUpModal />
       </div>
     </>
   );

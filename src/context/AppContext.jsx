@@ -13,46 +13,42 @@ export const AppProvider = ({ children }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [showSignUp, setShowSignUp] = useState(false);
-
-  // Global notification state
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [notificationsLoading, setNotificationsLoading] = useState(false);
+  // const { connected } = useWebSocketNotifications({
+  //   onNewNotification: (notification) => {
+  //     setNotifications((prev) => [notification, ...prev]);
+  //     setUnreadCount((prev) => prev + 1);
 
-  // Initialize WebSocket notifications
-  const { connected } = useWebSocketNotifications({
-    onNewNotification: (notification) => {
-      setNotifications((prev) => [notification, ...prev]);
-      setUnreadCount((prev) => prev + 1);
-
-      // Show toast for high priority notifications
-      if (
-        notification.priority === "high" ||
-        notification.priority === "urgent"
-      ) {
-        toast.info(notification.message);
-      }
-    },
-    onUnreadCountUpdate: (count) => {
-      setUnreadCount(count);
-    },
-    onNotificationDeleted: (notificationId) => {
-      // Remove the deleted notification from the list
-      setNotifications((prev) => prev.filter((n) => n._id !== notificationId));
-      // Update unread count if the deleted notification was unread
-      setNotifications((prev) => {
-        const deletedNotification = prev.find((n) => n._id === notificationId);
-        if (deletedNotification && deletedNotification.status === "unread") {
-          setUnreadCount((prevCount) => Math.max(0, prevCount - 1));
-        }
-        return prev.filter((n) => n._id !== notificationId);
-      });
-    },
-    onNotificationsRefresh: () => {
-      // Refresh the notifications list
-      loadNotifications();
-    },
-  });
+  //     // Show toast for high priority notifications
+  //     if (
+  //       notification.priority === "high" ||
+  //       notification.priority === "urgent"
+  //     ) {
+  //       toast.info(notification.message);
+  //     }
+  //   },
+  //   onUnreadCountUpdate: (count) => {
+  //     setUnreadCount(count);
+  //   },
+  //   onNotificationDeleted: (notificationId) => {
+  //     // Remove the deleted notification from the list
+  //     setNotifications((prev) => prev.filter((n) => n._id !== notificationId));
+  //     // Update unread count if the deleted notification was unread
+  //     setNotifications((prev) => {
+  //       const deletedNotification = prev.find((n) => n._id === notificationId);
+  //       if (deletedNotification && deletedNotification.status === "unread") {
+  //         setUnreadCount((prevCount) => Math.max(0, prevCount - 1));
+  //       }
+  //       return prev.filter((n) => n._id !== notificationId);
+  //     });
+  //   },
+  //   onNotificationsRefresh: () => {
+  //     // Refresh the notifications list
+  //     loadNotifications();
+  //   },
+  // });
 
   // Load notifications function
   const loadNotifications = async (
@@ -97,7 +93,7 @@ export const AppProvider = ({ children }) => {
     }
   };
 
-  const [user, setUser] = useState(() => localStorage.getItem("user"));
+  // const [user, setUser] = useState(() => localStorage.getItem("user"));
 
   useEffect(() => {
     const handleStorageChange = () => {

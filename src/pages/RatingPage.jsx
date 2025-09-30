@@ -21,8 +21,7 @@ const RatingPage = () => {
 
   const transactionId = searchParams.get('transaction');
   const type = searchParams.get('type') || 'escrow';
-  // console.log('Type:', type);
-  const baseURL = import.meta.env.VITE_API_BASE_URL?.replace(/\/api$/, '') || '';
+  const baseOrigin = typeof window !== 'undefined' ? window.location.origin : '';
   
   console.log('Transactiondataaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa:', transaction);
   useEffect(() => {
@@ -243,9 +242,8 @@ const RatingPage = () => {
       if (imageUrl.startsWith('http')) {
         return imageUrl;
       } else {
-        // Remove leading slash if present and construct proper URL
-        const cleanUrl = imageUrl.startsWith('/') ? imageUrl.substring(1) : imageUrl;
-        return `http://localhost:5000/${cleanUrl}`;
+        // Normalize to absolute path on same origin
+        return imageUrl.startsWith('/') ? imageUrl : `/${imageUrl}`;
       }
     }
 

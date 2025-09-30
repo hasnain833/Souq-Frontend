@@ -5,7 +5,7 @@ import { useAppContext } from '../../context/AppContext';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { register as registerAPI } from "../../api/AuthService"; // adjust the path
 import { saveTokens } from '../../utils/TokenStorage';
-import { toast } from 'react-toastify';
+// import { toast } from 'react-toastify';
 import { Alert } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 

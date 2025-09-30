@@ -12,13 +12,11 @@ export const getSharedSocket = () => {
       return null;
     }
 
-    // Use VITE_SOCKET_URL if available, otherwise use the base API URL directly
-    let socketURL = import.meta.env.VITE_SOCKET_URL;
-
-    if (!socketURL) {
-      // Since VITE_API_BASE_URL is http://localhost:5000, use it directly for socket
-      socketURL = import.meta.env.VITE_API_BASE_URL;
-    }
+    // In dev: connect to same origin (Vite proxy forwards to backend)
+    // In prod: connect to API base (different origin)
+    const socketURL = import.meta.env.PROD && import.meta.env.VITE_API_BASE_URL
+      ? import.meta.env.VITE_API_BASE_URL
+      : '/';
 
     console.log("🌐 Creating shared socket connection to:", socketURL);
     console.log("🔑 Token present:", !!token);
@@ -26,11 +24,6 @@ export const getSharedSocket = () => {
       "🔑 Token preview:",
       token ? `${token.substring(0, 20)}...` : "none"
     );
-    console.log("🌐 Environment check:", {
-      VITE_API_BASE_URL: import.meta.env.VITE_API_BASE_URL,
-      VITE_SOCKET_URL: import.meta.env.VITE_SOCKET_URL,
-      finalSocketURL: socketURL,
-    });
 
     sharedSocket = io(socketURL, {
       auth: { token },
@@ -43,6 +36,7 @@ export const getSharedSocket = () => {
       reconnectionDelayMax: 5000,
       autoConnect: true,
       withCredentials: true,
+      path: '/socket.io'
     });
 
     sharedSocket.on("connect", () => {

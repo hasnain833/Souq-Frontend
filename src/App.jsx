@@ -73,9 +73,14 @@ import HowItWorks from "./pages/HowItWorks";
 // Admin pages
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+// Auth modals mounted globally so Header buttons work everywhere
+import AuthModal from "./components/Auth/AuthModal";
+import LoginModal from "./components/Auth/LoginModal";
+import ForgotPasswordModal from "./components/Auth/ForgotPasswordModal";
+import SignUpModal from "./components/Auth/SignUpModal";
 
 function App() {
-  // const location = useLocation();
+  const location = useLocation();
   // const { i18n } = useTranslation();
   const isRTL = localStorage.getItem("lang") === "ar";
   const StripeComponent = isPaymentGatewayEnabled("stripe")
@@ -91,6 +96,11 @@ function App() {
             position={isRTL ? "top-left" : "top-right"}
             rtl={isRTL}
           />
+          {/* Global auth modals */}
+          <AuthModal />
+          <LoginModal />
+          <ForgotPasswordModal />
+          <SignUpModal />
           <main className="flex-grow bg-white">
             <Routes>
               <Route path="/" element={<HomePage />} />

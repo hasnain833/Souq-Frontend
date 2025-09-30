@@ -1,14 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
-
-/**
- * Custom hook to prevent access to payment pages after successful transactions
- * @param {Object} options - Configuration options
- * @param {boolean} options.preventAccess - Whether to prevent access to this page
- * @param {string} options.redirectTo - Where to redirect if access is prevented
- * @param {string} options.warningMessage - Custom warning message
- */
 const usePaymentSecurity = (options = {}) => {
   const navigate = useNavigate();
   const location = useLocation();

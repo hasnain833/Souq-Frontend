@@ -3,7 +3,7 @@ import { FaApple, FaFacebookSquare } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
 import { X } from 'lucide-react';
 import { useAppContext } from '../../context/AppContext';
-// import LoginModal from './LoginModal';
+import LoginModal from './LoginModal';
 import { useTranslation } from 'react-i18next';
 
 const AuthModal = () => {
@@ -42,10 +42,13 @@ const AuthModal = () => {
             </h2>
 
             <div className="space-y-4">
+              {/** Build API base: in dev use same-origin; in prod use VITE_API_BASE_URL **/}
+              {/** We compute at click time to avoid SSR issues **/}
               <button
                 className="flex items-center justify-center w-full py-2.5 px-4 border border-gray-300 rounded-lg hover:bg-gray-100 transition duration-200"
                 onClick={() => {
-                  window.location.href = `${import.meta.env.VITE_API_BASE_URL}/api/user/auth/google`;
+                  const apiBase = import.meta.env.PROD && import.meta.env.VITE_API_BASE_URL ? import.meta.env.VITE_API_BASE_URL : '';
+                  window.location.href = `${apiBase}/api/user/auth/google`;
                 }}
               >
                 <FcGoogle size={22} className="mr-2 rtl:ml-2" />
@@ -58,7 +61,8 @@ const AuthModal = () => {
               <button
                 className="flex items-center justify-center w-full py-2.5 px-4 border border-gray-300 rounded-lg hover:bg-gray-100 transition duration-200"
                 onClick={() => {
-                  window.location.href = `${import.meta.env.VITE_API_BASE_URL}/api/user/auth/facebook`;
+                  const apiBase = import.meta.env.PROD && import.meta.env.VITE_API_BASE_URL ? import.meta.env.VITE_API_BASE_URL : '';
+                  window.location.href = `${apiBase}/api/user/auth/facebook`;
                 }}
               >
                 <FaFacebookSquare size={22} className="text-blue-600 mr-2 rounded-full rtl:ml-2" />

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import ProductGrid from "../components/Products/ProductGrid";
-import ReviewSection from "../components/Profile/ReviewSection";
+// import ReviewSection from "../components/Profile/ReviewSection";
 import {
     FaMapMarkerAlt,
     FaClock,
@@ -303,7 +303,7 @@ export default function MemberProfile() {
                     </div>
                 ) : (
                     <div className="text-gray-600">
-                        <ReviewSection userProfile={profileData} />
+                        {/* <ReviewSection userProfile={profileData} /> */}
                     </div>
                 )}
             </div>

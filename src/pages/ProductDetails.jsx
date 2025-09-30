@@ -65,7 +65,7 @@ const ProductDetailPage = () => {
     setIsAuthModalOpen,
     setAuthMode,
   } = useAppContext();
-
+  
   useEffect(() => {
     if (!id) return;
     setIsLoading(true);
@@ -170,23 +170,23 @@ const ProductDetailPage = () => {
   };
 
 
-  // useEffect(() => {
-  //   if (product?.user?.id) {
-  //     // setIsLoading(true); // Start loading
-  //     getUserProduct(product?.user?.id)
-  //       .then((res) => {
-  //         const items = res?.data?.data?.items || [];
-  //         setProducts(items);
-  //         setUser(res?.data?.data?.user)
-  //       })
-  //       .catch((err) => {
-  //         console.log(err, "err");
-  //       })
-  //       .finally(() => {
-  //         // setIsLoading(false); // Stop loading
-  //       });
-  //   }
-  // }, [product?.user?.id, apiRefresh]);
+  useEffect(() => {
+    if (product?.user?.id) {
+      // setIsLoading(true); // Start loading
+      getUserProduct(product?.user?.id)
+        .then((res) => {
+          const items = res?.data?.data?.items || [];
+          setProducts(items);
+          setUser(res?.data?.data?.user)
+        })
+        .catch((err) => {
+          console.log(err, "err");
+        })
+        .finally(() => {
+          // setIsLoading(false); // Stop loading
+        });
+    }
+  }, [product?.user?.id, apiRefresh]);
 
   const loadedPages = useRef(new Set());
   const [showLoadMoreButton, setShowLoadMoreButton] = useState(false);

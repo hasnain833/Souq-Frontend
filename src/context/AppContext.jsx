@@ -97,7 +97,7 @@ export const AppProvider = ({ children }) => {
 
   useEffect(() => {
     const handleStorageChange = () => {
-      setUser(localStorage.getItem("user"));
+      setUser(localStorage.getItem("users"));
     };
     window.addEventListener("storage", handleStorageChange);
     return () => window.removeEventListener("storage", handleStorageChange);

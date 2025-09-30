@@ -11,17 +11,15 @@ import { useDispatch } from 'react-redux';
 import { setProfileImage } from '../../redux/slices/ProfileSlice';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
-
 const LoginModal = () => {
     const { showEmailLogin, setShowEmailLogin, setShowForgotPassword } = useAppContext();
-    const [showPassword, setShowPassword] = useState(false);
     const {
         register,
         handleSubmit,
         formState: { errors, isSubmitting, isValid },
         reset,
     } = useForm({ mode: 'onChange' });
-
+    const [showPassword, setShowPassword] = useState(false);
     const [apiError, setApiError] = useState('');
     const dispatch = useDispatch()
     const { t, i18n } = useTranslation();
@@ -30,7 +28,6 @@ const LoginModal = () => {
     const onSubmit = async (data) => {
         try {
             setApiError('');
-
             const response = await login(data);
 
             if (response.success) {

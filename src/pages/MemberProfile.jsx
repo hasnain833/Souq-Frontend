@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import ProductGrid from "../components/Products/ProductGrid";
-// import ReviewSection from "../components/Profile/ReviewSection";
+import ReviewSection from "../components/Profile/ReviewSection";
 import {
     FaMapMarkerAlt,
     FaClock,
@@ -21,7 +21,6 @@ import { Helmet } from "react-helmet";
 
 export default function MemberProfile() {
     const [profileData, setProfileData] = useState(null); // store user profile
-    // const baseURL = import.meta.env.VITE_API_BASE_URL.replace(/\/$/, '');
     const [isLoadingProducts, setIsLoadingProducts] = useState(true);
     const { t } = useTranslation();
     const navigate = useNavigate();
@@ -164,7 +163,6 @@ export default function MemberProfile() {
             {/* Header */}
             <div className="flex flex-col md:flex-row items-center md:items-start gap-8">
                 <img
-                    // src={profileData.profile ? `${baseURL}${profileData.profile}` : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
                     src={profileData.profile ? profileData.profile : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
                     alt="Profile"
                     className="w-44 h-44 rounded-full object-cover border-4 border-white shadow-md"
@@ -202,12 +200,6 @@ export default function MemberProfile() {
                             <span className="text-gray-500 text-lg">{t("no-reviews-yet")}</span>
                         )}
                     </div>
-
-                    {/* <div className="flex items-center gap-3 text-md text-gray-700">
-                        <FaBoxOpen className="text-teal-700 text-2xl" />
-                        <span className="text-teal-700 font-semibold">Frequent Uploads</span>
-                        <span>· Regularly lists 5 or more items</span>
-                    </div> */}
 
                     {/* Location, Last seen, Followers */}
                     <div className="flex items-start gap-12 flex-wrap text-md text-gray-600">

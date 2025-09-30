@@ -13,9 +13,9 @@ import {
   LuSettings,
   LuWallet,
   LuPackage,
-  // LuGift,
+  LuGift,
   LuLogOut,
-  // LuUsers,
+  LuUsers,
   LuSparkles,
   LuMail,
 } from "react-icons/lu";
@@ -385,8 +385,8 @@ const Header = () => {
                 <svg className="w-5 h-5 text-gray-600 cursor-pointer" fill="none" stroke="currentColor" viewBox="0 0 24 24" onClick={() => navigate("/chat-layout")}>
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                 </svg>
-                <LuMail className="w-5 h-5 text-gray-600 cursor-pointer" onClick={() => navigate("/chat-layout")} />
-                <LuBell className="w-5 h-5 text-gray-600 cursor-pointer" onClick={toggleNotifications} />
+                {/* <LuMail className="w-5 h-5 text-gray-600 cursor-pointer" onClick={() => navigate("/chat-layout")} /> */}
+                {/* <LuBell className="w-5 h-5 text-gray-600 cursor-pointer" onClick={toggleNotifications} /> */}
                 <NotificationDropdown
                   notifications={mockNotifications}
                   isOpen={isNotificationOpen}
@@ -394,7 +394,7 @@ const Header = () => {
                   showAll={showAllNotifications}
                   onToggleShowAll={handleToggleShowAll}
                 />
-                <NotificationDropdown />
+                {/* <NotificationDropdown /> */}
                 <LuHeart className="w-5 h-5 text-gray-600 cursor-pointer" onClick={() => navigate("/favorites-item")} />
 
                 {/* Profile Picture */}

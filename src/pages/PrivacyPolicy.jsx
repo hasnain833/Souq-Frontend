@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Shield, Eye, Lock, Users } from 'lucide-react';
 import { Helmet } from 'react-helmet';
-// import AuthModal from '../components/Auth/AuthModal';
+import AuthModal from '../components/Auth/AuthModal';
 import LoginModal from '../components/Auth/LoginModal';
 import ForgotPasswordModal from '../components/Auth/ForgotPasswordModal';
 import SignUpModal from '../components/Auth/SignUpModal';

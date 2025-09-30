@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { bumpProduct, deleteProduct, getAllCategory, getProductDetails, getUserProduct, hideProduct, markProductAsReserved, markProductAsSold, reactivateProduct } from "../api/ProductService";
 import { Star, X } from "lucide-react";
 import { formatDistanceToNowStrict } from 'date-fns';
 import ProductGrid from "../components/Products/ProductGrid";
-// import AuthModal from "../components/Auth/AuthModal";
+import AuthModal from "../components/Auth/AuthModal";
 import LoginModal from "../components/Auth/LoginModal";
 import ForgotPasswordModal from "../components/Auth/ForgotPasswordModal";
 import SignUpModal from "../components/Auth/SignUpModal";
@@ -29,6 +29,7 @@ import { Helmet } from "react-helmet";
 
 const ProductDetailPage = () => {
   const { id } = useParams();
+  const location = useLocation();
   const { t } = useTranslation()
   const navigate = useNavigate()
   const dispatch = useDispatch();
@@ -40,10 +41,7 @@ const ProductDetailPage = () => {
   const [showFullDescription, setShowFullDescription] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [apiRefresh, setApiRefresh] = useState("")
-  const baseURL = import.meta.env.VITE_API_BASE_URL;
-  // const normalizedBaseURL = baseURL.endsWith("/") ? baseURL : `${baseURL}/`;
-  // const normalizedURL = baseURL.endsWith('/') ? baseURL.slice(0, -1) : baseURL;
+  const [apiRefresh, setApiRefresh] = useState(0)
   const authUser = JSON.parse(localStorage.getItem("user"));
   const [products, setProducts] = useState([])
   const [user, setUser] = useState("")
@@ -53,7 +51,6 @@ const ProductDetailPage = () => {
   const [categoryPath, setCategoryPath] = useState("");
   const categoryData = useSelector((state) => state.categoryData.data);
   console.log(categoryData, "categoryData")
-
   const [page, setPage] = useState(1);
   const [limit] = useState(9); // fixed page size
   const [totalPages, setTotalPages] = useState(0);
@@ -66,13 +63,31 @@ const ProductDetailPage = () => {
     setAuthMode,
   } = useAppContext();
   
+  // Prime with product from navigation state (e.g., from Home/Product list)
+  useEffect(() => {
+    const stateProduct = location?.state?.product;
+    if (stateProduct && (String(stateProduct.id) === String(id))) {
+      setProduct(stateProduct);
+      setIsHidden(stateProduct?.hide);
+    }
+  }, [location?.state?.product, id]);
+
   useEffect(() => {
     if (!id) return;
     setIsLoading(true);
     getProductDetails(id)
       .then((res) => {
-        setProduct(res?.data?.data?.item);
-        setIsHidden(res?.data?.data?.item?.hide)
+        // apiService wraps responses as { success, data, error }
+        if (res?.success) {
+          const item = res?.data?.data?.item;
+          if (item) {
+            setProduct(item);
+            setIsHidden(item?.hide);
+          }
+        } else {
+          console.error("Error fetching product:", res?.error);
+          // Do not clear existing product if request fails
+        }
       })
       .catch((err) => {
         console.error("Error fetching product:", err);
@@ -169,24 +184,7 @@ const ProductDetailPage = () => {
     }
   };
 
-
-  useEffect(() => {
-    if (product?.user?.id) {
-      // setIsLoading(true); // Start loading
-      getUserProduct(product?.user?.id)
-        .then((res) => {
-          const items = res?.data?.data?.items || [];
-          setProducts(items);
-          setUser(res?.data?.data?.user)
-        })
-        .catch((err) => {
-          console.log(err, "err");
-        })
-        .finally(() => {
-          // setIsLoading(false); // Stop loading
-        });
-    }
-  }, [product?.user?.id, apiRefresh]);
+ 
 
   const loadedPages = useRef(new Set());
   const [showLoadMoreButton, setShowLoadMoreButton] = useState(false);
@@ -209,6 +207,11 @@ const ProductDetailPage = () => {
 
     try {
       const res = await getUserProduct(product.user.id, query);
+      if (!res?.success) {
+        console.error("Failed to fetch user products:", res?.error);
+        return;
+      }
+
       const items = res?.data?.data?.items || [];
 
       setProducts((prev) => {
@@ -302,7 +305,7 @@ const ProductDetailPage = () => {
     }
   }
 
-  if (isLoading) return <ProductDetailsSkeleton />;
+  if (isLoading && !product) return <ProductDetailsSkeleton />;
   if (!product) return <div className="text-center py-20 text-gray-600">Product not found</div>;
 
   const photos = product?.product_photos || [];
@@ -341,21 +344,20 @@ const ProductDetailPage = () => {
 
     try {
       const response = await bumpProduct(product?.id);
-      const resData = response;
+      const data = response?.data;
+      const success = data?.success ?? data?.status === 'success';
 
-      if (resData?.success) {
-        toast.success(resData?.data?.message || "Product bumped successfully!");
-        if (setApiRefresh) {
-          setApiRefresh(prev => prev + 1);
-        }
+      if (success) {
+        toast.success(data?.message || data?.data?.message || "Product bumped successfully!");
+        setApiRefresh(prev => prev + 1);
       } else {
         // Show error if success is false
-        toast.error(resData?.error || "Failed to bump product. Please try again.");
+        toast.error(data?.error || data?.message || "Failed to bump product. Please try again.");
       }
     } catch (error) {
       console.error("Bump failed:", error);
       toast.error(
-        error?.response?.data?.error || "Something went wrong. Please try again."
+        error?.response?.data?.error || error?.message || "Something went wrong. Please try again."
       );
     }
   };
@@ -567,8 +569,8 @@ const ProductDetailPage = () => {
                 <span className="text-teal-600 font-medium underline">{product.brand}</span>
               </p>
 
-              <p className="text-sm text-gray-600">${(product.price).toFixed(2)}</p>
-              <p className="text-l font-bold text-teal-600 mb-1 hover:underline cursor-pointer" onClick={() => setPriceShowModal(true)}>${Number((product.price * 1.05).toFixed(2))}</p>
+              <p className="text-sm text-gray-600">${Number(product.price).toFixed(2)}</p>
+              <p className="text-l font-bold text-teal-600 mb-1 hover:underline cursor-pointer" onClick={() => setPriceShowModal(true)}>${Number((Number(product.price) * 1.05).toFixed(2))}</p>
               <p className="text-sm text-teal-600 mb-4 hover:underline cursor-pointer" onClick={() => setPriceShowModal(true)}>{t("includesBuyerProtection")}</p>
 
               <div className="text-sm text-gray-600 mb-4 space-y-1">
@@ -586,7 +588,7 @@ const ProductDetailPage = () => {
                 </div>
                 <div className="flex justify-between">
                   <span>{t("uploaded")}</span>
-                  <span>{formatDistanceToNowStrict(new Date(product.createdAt), { addSuffix: true })}</span>
+                  {/* <span>{formatDistanceToNowStrict(new Date(product.createdAt), { addSuffix: true })}</span> */}
                 </div>
               </div>
 
@@ -607,7 +609,7 @@ const ProductDetailPage = () => {
               {/* Shipping */}
               <div className="mb-3 text-sm flex justify-between">
                 <span>{t("shipping")}:</span>
-                <span className="text-gray-600">${(product.shipping_cost).toFixed(2)}</span>
+                <span className="text-gray-600">${Number(product.shipping_cost).toFixed(2)}</span>
               </div>
 
               {/* Actions */}
@@ -768,7 +770,7 @@ const ProductDetailPage = () => {
                     </div>}
 
                   {/* Last seen */}
-                  <div className="flex items-center gap-1 text-xs text-gray-400 mt-1">
+                  {/* <div className="flex items-center gap-1 text-xs text-gray-400 mt-1">
                     <FaClock className="text-sm" />
                     <span>
                       Last seen{" "}
@@ -776,7 +778,7 @@ const ProductDetailPage = () => {
                         addSuffix: true,
                       })}
                     </span>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>

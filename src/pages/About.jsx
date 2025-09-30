@@ -4,7 +4,7 @@ import { Users, Target, Award, Globe, Heart, Shield } from 'lucide-react';
 import { Helmet } from 'react-helmet';
 import { useAppContext } from '../context/AppContext';
 import { useNavigate } from 'react-router-dom';
-// import AuthModal from '../components/Auth/AuthModal';
+import AuthModal from '../components/Auth/AuthModal';
 import LoginModal from '../components/Auth/LoginModal';
 import ForgotPasswordModal from '../components/Auth/ForgotPasswordModal';
 import SignUpModal from '../components/Auth/SignUpModal';

@@ -10,7 +10,7 @@ import {
     FaStar
 } from "react-icons/fa";
 import { FiMoreHorizontal } from "react-icons/fi"; // horizontal three-dot icon
-// import AuthModal from "../components/Auth/AuthModal";
+import AuthModal from "../components/Auth/AuthModal";
 import { useAppContext } from "../context/AppContext";
 import LoginModal from "../components/Auth/LoginModal";
 import ForgotPasswordModal from "../components/Auth/ForgotPasswordModal";

@@ -78,7 +78,7 @@ const ProductCard = ({ product, user, apiRefresh, setApiRefresh }) => {
         console.error("Personalization tracking failed", error);
       }
     }
-    navigate(`/product-details/${productId}`);
+    navigate(`/product-details/${productId}`, { state: { product } });
   };
 
   // const handleReactivateProduct = async (e) => {

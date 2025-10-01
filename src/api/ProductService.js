@@ -20,7 +20,7 @@ export const deleteProduct = (id) =>
     apiService({
         url: `/api/user/product/${id}`,
         method: 'DELETE',
-        // data: payload,
+        data: payload,
         withAuth: true,
     });
 
@@ -37,7 +37,7 @@ export const getProductDetails = (id) =>
     apiService({
         url: `/api/user/product/${id}`,
         method: 'GET',
-        // withAuth: true,
+        withAuth: true,
         credentials: 'include',
     });
 
@@ -82,7 +82,7 @@ export const addFevProduct = (id) =>
     apiService({
         url: `/api/user/product/${id}/favorite`,
         method: 'POST',
-        // data: payload,
+        data: payload,
         withAuth: true,
     });
 
@@ -90,15 +90,14 @@ export const getAllCategory = () =>
     apiService({
         url: '/api/user/general/category',
         method: 'GET',
-        // withAuth: true,
-        credentials: 'include',
+        // public endpoint; no auth or credentials needed
     });
 
 export const getSize = (id) =>
     apiService({
         url: `/api/user/general/category/size/${id}`,
         method: 'GET',
-        // withAuth: true,
+        withAuth: true,
         credentials: 'include',
     });
 

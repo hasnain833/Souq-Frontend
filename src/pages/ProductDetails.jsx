@@ -319,10 +319,24 @@ const ProductDetailPage = () => {
       <div className="text-center py-20 text-gray-600">Product not found</div>
     );
 
-  const photos = product?.product_photos || [];
+  // Build photos array from API (product_photos) or local mock (imageUrl)
+  const resolveImageUrl = (url) => {
+    if (!url) return "";
+    const isAbsolute = /^(https?:)?\/\//i.test(url) || String(url).startsWith("data:");
+    if (isAbsolute) return url;
+    const base = import.meta.env.VITE_API_BASE_URL || "";
+    const normalizedBase = base.endsWith("/") ? base.slice(0, -1) : base;
+    const normalizedUrl = String(url).startsWith("/") ? url : `/${url}`;
+    return `${normalizedBase}${normalizedUrl}`;
+  };
+
+  const photosSrc = Array.isArray(product?.product_photos) && product.product_photos.length > 0
+    ? product.product_photos.map(resolveImageUrl)
+    : (product?.imageUrl ? [resolveImageUrl(product.imageUrl)] : []);
+
   const maxVisibleImages = 3;
-  const visibleImages = photos.slice(0, maxVisibleImages);
-  const hiddenImageCount = photos.length - maxVisibleImages;
+  const visibleImages = photosSrc.slice(0, maxVisibleImages);
+  const hiddenImageCount = photosSrc.length - maxVisibleImages;
 
   const handleDelete = async () => {
     try {
@@ -472,9 +486,9 @@ const ProductDetailPage = () => {
         // onScroll={() => handleScroll("left")}
         >
           {/* Main Image */}
-          {photos.length > 0 && (
+          {photosSrc.length > 0 && (
             <img
-              src={photos[currentImageIndex]}
+              src={photosSrc[currentImageIndex]}
               alt="Main"
               className="w-full h-[400px] object-cover rounded border"
               onClick={() => openModal(currentImageIndex)}

@@ -13,7 +13,8 @@ import ProductCardSkeleton from '../components/Skeleton/ProductCardSkeleton';
 import SouqBanner from "../public/images/souqbanner.jpg"
 import SouqBannerMobile from "../public/images/souqbanner-1.jpg"
 import { Helmet } from 'react-helmet';
-import { products as mockProducts } from '../data/products';
+import { products as localProducts } from "../data/products";
+ 
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -53,13 +54,15 @@ const HomePage = () => {
     );
   };
 
-  const fetchProducts = async ({ page = 1, limit = 10 }) => {
+  const fetchProducts = async ({ page = 1, limit = 8 }) => {
     try {
       const res = await getAllProduct({
         page,
         limit,
+        // Show all products regardless of age; backend treats days<=0 as no cutoff
+        days: 0,
         sortBy: filters.sortBy || 'createdAt',
-        order: "",
+        order: "desc",
         brand: filters.brand || undefined,
         q: filters.searchText || undefined,
         condition: filters.condition?.value || undefined,
@@ -71,8 +74,14 @@ const HomePage = () => {
         category: getSelectedCategoryId(categorySelect)
       });
 
-      const items = res?.data?.data?.items || [];
-      const next = res?.data?.data?.hasNextPage;
+      let items = res?.data?.data?.items || [];
+      let next = res?.data?.data?.hasNextPage;
+      // Fallback to local products when API returns empty on the first page with no filters
+      const noFilters = !filters.searchText && !filters.brand && !filters.condition && !filters.color && !filters.material && !filters.size && !getSelectedCategoryId(categorySelect);
+      if (page === 1 && items.length === 0 && noFilters && Array.isArray(localProducts) && localProducts.length > 0) {
+        items = localProducts;
+        next = false;
+      }
       return { items, hasNextPage: next };
     } catch (err) {
       console.error(`Error fetching page ${page}:`, err);
@@ -80,18 +89,6 @@ const HomePage = () => {
     }
   };
 
-  // Transform mock products into API-like shape expected by ProductCard/ProductGrid
-  const mapMockToApiShape = (list) =>
-    list.map((p) => ({
-      id: p.id,
-      title: p.title,
-      price: p.price,
-      size: p.size,
-      brand: p.brand,
-      favoriteCount: 0,
-      status: 'active',
-      product_photos: p.imageUrl ? [p.imageUrl] : [],
-    }));
 
   const loadMoreProducts = async () => {
     if (isFetching.current || !hasNextPage) return;
@@ -122,17 +119,9 @@ const HomePage = () => {
     pageRef.current = 1;
     const { items, hasNextPage: next } = await fetchProducts({ page: 1, limit });
 
-    if (items.length > 0) {
-      setProducts(items);
-      setHasNextPage(next);
-      pageRef.current = 2; // next page
-    } else {
-      // Fallback to mock data if API returns nothing or fails
-      const mocks = mapMockToApiShape(mockProducts);
-      setProducts(mocks);
-      setHasNextPage(false);
-      pageRef.current = 2;
-    }
+    setProducts(items);
+    setHasNextPage(!!next);
+    pageRef.current = items.length > 0 ? 2 : 2;
 
     setIsLoading(false);
     setInitialLoad(false);
@@ -158,7 +147,7 @@ const HomePage = () => {
     }, 200);
     return () => clearTimeout(timeout);
   }, [filters, categorySelect]);
-  
+
 
   useEffect(() => {
     const handleScroll = () => {

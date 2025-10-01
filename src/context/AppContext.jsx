@@ -1,7 +1,7 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 import { NotificationService } from "../api/NotificationService";
-import { useWebSocketNotifications } from "../hooks/useWebSocketNotifications";
-import { toast } from "react-toastify";
+// import { useWebSocketNotifications } from "../hooks/useWebSocketNotifications";
+// import { toast } from "react-toastify";
 const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
@@ -59,22 +59,21 @@ export const AppProvider = ({ children }) => {
   ) => {
     try {
       setNotificationsLoading(true);
-      const response = await NotificationService.getNotifications(
+      const { data } = await NotificationService.getNotifications(
         page,
         limit,
         status
       );
 
-      if (reset || page === 1) {
-        setNotifications(response.data.notifications);
-      } else {
-        setNotifications((prev) => [...prev, ...response.data.notifications]);
-      }
+      if (!data || !data.notifications) return;
 
-      return response.data;
+      setNotifications((prev) =>
+        reset ? data.notifications : [...prev, ...data.notifications]
+      );
+      return data;
     } catch (error) {
-      console.error("Error loading notifications:", error);
-      throw error;
+      toast.error("Could not load notifications");
+      console.error(error);
     } finally {
       setNotificationsLoading(false);
     }
@@ -100,18 +99,15 @@ export const AppProvider = ({ children }) => {
   // and ensure the correct key ("user") is used.
 
   // Mark notification as read
-  const markNotificationAsRead = async (notificationId) => {
+  const markNotificationAsRead = async (id) => {
     try {
-      await NotificationService.markAsRead(notificationId);
+      await NotificationService.markAsRead(id);
       setNotifications((prev) =>
-        prev.map((n) =>
-          n._id === notificationId ? { ...n, status: "read" } : n
-        )
+        prev.map((n) => (n._id === id ? { ...n, status: "read" } : n))
       );
       setUnreadCount((prev) => Math.max(0, prev - 1));
-    } catch (error) {
-      console.error("Error marking notification as read:", error);
-      throw error;
+    } catch {
+      toast.error("Failed to update notification");
     }
   };
 

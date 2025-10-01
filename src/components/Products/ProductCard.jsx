@@ -16,8 +16,6 @@ const ProductCard = ({ product, user, apiRefresh, setApiRefresh }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [showModal, setShowModal] = useState(false);
-  // const baseURL = import.meta.env.VITE_API_BASE_URL;
-  // const normalizedBaseURL = baseURL.endsWith('/') ? baseURL : `${baseURL}/`;
   const authUser = JSON.parse(localStorage.getItem("user"));
 
   const { setIsAuthModalOpen, setAuthMode } = useAppContext();
@@ -81,31 +79,41 @@ const ProductCard = ({ product, user, apiRefresh, setApiRefresh }) => {
     navigate(`/product-details/${productId}`, { state: { product } });
   };
 
-  // const handleReactivateProduct = async (e) => {
-  //   e.stopPropagation(); // Prevent card click navigation
-  //   try {
-  //     const response = await reactivateProduct(product?.id);
-  //     toast.success(response?.data?.message || "Product marked as available!");
-  //     if (setApiRefresh) {
-  //       setApiRefresh(prev => prev + 1);
-  //     }
-  //   } catch (error) {
-  //     console.error("Reactivate failed:", error);
-  //     toast.error(error?.response?.data?.error || "Failed to reactivate product. Please try again.");
-  //   }
-  // }
+  const handleReactivateProduct = async (e) => {
+    e.stopPropagation(); // Prevent card click navigation
+    try {
+      const response = await reactivateProduct(product?.id);
+      toast.success(response?.data?.message || "Product marked as available!");
+      if (setApiRefresh) {
+        setApiRefresh(prev => prev + 1);
+      }
+    } catch (error) {
+      console.error("Reactivate failed:", error);
+      toast.error(error?.response?.data?.error || "Failed to reactivate product. Please try again.");
+    }
+  }
 
   return (
     <>
       <div className="group rounded-lg overflow-hidden bg-white border border-gray-200 hover:shadow-md transition-shadow duration-300">
         <div className="relative pb-[125%] overflow-hidden group">
-          <img
-            // src={`${normalizedBaseURL}${product?.product_photos?.[0]}`}
-            src={product?.product_photos?.[0]}
-            alt={product.title}
-            className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 cursor-pointer"
-            onClick={() => handleProductClick(product.id)}
-          />
+          {(() => {
+            // Support API products (product_photos[]) and local mock products (imageUrl)
+            const photo = product?.product_photos?.[0] || product?.imageUrl || "";
+            const isAbsolute = /^(https?:)?\/\//i.test(photo) || photo.startsWith("data:");
+            const base = import.meta.env.VITE_API_BASE_URL || "";
+            const normalizedBase = base.endsWith("/") ? base.slice(0, -1) : base;
+            const normalizedPhoto = photo.startsWith("/") ? photo : `/${photo}`;
+            const imageSrc = isAbsolute ? photo : `${normalizedBase}${normalizedPhoto}`;
+            return (
+              <img
+                src={imageSrc}
+                alt={product.title}
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 cursor-pointer"
+                onClick={() => handleProductClick(product.id)}
+              />
+            );
+          })()}
 
           {/* Favorite Button */}
           {(!authUser?.id || !user?.id || authUser?.id !== user?.id) && (
@@ -168,10 +176,10 @@ const ProductCard = ({ product, user, apiRefresh, setApiRefresh }) => {
                 <div className="text-base text-gray-500">
                   ${product?.price?.toFixed(2)}
                 </div>
-                {/* <button className="w-full border border-teal-600 text-teal-700 rounded-md py-1 text-sm font-medium hover:bg-teal-50 transition">
+                <button className="w-full border border-teal-600 text-teal-700 rounded-md py-1 text-sm font-medium hover:bg-teal-50 transition">
                   {t("bump")}
-                </button> */}
-                {/* {product?.status && product.status !== 'active' && (
+                </button>
+                {product?.status && product.status !== 'active' && (
                   <div className={`text-xs px-2 py-1 rounded-full text-center font-medium mb-1 ${product.status === 'sold' ? 'bg-red-100 text-red-700' :
                       product.status === 'reserved' ? 'bg-yellow-100 text-yellow-700' :
                         'bg-gray-100 text-gray-700'
@@ -180,9 +188,9 @@ const ProductCard = ({ product, user, apiRefresh, setApiRefresh }) => {
                       product.status === 'reserved' ? 'RESERVED' :
                         product.status.toUpperCase()}
                   </div>
-                )} */}
+                )}
                 {/* Action buttons based on product status */}
-                {/* {(!product?.status || product.status === 'active') ? (
+                {(!product?.status || product.status === 'active') ? (
            
                   <button
                     className="w-full border border-teal-600 text-teal-700 rounded-md py-1 text-sm font-medium hover:bg-teal-50 transition"
@@ -201,7 +209,7 @@ const ProductCard = ({ product, user, apiRefresh, setApiRefresh }) => {
                         'Mark as Available'}
                   </button>
               
-                )} */}
+                )}
 
                 <button
                   className={`w-full border border-teal-600 text-teal-700 rounded-md py-1 text-sm font-medium transition

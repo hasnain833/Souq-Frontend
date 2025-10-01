@@ -99,11 +99,11 @@ const CategorySelector = ({ category, onChange, onSubcategoryChange }) => {
     fetchCategories();
   }, [category]);
 
-  // useEffect(() => {
-  //   if (onSubcategoryChange) {
-  //     onSubcategoryChange(selectedChildCategory);
-  //   }
-  // }, [selectedChildCategory]);
+  useEffect(() => {
+    if (onSubcategoryChange) {
+      onSubcategoryChange(selectedChildCategory);
+    }
+  }, [selectedChildCategory]);
 
   useEffect(() => {
     if (onSubcategoryChange) {

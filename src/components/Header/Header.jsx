@@ -6,6 +6,7 @@ import MegaMenu from "./MegaMenu";
 import HeaderCategories from "./HeaderCategories";
 import Logo from "../common/Logo";
 import MobileMenu from "./MobileMenu";
+import { categories as localCategories } from "../../data/categories";
 import {
   // LuBell,
   LuHeart,
@@ -33,7 +34,7 @@ import { persistor } from "../../redux/store";
 
 const Header = () => {
   const {
-    // isAuthModalOpen,
+    isAuthModalOpen,
     setIsAuthModalOpen,
     setAuthMode,
     isMobileMenuOpen,
@@ -63,6 +64,29 @@ const Header = () => {
 
   const dispatch = useDispatch();
   const categoryData = useSelector((state) => state.categoryData.data);
+  // Transform local categories (src/data/categories.js) to API-like shape
+  const transformedLocalCategories = React.useMemo(() => {
+    if (!Array.isArray(localCategories)) return [];
+    return localCategories.map((cat) => ({
+      id: cat.id,
+      name: cat.name,
+      subCategories: (cat.subcategories || []).map((sub) => ({
+        id: sub.id,
+        name: sub.name,
+        // Wrap items under a single child category to match MegaMenu expectations
+        childCategories: [
+          {
+            id: `${sub.id}-all`,
+            name: sub.name,
+            items: (sub.items || []).map((item) => ({ id: item.id, name: item.name })),
+          },
+        ],
+      })),
+    }));
+  }, []);
+  const effectiveCategories = (categoryData && categoryData.length > 0)
+    ? categoryData
+    : transformedLocalCategories;
 
   useEffect(() => {
     if (categoryData.length === 0) {
@@ -182,39 +206,7 @@ const Header = () => {
     }
   };
 
-  // useEffect(() => {
-  //   const fetchedCategories = async () => {
-  //     try {
-  //       const res = await getAllCategory();
-
-  //       if (res?.data?.success) {
-  //         const transformed = res.data.data.map((cat) => ({
-  //           id: cat._id,
-  //           name: cat.name,
-  //           subCategories: cat.subCategories.map((sub) => ({
-  //             id: sub._id,
-  //             name: sub.name,
-  //             slug: sub.slug, // optional, for icon mapping
-  //             childCategories: sub.childCategories.map((child) => ({
-  //               id: child._id,
-  //               name: child.name,
-  //               items: child.items.map((item) => ({
-  //                 id: item._id,
-  //                 name: item.name,
-  //               })),
-  //             })),
-  //           })),
-  //         }));
-
-  //         setCategoryData(transformed);
-  //       }
-  //     } catch (error) {
-  //       console.error("Failed to fetch categories:", error);
-  //     }
-  //   };
-
-  //   fetchedCategories();
-  // }, []);
+  // Categories are fetched via Redux in the effect above (fetchCategories())
 
   const handleSearchChange = async (e) => {
     const value = e.target.value;
@@ -284,14 +276,12 @@ const Header = () => {
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-all duration-300 ${
-        isScrolled ? "bg-white shadow-sm" : "bg-white"
-      }`}>
+      className={`sticky top-0 z-50 transition-all duration-300 ${isScrolled ? "bg-white shadow-sm" : "bg-white"
+        }`}>
       <div className="container mx-auto px-4 flex items-center justify-between h-16 md:h-20">
         {/* Logo */}
         <div className="flex items-center">
           <Logo />
-          {/* {t('welcome')} */}
         </div>
 
         {/* Search Bar and Catalog Dropdown */}
@@ -345,11 +335,10 @@ const Header = () => {
                   value={searchValue}
                   onChange={handleSearchChange}
                   onKeyDown={handleKeyDown}
-                  placeholder={`${
-                    selectedOption === "member"
+                  placeholder={`${selectedOption === "member"
                       ? t("search_for_member")
                       : t("search_for_item")
-                  }`}
+                    }`}
                   className="bg-transparent focus:outline-none w-full h-full rounded-lg p-2 ltr:pr-8 rtl:pl-8"
                   onFocus={() => searchValue && setShowSuggestions(true)}
                 />
@@ -548,11 +537,10 @@ const Header = () => {
                     handleLanguageChange("en");
                     setIsOpen(false);
                   }}
-                  className={`block w-full px-4 py-2 text-left rtl:text-right hover:bg-gray-100 ${
-                    language === "en"
+                  className={`block w-full px-4 py-2 text-left rtl:text-right hover:bg-gray-100 ${language === "en"
                       ? "font-semibold text-black"
                       : "text-gray-500"
-                  }`}
+                    }`}
                   role="menuitem">
                   English
                 </button>
@@ -561,11 +549,10 @@ const Header = () => {
                     handleLanguageChange("ar");
                     setIsOpen(false);
                   }}
-                  className={`block w-full px-4 py-2 text-left rtl:text-right hover:bg-gray-100 ${
-                    language === "ar"
+                  className={`block w-full px-4 py-2 text-left rtl:text-right hover:bg-gray-100 ${language === "ar"
                       ? "font-semibold text-black"
                       : "text-gray-500"
-                  }`}
+                    }`}
                   role="menuitem">
                   العربية
                 </button>
@@ -592,15 +579,22 @@ const Header = () => {
           setActiveCategory(null);
         }}>
         <div className="container mx-auto hidden lg:flex items-center space-x-4 py-2 px-4 w-full overflow-x-auto">
-          <HeaderCategories categoryData={categoryData} />
+          <HeaderCategories categoryData={effectiveCategories} />
         </div>
         {isMegaMenuOpen && (
           <div className="absolute top-full left-0 w-full bg-white shadow-lg z-50">
-            <MegaMenu categoryData={categoryData} />
+            <MegaMenu categoryData={effectiveCategories} />
           </div>
         )}
       </div>
-  </header>
+
+      {/* Mobile menu content - render only when open on small screens */}
+      {isMobileMenuOpen && (
+        <div className="lg:hidden">
+          <MobileMenu />
+        </div>
+      )}
+    </header>
   );
 };
 

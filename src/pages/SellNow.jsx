@@ -117,56 +117,56 @@ const SellNowPage = () => {
   };
 
   const handleSaveDraft = async () => {
-    // try {
-    //   const payload = new FormData();
-    //   payload.append('title', formData.title);
-    //   payload.append('description', formData.description);
-    //   payload.append('brand', formData.brand);
-    //   payload.append('size', formData.size);
-    //   payload.append('condition', formData.condition);
-    //   payload.append('colors', formData.color);
-    //   payload.append('material', formData.material);
-    //   payload.append('price', formData.price);
-    //   payload.append('package_size', formData.packageSize);
-    //   payload.append('category', formData.category);
-    //   payload.append('status', "draft");
-    //   const price = parseFloat(formData.price) || 0;
-    //   let shippingCost = 0;
-    //   if (formData.packageSize === 'small') {
-    //     shippingCost = (price * 0.02).toFixed(2);
-    //   } else if (formData.packageSize === 'medium') {
-    //     shippingCost = (price * 0.05).toFixed(2);
-    //   } else if (formData.packageSize === 'large') {
-    //     shippingCost = (price * 0.07).toFixed(2);
-    //   } else if (formData.packageSize === 'custom') {
-    //     shippingCost = formData.customShippingCost;
-    //   }
+    try {
+      const payload = new FormData();
+      payload.append('title', formData.title);
+      payload.append('description', formData.description);
+      payload.append('brand', formData.brand);
+      payload.append('size', formData.size);
+      payload.append('condition', formData.condition);
+      payload.append('colors', formData.color);
+      payload.append('material', formData.material);
+      payload.append('price', formData.price);
+      payload.append('package_size', formData.packageSize);
+      payload.append('category', formData.category);
+      payload.append('status', "draft");
+      const price = parseFloat(formData.price) || 0;
+      let shippingCost = 0;
+      if (formData.packageSize === 'small') {
+        shippingCost = (price * 0.02).toFixed(2);
+      } else if (formData.packageSize === 'medium') {
+        shippingCost = (price * 0.05).toFixed(2);
+      } else if (formData.packageSize === 'large') {
+        shippingCost = (price * 0.07).toFixed(2);
+      } else if (formData.packageSize === 'custom') {
+        shippingCost = formData.customShippingCost;
+      }
 
-    //   payload.append('shipping_cost', shippingCost);
+      payload.append('shipping_cost', shippingCost);
 
-    //   formData.product_photos.forEach((file) => {
-    //     payload.append('product_photos', file);
-    //   });
+      formData.product_photos.forEach((file) => {
+        payload.append('product_photos', file);
+      });
 
-    //   let result;
-    //   if (isEditMode) {
-    //     result = await updateProduct(product.id, payload);
-    //   } else {
-    //     result = await addProduct(payload);
-    //   }
+      let result;
+      if (isEditMode) {
+        result = await updateProduct(product.id, payload);
+      } else {
+        result = await addProduct(payload);
+      }
 
-    //   if (result?.success) {
-    //     toast.success(result.message || (isEditMode ? "Draft updated successfully!" : "Draft added successfully!"));
-    //     navigate("/member-profile");
-    //   } else {
-    //     toast.error(result?.message || "Failed to save Draft.");
-    //   }
-    // } catch (error) {
-    //   console.error('Upload failed:', error);
-    //   toast.error("Something went wrong. Please try again.");
-    // } finally {
+      if (result?.success) {
+        toast.success(result.message || (isEditMode ? "Draft updated successfully!" : "Draft added successfully!"));
+        navigate("/member-profile");
+      } else {
+        toast.error(result?.message || "Failed to save Draft.");
+      }
+    } catch (error) {
+      console.error('Upload failed:', error);
+      toast.error("Something went wrong. Please try again.");
+    } finally {
 
-    // }
+    }
   };
 
   return (

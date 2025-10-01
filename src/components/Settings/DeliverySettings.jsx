@@ -188,9 +188,9 @@ const DeliverySettings = () => {
   const [selectedAddressId, setSelectedAddressId] = useState(null);
 
   const handleDelete = async (optionId) => {
-    // if (!window.confirm('Are you sure you want to delete this delivery option?')) {
-    //   return;
-    // }
+    if (!window.confirm('Are you sure you want to delete this delivery option?')) {
+      return;
+    }
 
     try {
       const response = await ShippingService.deleteDeliveryOption(optionId);

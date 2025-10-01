@@ -47,9 +47,6 @@ export default function UserProfile() {
         setIsAuthModalOpen,
         setAuthMode,
     } = useAppContext();
-
-    const baseURL = import.meta.env.VITE_API_BASE_URL;
-    const normalizedURL = baseURL.endsWith('/') ? baseURL.slice(0, -1) : baseURL;
     const [apiRefresh, setApiRefresh] = useState("");
     const [profileApiRefresh, setProfileApiRefresh] = useState("");
     const [following, setFollowing] = useState(profile?.isFollowingUser || false);
@@ -209,7 +206,7 @@ export default function UserProfile() {
     };
 
     // Single loader condition: show if either profile OR products loading
-    // const isLoading = loadingProfile || loadingProducts || !profile;
+    const isLoading = loadingProfile || loadingProducts || !profile;
 
     if (!profile) {
         return <MemberProfileSkeleton />;

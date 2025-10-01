@@ -13,6 +13,7 @@ import { persistor } from '../../redux/store';
 import { getSuggestions } from '../../api/ProductService';
 import { setSearchText } from '../../redux/slices/FilterSlice';
 import { setCategory } from '../../redux/slices/CategorySlice';
+import { categories as localCategories } from "../../data/categories";
 
 const MobileMenu = () => {
   const dispatch = useDispatch();
@@ -29,6 +30,7 @@ const MobileMenu = () => {
   const token = localStorage.getItem("user");
   const profileImage = useSelector((state) => state.profile.profileImage);
   const categoryData = useSelector((state) => state.categoryData.data);
+  const effectiveCategories = (categoryData && categoryData.length > 0) ? categoryData : (localCategories || []).map(c => ({ id: c.id, name: c.name }));
 
   useEffect(() => {
     const savedLang = localStorage.getItem("lang") || "en";
@@ -333,7 +335,7 @@ const MobileMenu = () => {
           <div>
             <h3 className="font-semibold text-gray-800">{t("categories")}</h3>
             <ul className="grid grid-cols-2 gap-3 pt-2">
-              {categoryData?.map((category) => (
+              {effectiveCategories?.map((category) => (
                 <li key={category?.id}>
                   <button
                     onClick={() => { dispatch(setCategory(category)); setIsMobileMenuOpen(false) }}

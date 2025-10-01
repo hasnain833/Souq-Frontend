@@ -128,7 +128,7 @@ function App() {
               {/* Admin */}
               <Route path="/admin/login" element={<AdminLogin />} />
               <Route path="/admin" element={<AdminDashboard />} />
-              {/* <Route path="/chat-layout" element={<ChatLayout />} /> */}
+              <Route path="/chat-layout" element={<ChatLayout />} />
               <Route
                 path="/member-profile/:tab?"
                 element={

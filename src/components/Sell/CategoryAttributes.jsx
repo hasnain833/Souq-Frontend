@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { attributeOptions } from '../../data/categoryData';
+// import { attributeOptions } from '../../data/categoryData';
 import { LuChevronDown, LuChevronUp } from 'react-icons/lu';
 import { MdRadioButtonChecked, MdRadioButtonUnchecked, MdAdd } from 'react-icons/md';
 import { getSize } from '../../api/ProductService';
@@ -63,9 +63,9 @@ const CategoryAttributes = ({ category, attributes, onChange }) => {
     ];
 
 
-    const getSizesForCategory = () => {
-        return attributeOptions.sizes[category] || attributeOptions.sizes.default;
-    };
+    // const getSizesForCategory = () => {
+    //     return attributeOptions.sizes[category] || attributeOptions.sizes.default;
+    // };
 
     const visibleAttributes = getAttributesForCategory();
     const [openBrand, setOpenBrand] = useState(false);
@@ -95,19 +95,19 @@ const CategoryAttributes = ({ category, attributes, onChange }) => {
     // Function to add a new brand
     const handleAddBrand = () => {
         const trimmedBrand = newBrand.trim();
-        
+
         // Check if brand name is empty
         if (!trimmedBrand) {
             setBrandError("Brand name cannot be empty");
             return;
         }
-        
+
         // Check if brand already exists
         if (brandCategories.allBrands.some(brand => brand.toLowerCase() === trimmedBrand.toLowerCase())) {
             setBrandError("This brand already exists");
             return;
         }
-        
+
         // If validation passes, add the brand
         onChange("brand", trimmedBrand);
         setOpenBrand(false);

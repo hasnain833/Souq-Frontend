@@ -1,10 +1,20 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { bumpProduct, deleteProduct, getAllCategory, getProductDetails, getUserProduct, hideProduct, markProductAsReserved, markProductAsSold, reactivateProduct } from "../api/ProductService";
+import {
+  bumpProduct,
+  deleteProduct,
+  getAllCategory,
+  getProductDetails,
+  getUserProduct,
+  hideProduct,
+  markProductAsReserved,
+  markProductAsSold,
+  reactivateProduct,
+} from "../api/ProductService";
 import { Star, X } from "lucide-react";
-import { formatDistanceToNowStrict } from 'date-fns';
+import { formatDistanceToNowStrict } from "date-fns";
 import ProductGrid from "../components/Products/ProductGrid";
-import AuthModal from "../components/Auth/AuthModal";
+// import AuthModal from "../components/Auth/AuthModal";
 import LoginModal from "../components/Auth/LoginModal";
 import ForgotPasswordModal from "../components/Auth/ForgotPasswordModal";
 import SignUpModal from "../components/Auth/SignUpModal";
@@ -30,8 +40,8 @@ import { Helmet } from "react-helmet";
 const ProductDetailPage = () => {
   const { id } = useParams();
   const location = useLocation();
-  const { t } = useTranslation()
-  const navigate = useNavigate()
+  const { t } = useTranslation();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [product, setProduct] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -41,32 +51,33 @@ const ProductDetailPage = () => {
   const [showFullDescription, setShowFullDescription] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [apiRefresh, setApiRefresh] = useState(0)
+  const [apiRefresh, setApiRefresh] = useState(0);
   const authUser = JSON.parse(localStorage.getItem("user"));
-  const [products, setProducts] = useState([])
-  const [user, setUser] = useState("")
+  const [products, setProducts] = useState([]);
+  const [user, setUser] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
   const [isHidden, setIsHidden] = useState(product?.hide);
-  const [statusModal, setStatusModal] = useState({ isOpen: false, action: '', isLoading: false });
+  const [statusModal, setStatusModal] = useState({
+    isOpen: false,
+    action: "",
+    isLoading: false,
+  });
   const [categoryPath, setCategoryPath] = useState("");
   const categoryData = useSelector((state) => state.categoryData.data);
-  console.log(categoryData, "categoryData")
+  console.log(categoryData, "categoryData");
   const [page, setPage] = useState(1);
   const [limit] = useState(9); // fixed page size
   const [totalPages, setTotalPages] = useState(0);
-  const [sortBy, setSortBy] = useState('relevance');
+  const [sortBy, setSortBy] = useState("relevance");
   const [filters, setFilters] = useState({});
   const [isLoadingMore, setIsLoadingMore] = useState(false);
 
-  const {
-    setIsAuthModalOpen,
-    setAuthMode,
-  } = useAppContext();
-  
+  const { setIsAuthModalOpen, setAuthMode } = useAppContext();
+
   // Prime with product from navigation state (e.g., from Home/Product list)
   useEffect(() => {
     const stateProduct = location?.state?.product;
-    if (stateProduct && (String(stateProduct.id) === String(id))) {
+    if (stateProduct && String(stateProduct.id) === String(id)) {
       setProduct(stateProduct);
       setIsHidden(stateProduct?.hide);
     }
@@ -119,7 +130,7 @@ const ProductDetailPage = () => {
     const fetchData = () => {
       if (!Array.isArray(categoryData)) return;
 
-      const mainCategory = categoryData.find(cat =>
+      const mainCategory = categoryData.find((cat) =>
         findPathRecursive([cat], product?.category)
       );
 
@@ -147,7 +158,7 @@ const ProductDetailPage = () => {
   const handleCategoryClick = (name, level, mainCategoryId) => {
     if (!Array.isArray(categoryData)) return;
 
-    const mainCategory = categoryData.find(cat => cat.id === mainCategoryId);
+    const mainCategory = categoryData.find((cat) => cat.id === mainCategoryId);
     if (!mainCategory) return;
 
     if (level === "main" && mainCategory.name === name) {
@@ -183,8 +194,6 @@ const ProductDetailPage = () => {
       }
     }
   };
-
- 
 
   const loadedPages = useRef(new Set());
   const [showLoadMoreButton, setShowLoadMoreButton] = useState(false);
@@ -248,7 +257,7 @@ const ProductDetailPage = () => {
       timeout = setTimeout(() => {
         if (
           window.innerHeight + window.scrollY >=
-          document.body.offsetHeight - 300 &&
+            document.body.offsetHeight - 300 &&
           !isLoadingMore &&
           page < totalPages
         ) {
@@ -283,30 +292,33 @@ const ProductDetailPage = () => {
 
   const userNavigate = () => {
     if (authUser?.id === product?.user?.id) {
-      navigate("/member-profile")
+      navigate("/member-profile");
     } else {
-      navigate(`/profile/${product?.user?.id}`)
+      navigate(`/profile/${product?.user?.id}`);
     }
-  }
+  };
 
   const userBuyNow = () => {
     if (authUser) {
-      console.log('ProductDetails - userBuyNow - product:', product);
-      console.log('ProductDetails - userBuyNow - product._id:', product?._id);
-      console.log('ProductDetails - userBuyNow - product.id:', product?.id);
+      console.log("ProductDetails - userBuyNow - product:", product);
+      console.log("ProductDetails - userBuyNow - product._id:", product?._id);
+      console.log("ProductDetails - userBuyNow - product.id:", product?.id);
       navigate("/checkout", {
         state: {
-          product: product
-        }
-      })
+          product: product,
+        },
+      });
     } else {
-      setAuthMode('login');
+      setAuthMode("login");
       setIsAuthModalOpen(true);
     }
-  }
+  };
 
   if (isLoading && !product) return <ProductDetailsSkeleton />;
-  if (!product) return <div className="text-center py-20 text-gray-600">Product not found</div>;
+  if (!product)
+    return (
+      <div className="text-center py-20 text-gray-600">Product not found</div>
+    );
 
   const photos = product?.product_photos || [];
   const maxVisibleImages = 3;
@@ -318,7 +330,7 @@ const ProductDetailPage = () => {
       setIsDeleting(true);
       await deleteProduct(product?.id);
       toast.success("Product deleted successfully!");
-      navigate('/member-profile');
+      navigate("/member-profile");
     } catch (error) {
       console.error("Delete failed:", error);
       toast.error("Something went wrong. Please try again.");
@@ -330,7 +342,7 @@ const ProductDetailPage = () => {
 
   const productHideUnhide = () => {
     const payload = {
-      hide: !isHidden
+      hide: !isHidden,
     };
     hideProduct(product?.id, payload).then((res) => {
       console.log(res?.data?.message, "res");
@@ -345,61 +357,73 @@ const ProductDetailPage = () => {
     try {
       const response = await bumpProduct(product?.id);
       const data = response?.data;
-      const success = data?.success ?? data?.status === 'success';
+      const success = data?.success ?? data?.status === "success";
 
       if (success) {
-        toast.success(data?.message || data?.data?.message || "Product bumped successfully!");
-        setApiRefresh(prev => prev + 1);
+        toast.success(
+          data?.message || data?.data?.message || "Product bumped successfully!"
+        );
+        setApiRefresh((prev) => prev + 1);
       } else {
         // Show error if success is false
-        toast.error(data?.error || data?.message || "Failed to bump product. Please try again.");
+        toast.error(
+          data?.error ||
+            data?.message ||
+            "Failed to bump product. Please try again."
+        );
       }
     } catch (error) {
       console.error("Bump failed:", error);
       toast.error(
-        error?.response?.data?.error || error?.message || "Something went wrong. Please try again."
+        error?.response?.data?.error ||
+          error?.message ||
+          "Something went wrong. Please try again."
       );
     }
   };
 
-
   const handleMarkAsSold = () => {
-    setStatusModal({ isOpen: true, action: 'sold', isLoading: false });
+    setStatusModal({ isOpen: true, action: "sold", isLoading: false });
   };
 
   const handleMarkAsReserved = () => {
-    setStatusModal({ isOpen: true, action: 'reserved', isLoading: false });
+    setStatusModal({ isOpen: true, action: "reserved", isLoading: false });
   };
 
   const handleReactivateProduct = () => {
-    setStatusModal({ isOpen: true, action: 'reactivate', isLoading: false });
+    setStatusModal({ isOpen: true, action: "reactivate", isLoading: false });
   };
 
   const confirmStatusChange = async () => {
-    setStatusModal(prev => ({ ...prev, isLoading: true }));
+    setStatusModal((prev) => ({ ...prev, isLoading: true }));
 
     try {
       let response;
       const { action } = statusModal;
 
-      if (action === 'sold') {
+      if (action === "sold") {
         response = await markProductAsSold(product?.id);
-        setProduct(prev => ({ ...prev, status: 'sold' }));
-      } else if (action === 'reserved') {
+        setProduct((prev) => ({ ...prev, status: "sold" }));
+      } else if (action === "reserved") {
         response = await markProductAsReserved(product?.id);
-        setProduct(prev => ({ ...prev, status: 'reserved' }));
-      } else if (action === 'reactivate') {
+        setProduct((prev) => ({ ...prev, status: "reserved" }));
+      } else if (action === "reactivate") {
         response = await reactivateProduct(product?.id);
-        setProduct(prev => ({ ...prev, status: 'active' }));
+        setProduct((prev) => ({ ...prev, status: "active" }));
       }
 
-      toast.success(response?.data?.message || "Product status updated successfully!");
-      setApiRefresh(prev => prev + 1);
-      setStatusModal({ isOpen: false, action: '', isLoading: false });
+      toast.success(
+        response?.data?.message || "Product status updated successfully!"
+      );
+      setApiRefresh((prev) => prev + 1);
+      setStatusModal({ isOpen: false, action: "", isLoading: false });
     } catch (error) {
       console.error("Status change failed:", error);
-      toast.error(error?.response?.data?.error || "Failed to update product status. Please try again.");
-      setStatusModal(prev => ({ ...prev, isLoading: false }));
+      toast.error(
+        error?.response?.data?.error ||
+          "Failed to update product status. Please try again."
+      );
+      setStatusModal((prev) => ({ ...prev, isLoading: false }));
     }
   };
 
@@ -410,12 +434,12 @@ const ProductDetailPage = () => {
         toast.error("You cannot make an offer on your own product");
         return;
       }
-      setMakeOfferModal(true)
+      setMakeOfferModal(true);
     } else {
-      setAuthMode('login');
+      setAuthMode("login");
       setIsAuthModalOpen(true);
     }
-  }
+  };
 
   const messageToSeller = () => {
     if (authUser) {
@@ -425,12 +449,12 @@ const ProductDetailPage = () => {
         return;
       }
       // Navigate to chat layout with the product ID as a query parameter
-      navigate(`/chat-layout?productId=${product.id}`)
+      navigate(`/chat-layout?productId=${product.id}`);
     } else {
-      setAuthMode('login');
+      setAuthMode("login");
       setIsAuthModalOpen(true);
     }
-  }
+  };
 
   return (
     <div className="bg-white min-h-screen p-4 max-w-[1200px] mx-auto">
@@ -446,7 +470,7 @@ const ProductDetailPage = () => {
         <div
           // ref={leftColRef}
           className="md:col-span-2 flex flex-col md:overflow-y-auto md:h-full hide-scrollbar"
-        // onScroll={() => handleScroll("left")}
+          // onScroll={() => handleScroll("left")}
         >
           {/* Main Image */}
           {photos.length > 0 && (
@@ -464,8 +488,7 @@ const ProductDetailPage = () => {
               <div
                 key={idx}
                 className="relative cursor-pointer"
-                onClick={() => openModal(idx)}
-              >
+                onClick={() => openModal(idx)}>
                 <img
                   src={img}
                   alt={`Thumbnail ${idx + 1}`}
@@ -474,8 +497,7 @@ const ProductDetailPage = () => {
                 {idx === maxVisibleImages - 1 && hiddenImageCount > 0 && (
                   <div
                     className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center text-white font-bold text-sm rounded"
-                    onClick={() => openModal(idx)}
-                  >
+                    onClick={() => openModal(idx)}>
                     +{hiddenImageCount}
                   </div>
                 )}
@@ -485,7 +507,9 @@ const ProductDetailPage = () => {
 
           {/* Breadcrumbs */}
           <div className="mt-4 text-sm text-gray-500">
-            <span className="hover:underline cursor-pointer" onClick={() => navigate("/")}>
+            <span
+              className="hover:underline cursor-pointer"
+              onClick={() => navigate("/")}>
               Home
             </span>
             {categoryPath &&
@@ -496,8 +520,9 @@ const ProductDetailPage = () => {
                     {" / "}
                     <span
                       className="hover:underline cursor-pointer"
-                      onClick={() => handleCategoryClick(part, level, mainCategoryId)}
-                    >
+                      onClick={() =>
+                        handleCategoryClick(part, level, mainCategoryId)
+                      }>
                       {part}
                     </span>
                   </span>
@@ -510,7 +535,12 @@ const ProductDetailPage = () => {
             <h2 className="text-xl font-semibold text-gray-800 mb-4">
               {t("membersItems")} ({products?.length})
             </h2>
-            <ProductGrid products={products} user={user} apiRefresh={apiRefresh} setApiRefresh={setApiRefresh} />
+            <ProductGrid
+              products={products}
+              user={user}
+              apiRefresh={apiRefresh}
+              setApiRefresh={setApiRefresh}
+            />
 
             {isLoadingMore && (
               <div className="flex justify-center py-4">
@@ -522,9 +552,8 @@ const ProductDetailPage = () => {
                 <button
                   onClick={handleLoadMore}
                   className="px-6 py-2 bg-teal-600 text-white rounded hover:bg-teal-700"
-                  disabled={isLoadingMore}
-                >
-                  {isLoadingMore ? 'Loading...' : t("load_more")}
+                  disabled={isLoadingMore}>
+                  {isLoadingMore ? "Loading..." : t("load_more")}
                 </button>
               </div>
             )}
@@ -532,9 +561,7 @@ const ProductDetailPage = () => {
         </div>
 
         {/* Product Info */}
-        <div
-          className="order-2 md:order-2 md:col-span-1 w-full md:h-full md:overflow-y-auto"
-        >
+        <div className="order-2 md:order-2 md:col-span-1 w-full md:h-full md:overflow-y-auto">
           <div className="border rounded-md shadow-sm sticky h-fit">
             {isHidden && (
               <div className="w-full bg-gray-800 bg-opacity-75 text-white p-0 text-center text-sm font-semibold py-2 rounded-t-md mb-2">
@@ -544,38 +571,53 @@ const ProductDetailPage = () => {
             {product.status !== "active" && (
               <div
                 className={`w-full text-white p-0 text-center text-sm font-semibold py-2 rounded-t-md mb-2
-  ${product.status === 'sold'
-                    ? 'bg-teal-600'
-                    : product.status === 'reserved'
-                      ? 'bg-yellow-500 text-black'
-                      : product.status === 'rejected'
-                        ? 'bg-red-600'
-                        : 'bg-gray-800 bg-opacity-75'
-                  }`}
-              >
-                {product.status === 'sold'
-                  ? t('sold')
-                  : product.status === 'reserved'
-                    ? t('reserved')
-                    : product.status === 'rejected'
-                      ? t('rejected')
-                      : 'Mark as Available'}
+  ${
+    product.status === "sold"
+      ? "bg-teal-600"
+      : product.status === "reserved"
+      ? "bg-yellow-500 text-black"
+      : product.status === "rejected"
+      ? "bg-red-600"
+      : "bg-gray-800 bg-opacity-75"
+  }`}>
+                {product.status === "sold"
+                  ? t("sold")
+                  : product.status === "reserved"
+                  ? t("reserved")
+                  : product.status === "rejected"
+                  ? t("rejected")
+                  : "Mark as Available"}
               </div>
             )}
             <div className="p-4">
-              <h1 className="text-lg font-semibold leading-5 mb-1">{product.title}</h1>
+              <h1 className="text-lg font-semibold leading-5 mb-1">
+                {product.title}
+              </h1>
               <p className="text-sm text-gray-500 mb-2 capitalize">
                 {product.size} • {product.condition} •{" "}
-                <span className="text-teal-600 font-medium underline">{product.brand}</span>
+                <span className="text-teal-600 font-medium underline">
+                  {product.brand}
+                </span>
               </p>
 
-              <p className="text-sm text-gray-600">${Number(product.price).toFixed(2)}</p>
-              <p className="text-l font-bold text-teal-600 mb-1 hover:underline cursor-pointer" onClick={() => setPriceShowModal(true)}>${Number((Number(product.price) * 1.05).toFixed(2))}</p>
-              <p className="text-sm text-teal-600 mb-4 hover:underline cursor-pointer" onClick={() => setPriceShowModal(true)}>{t("includesBuyerProtection")}</p>
+              <p className="text-sm text-gray-600">
+                ${Number(product.price).toFixed(2)}
+              </p>
+              <p
+                className="text-l font-bold text-teal-600 mb-1 hover:underline cursor-pointer"
+                onClick={() => setPriceShowModal(true)}>
+                ${Number((Number(product.price) * 1.05).toFixed(2))}
+              </p>
+              <p
+                className="text-sm text-teal-600 mb-4 hover:underline cursor-pointer"
+                onClick={() => setPriceShowModal(true)}>
+                {t("includesBuyerProtection")}
+              </p>
 
               <div className="text-sm text-gray-600 mb-4 space-y-1">
                 <div className="flex justify-between">
-                  <span>{t("brand")}</span> <strong className="text-teal-600">{product.brand}</strong>
+                  <span>{t("brand")}</span>{" "}
+                  <strong className="text-teal-600">{product.brand}</strong>
                 </div>
                 <div className="flex justify-between">
                   <span>{t("size")}</span> <span>{product.size}</span>
@@ -593,14 +635,18 @@ const ProductDetailPage = () => {
               </div>
 
               <div className="mb-3 text-sm">
-                <p className={`overflow-hidden text-gray-700 ${showFullDescription ? "" : "line-clamp-2"}`}>
+                <p
+                  className={`overflow-hidden text-gray-700 ${
+                    showFullDescription ? "" : "line-clamp-2"
+                  }`}>
                   {product.description}
                 </p>
                 {product.description?.length > 100 && (
                   <button
                     className="text-teal-600 font-semibold mt-1 flex justify-end hover:underline"
-                    onClick={() => setShowFullDescription(!showFullDescription)}
-                  >
+                    onClick={() =>
+                      setShowFullDescription(!showFullDescription)
+                    }>
                     {showFullDescription ? t("showLess") : t("more")}
                   </button>
                 )}
@@ -609,7 +655,9 @@ const ProductDetailPage = () => {
               {/* Shipping */}
               <div className="mb-3 text-sm flex justify-between">
                 <span>{t("shipping")}:</span>
-                <span className="text-gray-600">${Number(product.shipping_cost).toFixed(2)}</span>
+                <span className="text-gray-600">
+                  ${Number(product.shipping_cost).toFixed(2)}
+                </span>
               </div>
 
               {/* Actions */}
@@ -617,60 +665,61 @@ const ProductDetailPage = () => {
               {authUser?.id === product?.user?.id ? (
                 <>
                   <button
-                    className={`w-full py-2 rounded-md mb-2 font-medium ${product?.status !== 'active'
-                      ? 'bg-teal-600 hover:bg-teal-700 opacity-50 text-white cursor-not-allowed'
-                      : 'bg-teal-600 hover:bg-teal-700 text-white'
-                      }`}
-                    disabled={product?.status !== 'active'}
-                    onClick={handleBumpProduct}
-                  >
+                    className={`w-full py-2 rounded-md mb-2 font-medium ${
+                      product?.status !== "active"
+                        ? "bg-teal-600 hover:bg-teal-700 opacity-50 text-white cursor-not-allowed"
+                        : "bg-teal-600 hover:bg-teal-700 text-white"
+                    }`}
+                    disabled={product?.status !== "active"}
+                    onClick={handleBumpProduct}>
                     {t("bump")}
                   </button>
-                  {product.status !== 'rejected' && (
-                    (!product?.status || product.status === 'active') ? (
+                  {product.status !== "rejected" &&
+                    (!product?.status || product.status === "active" ? (
                       <>
                         <button
                           className="text-teal-700 rounded-md font-semibold border border-teal-600 w-full py-2 mb-2"
-                          onClick={handleMarkAsSold}
-                        >
+                          onClick={handleMarkAsSold}>
                           {t("markAsSold")}
                         </button>
                         <button
                           className="text-teal-700 rounded-md font-semibold border border-teal-600 w-full py-2 mb-2"
-                          onClick={handleMarkAsReserved}
-                        >
+                          onClick={handleMarkAsReserved}>
                           {t("markAsReserved")}
                         </button>
                       </>
                     ) : (
                       <button
                         className="text-green-700 rounded-md font-semibold border border-green-600 w-full py-2 mb-2 hover:bg-green-50"
-                        onClick={handleReactivateProduct}
-                      >
-                        {product.status === 'sold'
-                          ? t('mark-as-unsold')
-                          : product.status === 'reserved'
-                            ? t('mark-as-unreserved')
-                            : 'Mark as Available'}
+                        onClick={handleReactivateProduct}>
+                        {product.status === "sold"
+                          ? t("mark-as-unsold")
+                          : product.status === "reserved"
+                          ? t("mark-as-unreserved")
+                          : "Mark as Available"}
                       </button>
-                    )
-                  )}
-                  {product.status !== 'rejected' && (
+                    ))}
+                  {product.status !== "rejected" && (
                     <button
                       className="text-teal-700 rounded-md font-semibold border border-teal-600 w-full py-2 mb-2"
-                      onClick={productHideUnhide}
-                    >
-                      {isHidden ? t('unhide') : t('hide')}
+                      onClick={productHideUnhide}>
+                      {isHidden ? t("unhide") : t("hide")}
                     </button>
                   )}
-                  <button className="text-teal-700 rounded-md font-semibold border border-teal-600 w-full py-2 mb-2" onClick={() => navigate("/sell-now", {
-                    state: {
-                      product: product
-                    }
-                  })}>
+                  <button
+                    className="text-teal-700 rounded-md font-semibold border border-teal-600 w-full py-2 mb-2"
+                    onClick={() =>
+                      navigate("/sell-now", {
+                        state: {
+                          product: product,
+                        },
+                      })
+                    }>
                     {t("editListing")}
                   </button>
-                  <button className="text-red-700 border border-red-600 w-full py-2 rounded-md font-medium" onClick={() => setShowModal(true)}>
+                  <button
+                    className="text-red-700 border border-red-600 w-full py-2 rounded-md font-medium"
+                    onClick={() => setShowModal(true)}>
                     {t("delete")}
                   </button>
                 </>
@@ -678,31 +727,31 @@ const ProductDetailPage = () => {
                 <>
                   <button
                     className={`bg-teal-600 hover:bg-teal-700 text-white w-full py-2 rounded-md mb-2 font-medium transition
-    ${product.status === 'sold' ? 'opacity-50 cursor-not-allowed hover:bg-teal-600' : ''}`}
+    ${
+      product.status === "sold"
+        ? "opacity-50 cursor-not-allowed hover:bg-teal-600"
+        : ""
+    }`}
                     onClick={userBuyNow}
-                    disabled={product.status === 'sold'}
-                  >
+                    disabled={product.status === "sold"}>
                     {t("buyNow")}
                   </button>
 
                   <button
                     className={`text-teal-700 rounded-md font-semibold border border-teal-600 w-full py-2 mb-2 transition
-    ${product.status === 'sold' ? 'opacity-50 cursor-not-allowed' : ''}`}
+    ${product.status === "sold" ? "opacity-50 cursor-not-allowed" : ""}`}
                     onClick={makeOfferOpen}
-                    disabled={product.status === 'sold'}
-                  >
+                    disabled={product.status === "sold"}>
                     {t("makeAnOffer")}
                   </button>
 
                   <button
                     className={`text-teal-700 rounded-md font-semibold border border-teal-600 w-full py-2 mb-2 transition
-    ${product.status === 'sold' ? 'opacity-50 cursor-not-allowed' : ''}`}
+    ${product.status === "sold" ? "opacity-50 cursor-not-allowed" : ""}`}
                     onClick={messageToSeller}
-                    disabled={product.status === 'sold'}
-                  >
+                    disabled={product.status === "sold"}>
                     {t("messageSeller")}
                   </button>
-
                 </>
               )}
 
@@ -710,18 +759,20 @@ const ProductDetailPage = () => {
               {authUser?.id !== product?.user?.id && (
                 <div className="mt-6">
                   <div className="border rounded-md p-4 shadow-sm text-xs text-gray-500">
-                    <strong className="text-teal-600">{t("buyerProtectionFee")}</strong>
+                    <strong className="text-teal-600">
+                      {t("buyerProtectionFee")}
+                    </strong>
                     <br />
                     {t("buyerProtectionInfo")}
                   </div>
-                </div>)}
+                </div>
+              )}
 
               {/* Seller Info */}
               <div className="mt-4">
                 <div
                   className="border rounded-md p-4 shadow-sm cursor-pointer"
-                  onClick={userNavigate}
-                >
+                  onClick={userNavigate}>
                   {/* Top section: profile image and user info */}
                   <div className="flex items-start gap-3 border-b pb-3">
                     {/* Profile photo */}
@@ -746,7 +797,12 @@ const ProductDetailPage = () => {
                           {Array.from({ length: 5 }).map((_, i) => (
                             <Star
                               key={i}
-                              className={`w-3 h-3 ${i < Math.floor(product.sellerRatings.averageRating) ? 'fill-yellow-500' : 'fill-gray-300'}`}
+                              className={`w-3 h-3 ${
+                                i <
+                                Math.floor(product.sellerRatings.averageRating)
+                                  ? "fill-yellow-500"
+                                  : "fill-gray-300"
+                              }`}
                             />
                           ))}
                           <span className="text-sm text-gray-600">
@@ -754,20 +810,24 @@ const ProductDetailPage = () => {
                           </span>
                         </div>
                       ) : (
-                        <p className="text-sm text-gray-500">{t("no-reviews-yet")}</p>
+                        <p className="text-sm text-gray-500">
+                          {t("no-reviews-yet")}
+                        </p>
                       )}
                     </div>
                   </div>
 
                   {/* Location */}
-                  {product?.user?.country &&
+                  {product?.user?.country && (
                     <div className="flex items-center gap-1 text-xs text-gray-400 mt-3">
                       <FaMapMarkerAlt className="text-sm" />
                       <span>
                         {/* {product?.user?.city}, {product?.user?.country} */}
-                        {product?.user?.cityShow && `${product?.user.city}, `}{product?.user?.country}
+                        {product?.user?.cityShow && `${product?.user.city}, `}
+                        {product?.user?.country}
                       </span>
-                    </div>}
+                    </div>
+                  )}
 
                   {/* Last seen */}
                   {/* <div className="flex items-center gap-1 text-xs text-gray-400 mt-1">
@@ -788,8 +848,15 @@ const ProductDetailPage = () => {
 
       {/* Product Grid (mobile only) */}
       <div className="mt-8 block md:hidden">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">{t("membersItems")} ({products?.length})</h2>
-        <ProductGrid products={products} user={user} apiRefresh={apiRefresh} setApiRefresh={setApiRefresh} />
+        <h2 className="text-xl font-semibold text-gray-800 mb-4">
+          {t("membersItems")} ({products?.length})
+        </h2>
+        <ProductGrid
+          products={products}
+          user={user}
+          apiRefresh={apiRefresh}
+          setApiRefresh={setApiRefresh}
+        />
         {isLoadingMore && (
           <div className="flex justify-center py-4">
             <LoadingSpinner />
@@ -800,16 +867,15 @@ const ProductDetailPage = () => {
             <button
               onClick={handleLoadMore}
               className="px-6 py-2 bg-teal-600 text-white rounded hover:bg-teal-700"
-              disabled={isLoadingMore}
-            >
-              {isLoadingMore ? 'Loading...' : t("load_more")}
+              disabled={isLoadingMore}>
+              {isLoadingMore ? "Loading..." : t("load_more")}
             </button>
           </div>
         )}
       </div>
 
       {/* Modals */}
-      <AuthModal />
+      {/* <AuthModal /> */}
       <LoginModal />
       <ForgotPasswordModal />
       <SignUpModal />
@@ -825,10 +891,16 @@ const ProductDetailPage = () => {
         itemPrice={product.price}
         protectionFee={Number((product.price * 0.05).toFixed(2))}
       />
-      <MakeOfferModal product={product} onClose={() => setMakeOfferModal(false)} isOpen={makeOfferModal} />
+      <MakeOfferModal
+        product={product}
+        onClose={() => setMakeOfferModal(false)}
+        isOpen={makeOfferModal}
+      />
       <StatusConfirmationModal
         isOpen={statusModal.isOpen}
-        onClose={() => setStatusModal({ isOpen: false, action: '', isLoading: false })}
+        onClose={() =>
+          setStatusModal({ isOpen: false, action: "", isLoading: false })
+        }
         onConfirm={confirmStatusChange}
         action={statusModal.action}
         productTitle={product?.title}
@@ -840,23 +912,27 @@ const ProductDetailPage = () => {
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 px-4">
           <div className="relative bg-white rounded-xl shadow-lg p-4 max-w-3xl w-full flex flex-col items-center">
-            <button className="absolute top-4 right-4 text-gray-500 hover:text-gray-700" onClick={closeModal}>
+            <button
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+              onClick={closeModal}>
               <X size={24} />
             </button>
             {currentImageIndex > 0 && (
               <button
                 className="absolute left-4 top-1/2 transform -translate-y-1/2 text-black text-3xl z-10"
-                onClick={() => setCurrentImageIndex((prev) => prev - 1)}
-              >
+                onClick={() => setCurrentImageIndex((prev) => prev - 1)}>
                 ‹
               </button>
             )}
-            <img src={photos[currentImageIndex]} alt="Modal View" className="w-full max-h-[70vh] object-contain rounded" />
+            <img
+              src={photos[currentImageIndex]}
+              alt="Modal View"
+              className="w-full max-h-[70vh] object-contain rounded"
+            />
             {currentImageIndex < photos.length - 1 && (
               <button
                 className="absolute right-4 top-1/2 transform -translate-y-1/2 text-black text-3xl z-10"
-                onClick={() => setCurrentImageIndex((prev) => prev + 1)}
-              >
+                onClick={() => setCurrentImageIndex((prev) => prev + 1)}>
                 ›
               </button>
             )}
@@ -864,7 +940,6 @@ const ProductDetailPage = () => {
         </div>
       )}
     </div>
-
   );
 };
 

@@ -69,7 +69,7 @@ import HowItWorks from "./pages/HowItWorks";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 // Auth modals mounted globally so Header buttons work everywhere
-import AuthModal from "./components/Auth/AuthModal.jsx";
+import AuthModal from "./components/Auth/AuthModal";
 import LoginModal from "./components/Auth/LoginModal";
 import ForgotPasswordModal from "./components/Auth/ForgotPasswordModal";
 import SignUpModal from "./components/Auth/SignUpModal";
@@ -91,7 +91,7 @@ function App() {
             rtl={isRTL}
           />
           {/* Global auth modals */}
-          <AuthModal />
+          {/* <AuthModal /> */}
           <LoginModal />
           <ForgotPasswordModal />
           <SignUpModal />

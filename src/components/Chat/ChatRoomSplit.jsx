@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { getChatMessages, markMessagesAsSeen } from '../../api/ChatService';
 import useWebSocketChat from '../../hooks/useWebSocketChat';
 import LoadingSpinner from '../common/LoadingSpinner';
-import { formatDistanceToNowStrict } from 'date-fns';
+// import { formatDistanceToNowStrict } from 'date-fns';
 import {
   compressImage,
   fileToBase64,
@@ -12,7 +12,7 @@ import {
   revokeImagePreview,
   formatFileSize
 } from '../../utils/imageUtils';
-import ChatDebug from './ChatDebug';
+// import ChatDebug from './ChatDebug';
 import ImagePreviewModal from './ImagePreviewModal';
 import MakeOfferModal from '../Products/MakeOffer';
 import OfferMessage from './OfferMessage';
@@ -62,7 +62,7 @@ const ChatRoomSplit = ({ chat, onBack, getProductDetailsFromChats, onChatDeleted
   const lastChatIdRef = useRef(null);
 
   const {
-    socket,
+    // socket,
     connected,
     error: socketError,
     messageError,
@@ -80,8 +80,6 @@ const ChatRoomSplit = ({ chat, onBack, getProductDetailsFromChats, onChatDeleted
   } = useWebSocketChat();
 
   const currentUser = JSON.parse(localStorage.getItem('user'));
-  const baseURL = import.meta.env.VITE_API_BASE_URL;
-  // const normalizedURL = baseURL.endsWith('/') ? baseURL.slice(0, -1) : baseURL;
   const navigate = useNavigate();
 
   // Update matched product details when chat or getProductDetailsFromChats changes

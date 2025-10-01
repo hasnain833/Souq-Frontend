@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AiOutlineClose } from "react-icons/ai";
-import { createOrGetChat } from "../../api/ChatService";
+// import { createOrGetChat } from "../../api/ChatService";
 import { createOffer } from "../../api/OfferService";
 import { useTranslation } from "react-i18next";
 

@@ -166,7 +166,7 @@ const HelpCenter = () => {
           </div>
         </div>
       </div>
-      <AuthModal />
+      {/* <AuthModal /> */}
       <LoginModal />
       <ForgotPasswordModal />
       <SignUpModal />

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Newspaper, Calendar, Download, Mail } from 'lucide-react';
-import AuthModal from '../components/Auth/AuthModal';
+// import AuthModal from '../components/Auth/AuthModal';
 import LoginModal from '../components/Auth/LoginModal';
 import ForgotPasswordModal from '../components/Auth/ForgotPasswordModal';
 import SignUpModal from '../components/Auth/SignUpModal';
@@ -88,7 +88,7 @@ const Press = () => {
           </div>
         </div>
       </div>
-      <AuthModal />
+      {/* <AuthModal /> */}
       <LoginModal />
       <ForgotPasswordModal />
       <SignUpModal />

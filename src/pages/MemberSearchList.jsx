@@ -90,7 +90,7 @@ const MemberSearchList = () => {
             ) : (
                 <p className="text-gray-500">No members found.</p>
             )}
-            <AuthModal />
+            {/* <AuthModal /> */}
             <LoginModal />
             <ForgotPasswordModal />
             <SignUpModal />

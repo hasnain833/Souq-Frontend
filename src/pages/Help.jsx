@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Search, ChevronDown, ChevronRight, MessageCircle, Mail, Phone, Book } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import AuthModal from '../components/Auth/AuthModal';
+// import AuthModal from '../components/Auth/AuthModal';
 import LoginModal from '../components/Auth/LoginModal';
 import ForgotPasswordModal from '../components/Auth/ForgotPasswordModal';
 import SignUpModal from '../components/Auth/SignUpModal';
@@ -289,7 +289,7 @@ const Help = () => {
           </div>
         </div>
       </div>
-      <AuthModal />
+      {/* <AuthModal /> */}
       <LoginModal />
       <ForgotPasswordModal />
       <SignUpModal />

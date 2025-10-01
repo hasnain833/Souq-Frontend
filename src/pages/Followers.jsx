@@ -12,7 +12,7 @@ import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import ConnectionCardSkeleton from "../components/Skeleton/ConnectionCardSkeleton";
 import { Helmet } from "react-helmet";
-import AuthModal from "../components/Auth/AuthModal";
+// import AuthModal from "../components/Auth/AuthModal";
 import LoginModal from "../components/Auth/LoginModal";
 import ForgotPasswordModal from "../components/Auth/ForgotPasswordModal";
 import SignUpModal from "../components/Auth/SignUpModal";
@@ -156,7 +156,7 @@ const Followers = () => {
                     </div>
                 )}
             </div>
-            <AuthModal />
+            {/* <AuthModal /> */}
             <LoginModal />
             <ForgotPasswordModal />
             <SignUpModal />

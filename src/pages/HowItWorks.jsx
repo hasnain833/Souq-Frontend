@@ -157,7 +157,7 @@ export default function HowItWorks() {
                 </div>
             </section>
 
-            <AuthModal />
+            {/* <AuthModal /> */}
             <LoginModal />
             <ForgotPasswordModal />
             <SignUpModal />

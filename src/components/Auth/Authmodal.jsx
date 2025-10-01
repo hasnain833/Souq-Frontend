@@ -1,4 +1,4 @@
-import React from "react";
+// import React from "react";
 import { FaFacebookSquare } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { X } from "lucide-react";

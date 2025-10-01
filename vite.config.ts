@@ -1,6 +1,7 @@
 // vite.config.ts
 import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
+import path from 'path';
 
 export default defineConfig(({ mode }) => {
   // Load all VITE_* env vars for the current mode
@@ -15,6 +16,11 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [react()],
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, 'src'),
+      },
+    },
     optimizeDeps: {
       exclude: ['lucide-react'],
     },
@@ -39,6 +45,25 @@ export default defineConfig(({ mode }) => {
           changeOrigin: true,
           ws: true,
           secure: false,
+        },
+      },
+    },
+    // Optional: local preview config (vite preview)
+    preview: {
+      host: true,
+      port: 4173,
+    },
+    build: {
+      // Quiet the “>500kB” warnings and split big libs into separate chunks
+      chunkSizeWarningLimit: 1500,
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            react: ['react', 'react-dom', 'react-router-dom'],
+            i18n: ['i18next', 'react-i18next'],
+            ui: ['react-icons', 'lucide-react'],
+            // add more buckets if needed (e.g., charting libs etc.)
+          },
         },
       },
     },

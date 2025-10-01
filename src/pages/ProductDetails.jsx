@@ -11,10 +11,9 @@ import {
   markProductAsSold,
   reactivateProduct,
 } from "../api/ProductService";
-import { Star, X } from "lucide-react"; 
+import { Star, X } from "lucide-react";
 // import { formatDistanceToNowStrict } from "date-fns";
 import ProductGrid from "../components/Products/ProductGrid";
-import AuthModal from "../components/Auth/AuthModal";
 import LoginModal from "../components/Auth/LoginModal";
 import ForgotPasswordModal from "../components/Auth/ForgotPasswordModal";
 import SignUpModal from "../components/Auth/SignUpModal";
@@ -870,7 +869,6 @@ const ProductDetailPage = () => {
       </div>
 
       {/* Modals */}
-      <AuthModal />
       <LoginModal />
       <ForgotPasswordModal />
       <SignUpModal />

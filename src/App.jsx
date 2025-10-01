@@ -73,7 +73,7 @@ import HowItWorks from "./pages/HowItWorks";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 // Auth modals mounted globally so Header buttons work everywhere
-import AuthModal from "./components/Auth/AuthModal";
+import AuthModal from "./components/Auth/AuthModal.jsx";
 import LoginModal from "./components/Auth/LoginModal";
 import ForgotPasswordModal from "./components/Auth/ForgotPasswordModal";
 import SignUpModal from "./components/Auth/SignUpModal";
@@ -87,7 +87,7 @@ function App() {
     : DisabledStripePayment;
   return (
     <AppProvider>
-      <NetworkErrorProvider>
+      <NetworkErrorProvider>  
         <ScrollToTop />
         <div className="min-h-screen flex flex-col bg-gray-50">
           <Header />

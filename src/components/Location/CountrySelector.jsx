@@ -118,9 +118,9 @@ const CountrySelector = ({
       </button>
 
       {/* Error Message */}
-      {/* {error && (
+      {error && (
         <p className="mt-1 text-sm text-red-600">{error}</p>
-      )} */}
+      )}
 
       {/* Dropdown */}
       {isOpen && (
@@ -159,7 +159,7 @@ const CountrySelector = ({
                     transition-colors duration-150
                   `}
                 >
-                  {/* <span className="text-xl">{country.flag}</span> */}
+                  <span className="text-xl">{country.flag}</span>
                   <div className="flex-1">
                     <div className="font-medium">{country.name}</div>
                     <div className="text-sm text-gray-500">{country.code} • {country.dialCode}</div>

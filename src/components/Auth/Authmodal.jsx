@@ -16,7 +16,8 @@ const AuthModal = () => {
   } = useAppContext();
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === "ar";
-  // if (!isAuthModalOpen) return null;
+  // Only render when open
+  if (!isAuthModalOpen) return null;
 
   const loginModal = () => {
     setIsAuthModalOpen(false);
@@ -30,8 +31,14 @@ const AuthModal = () => {
 
   return (
     <>
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-        <div className="relative bg-white rounded-xl shadow-2xl w-full max-w-sm sm:max-w-md mx-4 max-h-[90vh] overflow-y-auto">
+      <div
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+        onClick={() => setIsAuthModalOpen(false)}
+      >
+        <div
+          className="relative bg-white rounded-xl shadow-2xl w-full max-w-sm sm:max-w-md mx-4 max-h-[90vh] overflow-y-auto"
+          onClick={(e) => e.stopPropagation()}
+        >
           <button
             onClick={() => setIsAuthModalOpen(false)}
             className={`absolute top-4 ${

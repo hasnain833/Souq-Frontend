@@ -75,10 +75,6 @@ export default function CheckoutPage() {
   const [shippingRates, setShippingRates] = useState([]);
   const [selectedShipping, setSelectedShipping] = useState(null);
   const [shippingLoading, setShippingLoading] = useState(false);
-
-  const baseURL = import.meta.env.VITE_API_BASE_URL;
-  // const normalizedBaseURL = baseURL.endsWith("/") ? baseURL : `${baseURL}/`;
-
   const shipping = product?.shipping_cost;
   const tax = 0.72;
   const productPrice = offerAmount || product.price || 0;
@@ -101,8 +97,8 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     // Load user cards, bank accounts, default address, and shipping rates
-    // loadUserCards();
-    // loadUserBankAccounts();
+    loadUserCards();
+    loadUserBankAccounts();
     loadDefaultAddress();
     loadShippingRates(); // Load shipping rates immediately
   }, []);

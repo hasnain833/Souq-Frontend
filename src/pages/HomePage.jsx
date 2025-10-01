@@ -1,24 +1,23 @@
-import React, { useEffect, useState, useRef } from 'react';
-import ProductGrid from '../components/Products/ProductGrid';
-import { useAppContext } from '../context/AppContext';
-import Filter from '../components/Navigation/Filter';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { getAllProduct } from '../api/ProductService';
-import LoadingSpinner from '../components/common/LoadingSpinner';
-import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
-import FilterModal from '../components/Filters/FilterModal';
-import { FilterIcon } from 'lucide-react';
-import ProductCardSkeleton from '../components/Skeleton/ProductCardSkeleton';
-import SouqBanner from "../public/images/souqbanner.jpg"
-import SouqBannerMobile from "../public/images/souqbanner-1.jpg"
-import { Helmet } from 'react-helmet';
+import React, { useEffect, useState, useRef } from "react";
+import ProductGrid from "../components/Products/ProductGrid";
+import { useAppContext } from "../context/AppContext";
+import Filter from "../components/Navigation/Filter";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { getAllProduct } from "../api/ProductService";
+import LoadingSpinner from "../components/common/LoadingSpinner";
+import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
+import FilterModal from "../components/Filters/FilterModal";
+import { FilterIcon } from "lucide-react";
+import ProductCardSkeleton from "../components/Skeleton/ProductCardSkeleton";
+import SouqBanner from "../public/images/souqbanner.jpg";
+import SouqBannerMobile from "../public/images/souqbanner-1.jpg";
+import { Helmet } from "react-helmet";
 import { products as localProducts } from "../data/products";
- 
 
 const HomePage = () => {
   const navigate = useNavigate();
-  const location = useLocation()
+  const location = useLocation();
   const { t } = useTranslation();
   const pageRef = useRef(1);
   const isFetching = useRef(false);
@@ -39,17 +38,21 @@ const HomePage = () => {
     if (isAuthenticated) {
       navigate("/sell-now");
     } else {
-      setAuthMode('login');
+      setAuthMode("login");
       setIsAuthModalOpen(true);
     }
   };
 
   const getSelectedCategoryId = (categorySelect) => {
     return (
-      categorySelect?.selectedItem?.id || categorySelect?.selectedItem?._id ||
-      categorySelect?.selectedChildCategory?.id || categorySelect?.selectedChildCategory?._id ||
-      categorySelect?.selectedSubcategory?.id || categorySelect?.selectedSubcategory?._id ||
-      categorySelect?.selectedCategory?.id || categorySelect?.selectedCategory?._id ||
+      categorySelect?.selectedItem?.id ||
+      categorySelect?.selectedItem?._id ||
+      categorySelect?.selectedChildCategory?.id ||
+      categorySelect?.selectedChildCategory?._id ||
+      categorySelect?.selectedSubcategory?.id ||
+      categorySelect?.selectedSubcategory?._id ||
+      categorySelect?.selectedCategory?.id ||
+      categorySelect?.selectedCategory?._id ||
       undefined
     );
   };
@@ -61,7 +64,7 @@ const HomePage = () => {
         limit,
         // Show all products regardless of age; backend treats days<=0 as no cutoff
         days: 0,
-        sortBy: filters.sortBy || 'createdAt',
+        sortBy: filters.sortBy || "createdAt",
         order: "desc",
         brand: filters.brand || undefined,
         q: filters.searchText || undefined,
@@ -71,14 +74,27 @@ const HomePage = () => {
         size: filters.size || undefined,
         minPrice: filters.price?.from || undefined,
         maxPrice: filters.price?.to || undefined,
-        category: getSelectedCategoryId(categorySelect)
+        category: getSelectedCategoryId(categorySelect),
       });
 
       let items = res?.data?.data?.items || [];
       let next = res?.data?.data?.hasNextPage;
       // Fallback to local products when API returns empty on the first page with no filters
-      const noFilters = !filters.searchText && !filters.brand && !filters.condition && !filters.color && !filters.material && !filters.size && !getSelectedCategoryId(categorySelect);
-      if (page === 1 && items.length === 0 && noFilters && Array.isArray(localProducts) && localProducts.length > 0) {
+      const noFilters =
+        !filters.searchText &&
+        !filters.brand &&
+        !filters.condition &&
+        !filters.color &&
+        !filters.material &&
+        !filters.size &&
+        !getSelectedCategoryId(categorySelect);
+      if (
+        page === 1 &&
+        items.length === 0 &&
+        noFilters &&
+        Array.isArray(localProducts) &&
+        localProducts.length > 0
+      ) {
         items = localProducts;
         next = false;
       }
@@ -89,18 +105,22 @@ const HomePage = () => {
     }
   };
 
-
   const loadMoreProducts = async () => {
-    if (isFetching.current || !hasNextPage) return;
+    if (isFetching.current || !hasNextPage) {
+    }
+    return
 
     isFetching.current = true;
     setIsLoading(true);
 
     const currentPage = pageRef.current;
 
-    const { items, hasNextPage: next } = await fetchProducts({ page: currentPage, limit });
+    const { items, hasNextPage: next } = await fetchProducts({
+      page: currentPage,
+      limit,
+    });
 
-    setProducts(prev => currentPage === 1 ? items : [...prev, ...items]);
+    setProducts((prev) => (currentPage === 1 ? items : [...prev, ...items]));
     setHasNextPage(next);
 
     // Increment page only after fetch is complete
@@ -117,7 +137,10 @@ const HomePage = () => {
     setInitialLoad(true);
 
     pageRef.current = 1;
-    const { items, hasNextPage: next } = await fetchProducts({ page: 1, limit });
+    const { items, hasNextPage: next } = await fetchProducts({
+      page: 1,
+      limit,
+    });
 
     setProducts(items);
     setHasNextPage(!!next);
@@ -133,7 +156,6 @@ const HomePage = () => {
     refreshProducts();
   }, []);
 
-
   useEffect(() => {
     const timeout = setTimeout(() => {
       refreshProducts();
@@ -148,11 +170,11 @@ const HomePage = () => {
     return () => clearTimeout(timeout);
   }, [filters, categorySelect]);
 
-
   useEffect(() => {
     const handleScroll = () => {
       if (
-        window.innerHeight + window.scrollY >= document.body.offsetHeight - 300 &&
+        window.innerHeight + window.scrollY >=
+          document.body.offsetHeight - 300 &&
         !isFetching.current &&
         !isLoading &&
         hasNextPage &&
@@ -174,7 +196,7 @@ const HomePage = () => {
     if (hasNextPage && !isFetching.current && !initialLoad) {
       loadMoreProducts();
     }
-  }
+  };
 
   return (
     <>
@@ -188,10 +210,7 @@ const HomePage = () => {
       </Helmet>
       <div className="relative w-full h-[500px] mb-0 md:mb-12">
         <picture>
-          <source
-            srcSet={SouqBannerMobile}
-            media="(max-width: 640px)"
-          />
+          <source srcSet={SouqBannerMobile} media="(max-width: 640px)" />
           <img
             src={SouqBanner}
             alt="People with clothes"
@@ -201,22 +220,22 @@ const HomePage = () => {
             loading="eager"
             fetchpriority="high" // lowercase
           />
-
         </picture>
         <div className="absolute inset-0 bg-black/20" />
         <div className="relative z-10 flex items-center h-full container mx-auto px-4">
           <div className="bg-white rounded-lg shadow-lg p-6 sm:p-8 w-full max-w-sm">
             <h2 className="text-2xl sm:text-3xl font-semibold text-gray-800 mb-4 text-center sm:text-left">
-              {t('ready_to_declutter')}
+              {t("ready_to_declutter")}
             </h2>
             <button
               className="w-full bg-teal-600 text-white py-2 rounded-md hover:bg-teal-700 transition-colors mb-2 mt-2"
-              onClick={handleLogin}
-            >
-              {t('sell_now')}
+              onClick={handleLogin}>
+              {t("sell_now")}
             </button>
-            <Link to="/how-it-work" className="block text-center text-sm text-teal-600 hover:underline mt-2">
-              {t('learn_how_it_works')}
+            <Link
+              to="/how-it-work"
+              className="block text-center text-sm text-teal-600 hover:underline mt-2">
+              {t("learn_how_it_works")}
             </Link>
           </div>
         </div>
@@ -228,24 +247,28 @@ const HomePage = () => {
       <div className="container mx-auto px-4 py-6">
         <div className="flex flex-col gap-6">
           <div className="flex-grow">
-            {location.pathname === "/" &&
+            {location.pathname === "/" && (
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold text-gray-800">{t("newsfeed")}</h2>
+                <h2 className="text-xl font-semibold text-gray-800">
+                  {t("newsfeed")}
+                </h2>
 
                 {/* Show only on small screens */}
                 <div className="block md:hidden">
                   <button
                     onClick={() => setIsFilterOpen(true)}
-                    className="flex items-center gap-1 p-2 rounded-md hover:bg-gray-100 transition"
-                  >
-                    <span className="text-teal-600 font-medium">{t("filter")}</span>
-                    <FilterIcon className="w-5 h-5 text-teal-600" aria-hidden="true" />
+                    className="flex items-center gap-1 p-2 rounded-md hover:bg-gray-100 transition">
+                    <span className="text-teal-600 font-medium">
+                      {t("filter")}
+                    </span>
+                    <FilterIcon
+                      className="w-5 h-5 text-teal-600"
+                      aria-hidden="true"
+                    />
                   </button>
-
                 </div>
               </div>
-
-            }
+            )}
             {initialLoad && products.length === 0 ? (
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                 {Array.from({ length: 5 }).map((_, i) => (
@@ -253,7 +276,9 @@ const HomePage = () => {
                 ))}
               </div>
             ) : products.length === 0 ? (
-              <div className="text-center text-gray-500 py-10">{t("no_products_found")}</div>
+              <div className="text-center text-gray-500 py-10">
+                {t("no_products_found")}
+              </div>
             ) : (
               <>
                 <ProductGrid
@@ -272,18 +297,19 @@ const HomePage = () => {
                   <div className="flex justify-center py-4">
                     <button
                       onClick={handleLoadMore}
-                      className="bg-teal-600 text-white px-6 py-2 rounded hover:bg-teal-700 transition"
-                    >
+                      className="bg-teal-600 text-white px-6 py-2 rounded hover:bg-teal-700 transition">
                       {t("load_more")}
                     </button>
                   </div>
                 )}
-
               </>
             )}
           </div>
         </div>
-        <FilterModal isOpen={isFilterOpen} onClose={() => setIsFilterOpen(false)} />
+        <FilterModal
+          isOpen={isFilterOpen}
+          onClose={() => setIsFilterOpen(false)}
+        />
       </div>
     </>
   );

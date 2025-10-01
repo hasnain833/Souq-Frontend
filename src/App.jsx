@@ -13,6 +13,7 @@ import NotReceiveMail from "./pages/NotReceiveMail";
 import SendPhoneOTP from "./pages/SendPhoneOtp";
 import PhoneVeriy from "./pages/PhoneVerify";
 import MemberProfile from "./pages/MemberProfile";
+// import Settings from "./pages/Settings";
 import ProtectedRoute from "./route/ProtectedRoute";
 import AuthCallback from "./pages/AuthPage";
 import { ToastContainer } from "react-toastify";
@@ -91,7 +92,7 @@ function App() {
             rtl={isRTL}
           />
           {/* Global auth modals */}
-          {/* <AuthModal /> */}
+          <AuthModal />
           <LoginModal />
           <ForgotPasswordModal />
           <SignUpModal />
@@ -128,7 +129,7 @@ function App() {
               {/* Admin */}
               <Route path="/admin/login" element={<AdminLogin />} />
               <Route path="/admin" element={<AdminDashboard />} />
-              <Route path="/chat-layout" element={<ChatLayout />} />
+              {/* <Route path="/chat-layout" element={<ChatLayout />} /> */}
               <Route
                 path="/member-profile/:tab?"
                 element={

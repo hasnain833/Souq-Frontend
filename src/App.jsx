@@ -13,7 +13,6 @@ import NotReceiveMail from "./pages/NotReceiveMail";
 import SendPhoneOTP from "./pages/SendPhoneOtp";
 import PhoneVeriy from "./pages/PhoneVerify";
 import MemberProfile from "./pages/MemberProfile";
-// import Settings from "./pages/Settings";
 import ProtectedRoute from "./route/ProtectedRoute";
 import AuthCallback from "./pages/AuthPage";
 import { ToastContainer } from "react-toastify";
@@ -44,10 +43,7 @@ import Orders from "./pages/Orders";
 import OrderDetails from "./pages/OrderDetails";
 import RatingTest from "./components/Rating/RatingTest";
 import RatingPage from "./pages/RatingPage";
-// import RatingNotification from './components/Rating/RatingNotification';
-// import RatingTestButton from './components/Rating/RatingTestButton';
 import Wallet from "./pages/Wallet";
-// import LocationTest from "./pages/LocationTest";
 import NotFound from "./pages/NotFound";
 import NotFoundTest from "./components/Test/NotFoundTest";
 import { isPaymentGatewayEnabled } from "./config/paymentConfig";
@@ -80,7 +76,6 @@ import SignUpModal from "./components/Auth/SignUpModal";
 
 function App() {
   const location = useLocation();
-  // const { i18n } = useTranslation();
   const isRTL = localStorage.getItem("lang") === "ar";
   const StripeComponent = isPaymentGatewayEnabled("stripe")
     ? StripePayment

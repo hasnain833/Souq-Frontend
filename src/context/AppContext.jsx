@@ -95,13 +95,9 @@ export const AppProvider = ({ children }) => {
 
   // const [user, setUser] = useState(() => localStorage.getItem("user"));
 
-  useEffect(() => {
-    const handleStorageChange = () => {
-      setUser(localStorage.getItem("users"));
-    };
-    window.addEventListener("storage", handleStorageChange);
-    return () => window.removeEventListener("storage", handleStorageChange);
-  }, []);
+  // NOTE: Removed buggy storage listener referencing an undefined setUser.
+  // If you need to sync user from localStorage across tabs, reintroduce user state
+  // and ensure the correct key ("user") is used.
 
   // Mark notification as read
   const markNotificationAsRead = async (notificationId) => {

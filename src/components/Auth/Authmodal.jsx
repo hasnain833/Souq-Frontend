@@ -1,4 +1,4 @@
-// import React from "react";
+import React from "react";
 import { FaFacebookSquare } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { X } from "lucide-react";
@@ -16,7 +16,7 @@ const AuthModal = () => {
   } = useAppContext();
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === "ar";
-  if (!isAuthModalOpen) return null;
+  // if (!isAuthModalOpen) return null;
 
   const loginModal = () => {
     setIsAuthModalOpen(false);

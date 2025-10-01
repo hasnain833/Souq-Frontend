@@ -1,5 +1,5 @@
 import React from "react";
-import { FaApple, FaFacebookSquare } from "react-icons/fa";
+import { FaFacebookSquare } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { X } from "lucide-react";
 import { useAppContext } from "../../context/AppContext";
@@ -12,7 +12,6 @@ const AuthModal = () => {
     authMode,
     setAuthMode,
     setShowEmailLogin,
-    showSignUp,
     setShowSignUp,
   } = useAppContext();
   const { t, i18n } = useTranslation();

@@ -257,7 +257,7 @@ const ProductDetailPage = () => {
       timeout = setTimeout(() => {
         if (
           window.innerHeight + window.scrollY >=
-            document.body.offsetHeight - 300 &&
+          document.body.offsetHeight - 300 &&
           !isLoadingMore &&
           page < totalPages
         ) {
@@ -368,16 +368,16 @@ const ProductDetailPage = () => {
         // Show error if success is false
         toast.error(
           data?.error ||
-            data?.message ||
-            "Failed to bump product. Please try again."
+          data?.message ||
+          "Failed to bump product. Please try again."
         );
       }
     } catch (error) {
       console.error("Bump failed:", error);
       toast.error(
         error?.response?.data?.error ||
-          error?.message ||
-          "Something went wrong. Please try again."
+        error?.message ||
+        "Something went wrong. Please try again."
       );
     }
   };
@@ -421,7 +421,7 @@ const ProductDetailPage = () => {
       console.error("Status change failed:", error);
       toast.error(
         error?.response?.data?.error ||
-          "Failed to update product status. Please try again."
+        "Failed to update product status. Please try again."
       );
       setStatusModal((prev) => ({ ...prev, isLoading: false }));
     }
@@ -470,7 +470,7 @@ const ProductDetailPage = () => {
         <div
           // ref={leftColRef}
           className="md:col-span-2 flex flex-col md:overflow-y-auto md:h-full hide-scrollbar"
-          // onScroll={() => handleScroll("left")}
+        // onScroll={() => handleScroll("left")}
         >
           {/* Main Image */}
           {photos.length > 0 && (
@@ -571,22 +571,21 @@ const ProductDetailPage = () => {
             {product.status !== "active" && (
               <div
                 className={`w-full text-white p-0 text-center text-sm font-semibold py-2 rounded-t-md mb-2
-  ${
-    product.status === "sold"
-      ? "bg-teal-600"
-      : product.status === "reserved"
-      ? "bg-yellow-500 text-black"
-      : product.status === "rejected"
-      ? "bg-red-600"
-      : "bg-gray-800 bg-opacity-75"
-  }`}>
+  ${product.status === "sold"
+                    ? "bg-teal-600"
+                    : product.status === "reserved"
+                      ? "bg-yellow-500 text-black"
+                      : product.status === "rejected"
+                        ? "bg-red-600"
+                        : "bg-gray-800 bg-opacity-75"
+                  }`}>
                 {product.status === "sold"
                   ? t("sold")
                   : product.status === "reserved"
-                  ? t("reserved")
-                  : product.status === "rejected"
-                  ? t("rejected")
-                  : "Mark as Available"}
+                    ? t("reserved")
+                    : product.status === "rejected"
+                      ? t("rejected")
+                      : "Mark as Available"}
               </div>
             )}
             <div className="p-4">
@@ -636,9 +635,8 @@ const ProductDetailPage = () => {
 
               <div className="mb-3 text-sm">
                 <p
-                  className={`overflow-hidden text-gray-700 ${
-                    showFullDescription ? "" : "line-clamp-2"
-                  }`}>
+                  className={`overflow-hidden text-gray-700 ${showFullDescription ? "" : "line-clamp-2"
+                    }`}>
                   {product.description}
                 </p>
                 {product.description?.length > 100 && (
@@ -665,11 +663,10 @@ const ProductDetailPage = () => {
               {authUser?.id === product?.user?.id ? (
                 <>
                   <button
-                    className={`w-full py-2 rounded-md mb-2 font-medium ${
-                      product?.status !== "active"
+                    className={`w-full py-2 rounded-md mb-2 font-medium ${product?.status !== "active"
                         ? "bg-teal-600 hover:bg-teal-700 opacity-50 text-white cursor-not-allowed"
                         : "bg-teal-600 hover:bg-teal-700 text-white"
-                    }`}
+                      }`}
                     disabled={product?.status !== "active"}
                     onClick={handleBumpProduct}>
                     {t("bump")}
@@ -695,8 +692,8 @@ const ProductDetailPage = () => {
                         {product.status === "sold"
                           ? t("mark-as-unsold")
                           : product.status === "reserved"
-                          ? t("mark-as-unreserved")
-                          : "Mark as Available"}
+                            ? t("mark-as-unreserved")
+                            : "Mark as Available"}
                       </button>
                     ))}
                   {product.status !== "rejected" && (
@@ -727,11 +724,10 @@ const ProductDetailPage = () => {
                 <>
                   <button
                     className={`bg-teal-600 hover:bg-teal-700 text-white w-full py-2 rounded-md mb-2 font-medium transition
-    ${
-      product.status === "sold"
-        ? "opacity-50 cursor-not-allowed hover:bg-teal-600"
-        : ""
-    }`}
+    ${product.status === "sold"
+                        ? "opacity-50 cursor-not-allowed hover:bg-teal-600"
+                        : ""
+                      }`}
                     onClick={userBuyNow}
                     disabled={product.status === "sold"}>
                     {t("buyNow")}
@@ -797,12 +793,11 @@ const ProductDetailPage = () => {
                           {Array.from({ length: 5 }).map((_, i) => (
                             <Star
                               key={i}
-                              className={`w-3 h-3 ${
-                                i <
-                                Math.floor(product.sellerRatings.averageRating)
+                              className={`w-3 h-3 ${i <
+                                  Math.floor(product.sellerRatings.averageRating)
                                   ? "fill-yellow-500"
                                   : "fill-gray-300"
-                              }`}
+                                }`}
                             />
                           ))}
                           <span className="text-sm text-gray-600">

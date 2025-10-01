@@ -108,7 +108,7 @@ const HomePage = () => {
   const loadMoreProducts = async () => {
     if (isFetching.current || !hasNextPage) {
     }
-    return
+    return;
 
     isFetching.current = true;
     setIsLoading(true);

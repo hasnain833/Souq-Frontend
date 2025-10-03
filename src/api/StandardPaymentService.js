@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
 
 // Create axios instance for standard payments
 const paymentAPI = axios.create({
@@ -43,10 +43,7 @@ paymentAPI.interceptors.response.use(
     }
 );
 
-/**
- * Test standard payment API
- * @returns {Promise<Object>} Test result
- */
+
 export const testStandardPaymentAPI = async () => {
     try {
         console.log('🧪 Testing standard payment API...');
@@ -59,11 +56,7 @@ export const testStandardPaymentAPI = async () => {
     }
 };
 
-/**
- * Create a standard payment transaction
- * @param {Object} paymentData - Payment details
- * @returns {Promise<Object>} Payment creation response
- */
+
 export const createStandardPayment = async (paymentData) => {
     try {
         console.log('🔄 Creating standard payment transaction:', paymentData);
@@ -75,13 +68,6 @@ export const createStandardPayment = async (paymentData) => {
         throw error.response?.data || { success: false, error: 'Failed to create payment' };
     }
 };
-
-/**
- * Initialize payment with gateway
- * @param {string} paymentId - Payment transaction ID
- * @param {Object} initData - Initialization data
- * @returns {Promise<Object>} Payment initialization response
- */
 export const initializeStandardPayment = async (paymentId, initData) => {
     try {
         console.log('🔄 Initializing standard payment:', paymentId, initData);
@@ -94,11 +80,6 @@ export const initializeStandardPayment = async (paymentId, initData) => {
     }
 };
 
-/**
- * Get payment transaction details
- * @param {string} paymentId - Payment transaction ID
- * @returns {Promise<Object>} Payment details
- */
 export const getStandardPayment = async (paymentId) => {
     try {
         console.log('🔄 Getting standard payment details:', paymentId);
@@ -111,11 +92,6 @@ export const getStandardPayment = async (paymentId) => {
     }
 };
 
-/**
- * Check and update payment status from gateway for standard payments
- * @param {string} paymentId - Payment transaction ID
- * @returns {Promise<Object>} Payment status check response
- */
 export const checkStandardPaymentStatus = async (paymentId) => {
     try {
         console.log('🔍 Checking standard payment status:', paymentId);
@@ -128,12 +104,7 @@ export const checkStandardPaymentStatus = async (paymentId) => {
     }
 };
 
-/**
- * Confirm payment completion
- * @param {string} paymentId - Payment transaction ID
- * @param {Object} confirmData - Confirmation data
- * @returns {Promise<Object>} Payment confirmation response
- */
+
 export const confirmStandardPayment = async (paymentId, confirmData) => {
     try {
         console.log('🔄 Confirming standard payment:', paymentId, confirmData);

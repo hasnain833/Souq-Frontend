@@ -56,7 +56,6 @@ import NewEmailChange from "./pages/NewEmailChange";
 import Personalization from "./pages/Personalization";
 import About from "./pages/About";
 import Help from "./pages/Help";
-import PaypalCheckout from "./pages/PaypalCheckout";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
 import CookiePolicy from "./pages/CookiePolicy";
@@ -188,23 +187,15 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-              <Route
-                path="/continue-checkout"
-                element={
-                  <ProtectedRoute>
-                    <PaypalCheckout />
-                  </ProtectedRoute>
-                }
-              />
 
-              {/* <Route
+              <Route
                 path="/continue-checkout"
                 element={
                   <ProtectedRoute>
                     <EscrowCheckout />
                   </ProtectedRoute>
                 }
-              /> */}
+              />
               <Route
                 path="/escrow/transaction/:transactionId"
                 element={

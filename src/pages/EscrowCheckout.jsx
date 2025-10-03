@@ -265,16 +265,17 @@ const EscrowCheckout = () => {
         return;
       }
 
-      // Validate required fields
+      // Validate required fields (form uses 'zip', backend expects 'zipCode' which we map on submit)
       const requiredFields = [
         "fullName",
         "street1",
         "city",
-        "zipCode",
+        "state",
+        "zip",
         "country",
       ];
       const missingFields = requiredFields.filter(
-        (field) => !shippingAddress[field]?.trim()
+        (field) => !shippingAddress[field]?.toString().trim()
       );
 
       if (missingFields.length > 0) {
@@ -552,12 +553,24 @@ const EscrowCheckout = () => {
         originalAmount: selectedCurrency !== "USD" ? finalPrice : null,
       };
 
+      // Map shipping address to backend schema (zip -> zipCode)
+      const mappedShippingAddress = {
+        fullName: shippingAddress.fullName,
+        street1: shippingAddress.street1,
+        street2: shippingAddress.street2 || "",
+        city: shippingAddress.city,
+        state: shippingAddress.state || "",
+        zipCode: shippingAddress.zipCode || shippingAddress.zip || "",
+        country: shippingAddress.country,
+        phoneNumber: shippingAddress.phoneNumber || "",
+      };
+
       // Create escrow transaction
       const escrowData = {
         productId: finalProductId,
         offerId: offerId || null,
         paymentGateway: selectedGateway.id,
-        shippingAddress,
+        shippingAddress: mappedShippingAddress,
         shippingCost: shippingCostUSD, // Send the selected shipping cost
         gatewayFeePaidBy,
         currency: selectedCurrency,
@@ -598,16 +611,16 @@ const EscrowCheckout = () => {
         productShippingCost: product?.shipping_cost,
       });
 
-    //   const escrowResponse = await createEscrowTransaction(escrowData);
-    //   console.log("Escrow API response:", escrowResponse);
+      const escrowResponse = await createEscrowTransaction(escrowData);
+      console.log("Escrow API response:", escrowResponse);
 
-    //   if (!escrowResponse.success) {
-    //     console.error("Escrow transaction creation failed:", escrowResponse);
-    //     toast.error(
-    //       escrowResponse.error || "Failed to create escrow transaction"
-    //     );
-    //     return;
-    //   }
+      if (!escrowResponse.success) {
+        console.error("Escrow transaction creation failed:", escrowResponse);
+        toast.error(
+          escrowResponse.error || "Failed to create escrow transaction"
+        );
+        return;
+      }
 
       console.log("✅ Escrow transaction created successfully");
       toast.success("Escrow transaction created successfully!");
@@ -810,12 +823,24 @@ const EscrowCheckout = () => {
         exchangeRate: currentExchangeRate,
       };
 
+      // Map shipping address to backend schema (zip -> zipCode)
+      const mappedShippingAddress = {
+        fullName: shippingAddress.fullName,
+        street1: shippingAddress.street1,
+        street2: shippingAddress.street2 || "",
+        city: shippingAddress.city,
+        state: shippingAddress.state || "",
+        zipCode: shippingAddress.zipCode || shippingAddress.zip || "",
+        country: shippingAddress.country,
+        phoneNumber: shippingAddress.phoneNumber || "",
+      };
+
       // Create standard payment
       const paymentData = {
         productId: finalProductId,
         offerId: offerId || null,
         paymentGateway: selectedGateway.id,
-        shippingAddress,
+        shippingAddress: mappedShippingAddress,
         // Ensure backend uses the selected shipping option from checkout
         shippingCost: shippingCostUSD,
         gatewayFeePaidBy,
@@ -1270,7 +1295,7 @@ const EscrowCheckout = () => {
 
               <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                 {/* Product Image */}
-                <img
+                {/* <img
                   src={product.product_photos[0]}
                   alt={product.title}
                   className="w-20 h-20 object-cover rounded-lg flex-shrink-0"
@@ -1288,7 +1313,7 @@ const EscrowCheckout = () => {
                       productImage
                     );
                   }}
-                />
+                /> */}
 
                 {/* Product Info */}
                 <div className="flex-1">

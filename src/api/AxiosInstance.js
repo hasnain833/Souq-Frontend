@@ -6,9 +6,6 @@ import {
   clearTokens,
 } from '../utils/TokenStorage';
 
-// Base URL strategy:
-// - Dev: use same-origin so Vite proxy forwards requests to backend
-// - Prod (Vercel): use VITE_API_BASE_URL to point to backend origin
 const resolvedBaseURL = import.meta.env.PROD
   ? (import.meta.env.VITE_API_BASE_URL || '/')
   : '/';

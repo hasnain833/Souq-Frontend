@@ -165,8 +165,22 @@ export default function CheckoutPage() {
   };
 
   const handleCardSaved = (newCard) => {
-    // Refresh cards list when a new card is saved
-    loadUserCards();
+    // TODO: Replace mocked card storage with real API once backend is available
+    // Optimistically add the newly saved card to local state so UI updates immediately
+    if (newCard) {
+      const normalized = {
+        id: newCard.id || "temp1",
+        brand: newCard.brand || "Visa",
+        last4: newCard.last4 || "4242",
+        isDefault: Boolean(newCard.isDefault),
+        active: true,
+      };
+      setUserCards((prev) => [normalized, ...prev]);
+      setSelectedCard((prev) => prev || normalized);
+    }
+
+    // Optionally re-fetch from backend when it becomes available
+    // loadUserCards();
     toast.success("Card saved successfully!");
   };
 
@@ -523,7 +537,7 @@ export default function CheckoutPage() {
             )}
           </div>
 
-          <div className="bg-white p-4 rounded shadow">
+          {/* <div className="bg-white p-4 rounded shadow">
             <h3 className="font-semibold text-lg mb-2">
               {t("delivery_options")}
             </h3>
@@ -664,8 +678,9 @@ export default function CheckoutPage() {
                 </p>
               </div>
             )}
-          </div>
-          <div className="bg-white p-4 rounded shadow">
+          </div> */}
+          {/* Deliver Section  */}
+          {/* <div className="bg-white p-4 rounded shadow">
             <h3 className="font-semibold text-lg mb-2">{t("delivery")}</h3>
 
             {product?.shipping_cost ? (
@@ -691,25 +706,18 @@ export default function CheckoutPage() {
                 }>
                 <div className="flex justify-between items-start">
                   <div className="flex items-start gap-3">
-                    {/* Radio Circle */}
                     <div className="w-4 h-4 rounded-full border-2 flex items-center justify-center mt-1 border-teal-500 bg-teal-500">
-                      {/* {selectedShipping?.id === "default" && ( */}
                       <div className="w-1.5 h-1.5 bg-white rounded-full" />
-                      {/* )} */}
                     </div>
 
-                    {/* Shipping info */}
                     <div className="flex-1">
                       <p className="text-sm font-medium text-gray-900">
                         {t("deliveryCharge")}
                       </p>
-                      {/* <p className="text-xs text-gray-500 mt-1">
-                                                Shiping
-                                            </p> */}
+                      <p className="text-xs text-gray-500 mt-1">Shiping</p>
                     </div>
                   </div>
 
-                  {/* Price */}
                   <div className="text-right">
                     <p className="text-sm font-medium text-gray-900">
                       {ShippingService.formatCurrency(
@@ -726,16 +734,15 @@ export default function CheckoutPage() {
                 </p>
               </div>
             )}
-          </div>
+          </div> */}
 
           {/* Payment Protection Options */}
-          <div className="bg-white p-4 sm:p-4 md:p-4 rounded shadow">
+          {/* <div className="bg-white p-4 sm:p-4 md:p-4 rounded shadow">
             <h3 className="font-semibold text-lg sm:text-xl md:text-2xl mb-4">
               {t("payment_protection")}
             </h3>
 
             <div className="space-y-4 ">
-              {/* Escrow Protection Option */}
               <div
                 className={`border rounded-lg p-4 sm:p-5 cursor-pointer transition-all ${
                   useEscrow
@@ -744,7 +751,6 @@ export default function CheckoutPage() {
                 }`}
                 onClick={() => setUseEscrow(true)}>
                 <div className="flex flex-col sm:flex-row sm:items-start sm:space-x-4 space-y-2 sm:space-y-0 rtl:space-x-reverse rtl:space-y-reverse">
-                  {/* Radio indicator */}
                   <div
                     className={`w-5 h-5 rounded-full border shrink-0 flex items-center justify-center ${
                       useEscrow
@@ -755,7 +761,6 @@ export default function CheckoutPage() {
                       <div className="w-2 h-2 bg-white rounded-full" />
                     )}
                   </div>
-                  {/* Description */}
                   <div className="flex-1">
                     <div className="flex items-center flex-wrap gap-2 mb-1">
                       <Shield className="w-4 h-4 text-teal-600" />
@@ -775,7 +780,6 @@ export default function CheckoutPage() {
                     </div>
                   </div>
 
-                  {/* Fee */}
                   <div className="sm:text-right text-left sm:mt-0 mt-2">
                     <div className="text-sm font-medium text-gray-900">
                       USD {platformFee.toFixed(2)}
@@ -786,8 +790,6 @@ export default function CheckoutPage() {
                   </div>
                 </div>
               </div>
-
-              {/* Standard Protection Option */}
               <div
                 className={`border rounded-lg p-4 sm:p-5 cursor-pointer transition-all ${
                   !useEscrow
@@ -796,7 +798,6 @@ export default function CheckoutPage() {
                 }`}
                 onClick={() => setUseEscrow(false)}>
                 <div className="flex flex-col sm:flex-row sm:items-start sm:space-x-4 space-y-2 sm:space-y-0 rtl:space-x-reverse rtl:space-y-reverse">
-                  {/* Radio indicator */}
                   <div
                     className={`w-5 h-5 rounded-full border shrink-0 flex items-center justify-center ${
                       !useEscrow
@@ -808,7 +809,6 @@ export default function CheckoutPage() {
                     )}
                   </div>
 
-                  {/* Description */}
                   <div className="flex-1">
                     <h4 className="font-medium text-gray-900 mb-1">
                       {t("standard_payment")}
@@ -822,7 +822,6 @@ export default function CheckoutPage() {
                     </div>
                   </div>
 
-                  {/* Fee */}
                   <div className="sm:text-right text-left sm:mt-0 mt-2">
                     <div className="text-sm font-medium text-gray-900">
                       USD {buyerProtectionFee.toFixed(2)}
@@ -834,20 +833,32 @@ export default function CheckoutPage() {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
 
           <div className="bg-white p-4 rounded shadow">
             <div className="flex justify-between items-center mb-4">
               <h3 className="font-semibold text-lg">Payment Method</h3>
-              <Plus
+              {/* <Plus
                 className="w-5 h-5 cursor-pointer text-teal-600 hover:text-teal-700"
                 onClick={() => setOpenCard(true)}
-              />
+              /> */}
             </div>
 
-            {/* Payment Method Type Selection */}
-
             <div className="flex space-x-4 mb-4">
+              <button
+                onClick={() => setPaymentMethodType("paypal")}
+                className={`flex items-center space-x-2 px-4 py-2 rounded-lg border transition-colors ${
+                  paymentMethodType === "paypal"
+                    ? "border-teal-500 bg-teal-50 text-teal-700"
+                    : "border-gray-200 hover:border-gray-300 text-gray-700"
+                }`}>
+                <img
+                  src="https://www.paypalobjects.com/webstatic/icon/pp258.png"
+                  alt="PayPal"
+                  className="w-5 h-5"
+                />
+                <span>PayPal</span>
+              </button>
               <button
                 onClick={() => setPaymentMethodType("card")}
                 className={`flex items-center space-x-2 px-4 py-2 rounded-lg border transition-colors ${
@@ -870,7 +881,7 @@ export default function CheckoutPage() {
               </button>
             </div>
 
-            {/* Card Details Section */}
+            {/* Card Detail Section */}
             {paymentMethodType === "card" && (
               <>
                 {cardsLoading ? (
@@ -1037,6 +1048,25 @@ export default function CheckoutPage() {
                 )}
               </>
             )}
+
+            {/* Paypal Method Section */}
+            {paymentMethodType === "paypal" && (
+              <div className="border p-3 rounded flex justify-between items-center mt-2">
+                <div>
+                  <p className="text-sm font-medium">
+                    Pay securely with PayPal
+                  </p>
+                  <p className="text-gray-500 text-sm">
+                    You will be redirected to PayPal to complete your purchase.
+                  </p>
+                </div>
+                <img
+                  src="https://www.paypalobjects.com/webstatic/icon/pp258.png"
+                  alt="PayPal"
+                  className="h-6"
+                />
+              </div>
+            )}
           </div>
         </div>
 
@@ -1047,13 +1077,13 @@ export default function CheckoutPage() {
               <span>{t("productPrice")}</span>
               <span>USD {productPrice.toFixed(2)}</span>
             </div>
-            {offerAmount && (
+            {/* {offerAmount && (
               <div className="flex justify-between text-green-600">
                 <span>{t("offerApplied")}</span>
                 <span>-USD {(product.price - offerAmount).toFixed(2)}</span>
               </div>
-            )}
-            {useEscrow ? (
+            )} */}
+            {/* {useEscrow ? (
               <div className="flex justify-between">
                 <span>{t("escrow_protection_fee")}</span>
                 <span>USD {platformFee.toFixed(2)}</span>
@@ -1063,11 +1093,16 @@ export default function CheckoutPage() {
                 <span>{t("buyer_protection_fee")}</span>
                 <span>USD {buyerProtectionFee.toFixed(2)}</span>
               </div>
-            )}
+            )} */}
             <div className="flex justify-between">
-              <span>{t("shipping")}</span>
-              {/* <span>USD {shipping.toFixed(2)}</span> */}
+              <span>{t("paypal_fee")}</span>
+              <span>USD {platformFee.toFixed(2)}</span>
             </div>
+
+            {/* <div className="flex justify-between">
+              <span>{t("shipping")}</span>
+              <span>USD {shipping.toFixed(2)}</span>
+            </div> */}
             <div className="flex justify-between">
               <span>{t("sales_tax")}</span>
               <span>USD {tax.toFixed(2)}</span>
@@ -1197,6 +1232,7 @@ export default function CheckoutPage() {
               {t("continueWithStandardPayment")}
             </button>
           )}
+
           <p className="text-xs text-center text-gray-500 mt-2">
             🔒 {t("payment_encrypted_secure")}
           </p>

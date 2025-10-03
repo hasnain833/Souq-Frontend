@@ -62,8 +62,7 @@ const HomePage = () => {
       const res = await getAllProduct({
         page,
         limit,
-        // Show all products regardless of age; backend treats days<=0 as no cutoff
-        days: 0,
+        days: 0, // means no time cutoff
         sortBy: filters.sortBy || "createdAt",
         order: "desc",
         brand: filters.brand || undefined,
@@ -79,25 +78,7 @@ const HomePage = () => {
 
       let items = res?.data?.data?.items || [];
       let next = res?.data?.data?.hasNextPage;
-      // Fallback to local products when API returns empty on the first page with no filters
-      const noFilters =
-        !filters.searchText &&
-        !filters.brand &&
-        !filters.condition &&
-        !filters.color &&
-        !filters.material &&
-        !filters.size &&
-        !getSelectedCategoryId(categorySelect);
-      if (
-        page === 1 &&
-        items.length === 0 &&
-        noFilters &&
-        Array.isArray(localProducts) &&
-        localProducts.length > 0
-      ) {
-        items = localProducts;
-        next = false;
-      }
+
       return { items, hasNextPage: next };
     } catch (err) {
       console.error(`Error fetching page ${page}:`, err);
@@ -106,9 +87,7 @@ const HomePage = () => {
   };
 
   const loadMoreProducts = async () => {
-    if (isFetching.current || !hasNextPage) {
-    }
-    return;
+    if (isFetching.current || !hasNextPage) return;
 
     isFetching.current = true;
     setIsLoading(true);

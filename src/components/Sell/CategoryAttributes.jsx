@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-// import { attributeOptions } from '../../data/categoryData';
+import { attributeOptions } from '../../data/categoryData';
 import { LuChevronDown, LuChevronUp } from 'react-icons/lu';
 import { MdRadioButtonChecked, MdRadioButtonUnchecked, MdAdd } from 'react-icons/md';
 import { getSize } from '../../api/ProductService';
@@ -15,15 +15,25 @@ const CategoryAttributes = ({ category, attributes, onChange }) => {
 
     const [sizes, setSizes] = useState([]);
 
-    useEffect(() => {
-        if (category) {
-            getSize(category).then((res) => {
-                const sizeList = res?.data?.sizes || [];
-                setSizes(sizeList);
-            }).catch((err) => {
-                console.error("Failed to fetch sizes", err);
-            });
-        }
+   useEffect(() => {
+      if (category) {
+        getSize(category)
+          .then((res) => {
+            const sizeList = res?.data?.sizes;
+
+            if (sizeList && sizeList.length > 0) {
+              setSizes(sizeList);
+            } else {
+              // fallback to local attributeOptions
+              setSizes(attributeOptions.sizes[category] || attributeOptions.sizes.default);
+            }
+          })
+          .catch((err) => {
+            console.error("Failed to fetch sizes", err);
+            // fallback to local attributeOptions
+            setSizes(attributeOptions.sizes[category] || attributeOptions.sizes.default);
+          });
+      }
     }, [category]);
 
     const brandCategories = {
@@ -63,9 +73,9 @@ const CategoryAttributes = ({ category, attributes, onChange }) => {
     ];
 
 
-    // const getSizesForCategory = () => {
-    //     return attributeOptions.sizes[category] || attributeOptions.sizes.default;
-    // };
+    const getSizesForCategory = () => {
+        return attributeOptions.sizes[category] || attributeOptions.sizes.default;
+    };
 
     const visibleAttributes = getAttributesForCategory();
     const [openBrand, setOpenBrand] = useState(false);

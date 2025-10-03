@@ -290,7 +290,10 @@ const ProductDetailPage = () => {
   };
 
   const userNavigate = () => {
-    if (authUser?.id === product?.user?.id) {
+    const loggedInUserId = authUser?.id || authUser?._id;
+    const sellerId = product?.user?.id || product?.user?._id;
+    const isOwner = !!(loggedInUserId && sellerId && String(loggedInUserId) === String(sellerId));
+    if (isOwner) {
       navigate("/member-profile");
     } else {
       navigate(`/profile/${product?.user?.id}`);
@@ -443,7 +446,10 @@ const ProductDetailPage = () => {
   const makeOfferOpen = () => {
     if (authUser) {
       // Check if user is trying to make offer on their own product
-      if (authUser.id === product.user.id) {
+      const loggedInUserId = authUser?.id || authUser?._id;
+      const sellerId = product?.user?.id || product?.user?._id;
+      const isOwner = !!(loggedInUserId && sellerId && String(loggedInUserId) === String(sellerId));
+      if (isOwner) {
         toast.error("You cannot make an offer on your own product");
         return;
       }
@@ -457,7 +463,10 @@ const ProductDetailPage = () => {
   const messageToSeller = () => {
     if (authUser) {
       // Check if user is trying to message themselves
-      if (authUser.id === product.user.id) {
+      const loggedInUserId = authUser?.id || authUser?._id;
+      const sellerId = product?.user?.id || product?.user?._id;
+      const isOwner = !!(loggedInUserId && sellerId && String(loggedInUserId) === String(sellerId));
+      if (isOwner) {
         toast.error("You cannot message yourself");
         return;
       }
@@ -673,7 +682,12 @@ const ProductDetailPage = () => {
 
               {/* Actions */}
 
-              {authUser?.id === product?.user?.id ? (
+              {(() => {
+                const loggedInUserId = authUser?.id || authUser?._id;
+                const sellerId = product?.user?.id || product?.user?._id;
+                const isOwner = !!(loggedInUserId && sellerId && String(loggedInUserId) === String(sellerId));
+                return isOwner;
+              })() ? (
                 <>
                   <button
                     className={`w-full py-2 rounded-md mb-2 font-medium ${product?.status !== "active"

@@ -6,12 +6,13 @@ import {
   clearTokens,
 } from '../utils/TokenStorage';
 
-const resolvedBaseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
-
+// ✅ Base URL setup
+const resolvedBaseURL =
+  import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
 
 const axiosInstance = axios.create({
   baseURL: resolvedBaseURL,
-  withCredentials: true,
+  withCredentials: true, // allow cookies (refresh token, etc.)
 });
 
 let isRefreshing = false;
@@ -28,6 +29,7 @@ const processQueue = (error, token = null) => {
   failedQueue = [];
 };
 
+// ✅ Attach access token to every request
 axiosInstance.interceptors.request.use(
   (config) => {
     if (config.withAuth !== false) {
@@ -41,6 +43,7 @@ axiosInstance.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+// ✅ Handle expired tokens
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -67,15 +70,16 @@ axiosInstance.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        // ✅ Call refresh token API
-        const response = await axiosInstance.post(
-          '/api/user/auth/refresh-token',
+        // 🚨 Use raw axios, not axiosInstance (avoid attaching expired token)
+        const response = await axios.post(
+          `${resolvedBaseURL}/api/user/auth/refresh-token`,
           { token: getRefreshToken() },
           { withCredentials: true }
         );
 
         const { accessToken, refreshToken } = response.data.data;
 
+        // ✅ Save new tokens
         saveTokens({ accessToken, refreshToken });
 
         axiosInstance.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
@@ -84,15 +88,14 @@ axiosInstance.interceptors.response.use(
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
         return axiosInstance(originalRequest);
       } catch (err) {
-        console.error("Refresh token failed:", err.response?.data || err.message);
+        console.error("❌ Refresh token failed:", err.response?.data || err.message);
         processQueue(err, null);
         clearTokens();
-        window.location.href = '/'; // redirect to login
+        window.location.href = '/'; // force login
         return Promise.reject(err);
       } finally {
         isRefreshing = false;
       }
-
     }
 
     return Promise.reject(error);

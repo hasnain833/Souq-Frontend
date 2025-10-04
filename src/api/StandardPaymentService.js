@@ -1,53 +1,9 @@
-import axios from 'axios';
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
-
-// Create axios instance for standard payments
-const paymentAPI = axios.create({
-    baseURL: `${API_BASE_URL}/api/user/payments`,
-    headers: {
-        'Content-Type': 'application/json',
-    },
-});
-
-// Add auth token to requests
-paymentAPI.interceptors.request.use(
-    (config) => {
-        const token = localStorage.getItem('accessToken');
-        console.log('🔑 Payment API - Token check:', token ? 'Token found' : 'No token found');
-        console.log('🔗 Payment API - Request URL:', config.url);
-
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-            console.log('✅ Payment API - Authorization header added');
-        } else {
-            console.warn('⚠️ Payment API - No accessToken found in localStorage');
-        }
-        return config;
-    },
-    (error) => {
-        console.error('❌ Payment API - Request interceptor error:', error);
-        return Promise.reject(error);
-    }
-);
-
-// Response interceptor for error handling
-paymentAPI.interceptors.response.use(
-    (response) => {
-        console.log('✅ Payment API - Response received:', response.status);
-        return response;
-    },
-    (error) => {
-        console.error('❌ Payment API - Response error:', error.response?.status, error.response?.data);
-        return Promise.reject(error);
-    }
-);
-
+import axiosInstance from './AxiosInstance';
 
 export const testStandardPaymentAPI = async () => {
     try {
         console.log('🧪 Testing standard payment API...');
-        const response = await paymentAPI.get('/test');
+        const response = await axiosInstance.get('/api/user/payments/test');
         console.log('✅ Standard payment API test successful:', response.data);
         return response.data;
     } catch (error) {
@@ -60,7 +16,7 @@ export const testStandardPaymentAPI = async () => {
 export const createStandardPayment = async (paymentData) => {
     try {
         console.log('🔄 Creating standard payment transaction:', paymentData);
-        const response = await paymentAPI.post('/create', paymentData);
+        const response = await axiosInstance.post('/api/user/payments/create', paymentData);
         console.log('✅ Standard payment created:', response.data);
         return response.data;
     } catch (error) {
@@ -71,7 +27,7 @@ export const createStandardPayment = async (paymentData) => {
 export const initializeStandardPayment = async (paymentId, initData) => {
     try {
         console.log('🔄 Initializing standard payment:', paymentId, initData);
-        const response = await paymentAPI.post(`/${paymentId}/initialize`, initData);
+        const response = await axiosInstance.post(`/api/user/payments/${paymentId}/initialize`, initData);
         console.log('✅ Standard payment initialized:', response.data);
         return response.data;
     } catch (error) {
@@ -83,7 +39,7 @@ export const initializeStandardPayment = async (paymentId, initData) => {
 export const getStandardPayment = async (paymentId) => {
     try {
         console.log('🔄 Getting standard payment details:', paymentId);
-        const response = await paymentAPI.get(`/${paymentId}`);
+        const response = await axiosInstance.get(`/api/user/payments/${paymentId}`);
         console.log('✅ Standard payment details retrieved:', response.data);
         return response.data;
     } catch (error) {
@@ -95,7 +51,7 @@ export const getStandardPayment = async (paymentId) => {
 export const checkStandardPaymentStatus = async (paymentId) => {
     try {
         console.log('🔍 Checking standard payment status:', paymentId);
-        const response = await paymentAPI.get(`/${paymentId}/check-payment-status`);
+        const response = await axiosInstance.get(`/api/user/payments/${paymentId}/check-payment-status`);
         console.log('✅ Standard payment status checked:', response.data);
         return response.data;
     } catch (error) {
@@ -108,7 +64,7 @@ export const checkStandardPaymentStatus = async (paymentId) => {
 export const confirmStandardPayment = async (paymentId, confirmData) => {
     try {
         console.log('🔄 Confirming standard payment:', paymentId, confirmData);
-        const response = await paymentAPI.post(`/${paymentId}/confirm`, confirmData);
+        const response = await axiosInstance.post(`/api/user/payments/${paymentId}/confirm`, confirmData);
         console.log('✅ Standard payment confirmed:', response.data);
         return response.data;
     } catch (error) {

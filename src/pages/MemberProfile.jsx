@@ -18,6 +18,7 @@ import { formatDistanceToNowStrict } from 'date-fns';
 import { useTranslation } from "react-i18next";
 import MemberProfileSkeleton from "../components/Skeleton/MemberProfileSkeleton";
 import { Helmet } from "react-helmet";
+import { toast } from "react-toastify";
 
 export default function MemberProfile() {
     const [profileData, setProfileData] = useState(null); // store user profile
@@ -42,11 +43,21 @@ export default function MemberProfile() {
     }, [tab]);
 
     useEffect(() => {
-        getProfile().then((res) => {
-            if (res?.success) {
-                setProfileData(res?.data?.data);
-            }
-        });
+        getProfile()
+            .then((res) => {
+                if (res?.success) {
+                    setProfileData(res?.data?.data);
+                } else {
+                    toast.error(res?.error || "Failed to load profile");
+                    // Minimal fallback to allow page to render and product list to load
+                    setProfileData({ id: "me" });
+                }
+            })
+            .catch((err) => {
+                console.error("getProfile failed:", err);
+                toast.error("Failed to load profile");
+                setProfileData({ id: "me" });
+            });
     }, []);
 
     const rating = profileData?.ratings?.averageRating || 0;

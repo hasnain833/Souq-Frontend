@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
 import HomePage from "./pages/HomePage";
@@ -25,7 +25,6 @@ import EmailChange from "./pages/EmailChange";
 import FavoritesItem from "./pages/FavoritesItem";
 import FollowingPage from "./pages/Following";
 import Followers from "./pages/Followers";
-import CheckOut from "./pages/Checkout";
 import EscrowCheckout from "./pages/EscrowCheckout";
 import EscrowTransaction from "./pages/EscrowTransaction";
 import StandardTransactionView from "./pages/StandardTransactionView";
@@ -174,7 +173,7 @@ function App() {
                 path="/checkout"
                 element={
                   <ProtectedRoute>
-                    <CheckOut />
+                    <Navigate to="/continue-checkout" replace />
                   </ProtectedRoute>
                 }
               />
@@ -190,6 +189,23 @@ function App() {
 
               <Route
                 path="/continue-checkout"
+                element={
+                  <ProtectedRoute>
+                    <EscrowCheckout />
+                  </ProtectedRoute>
+                }
+              />
+              {/* Aliases for backward compatibility and typos */}
+              <Route
+                path="/escrow-checkout"
+                element={
+                  <ProtectedRoute>
+                    <EscrowCheckout />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/continue-check-out"
                 element={
                   <ProtectedRoute>
                     <EscrowCheckout />

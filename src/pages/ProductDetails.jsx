@@ -63,7 +63,6 @@ const ProductDetailPage = () => {
   });
   const [categoryPath, setCategoryPath] = useState("");
   const categoryData = useSelector((state) => state.categoryData.data);
-  console.log(categoryData, "categoryData");
   const [page, setPage] = useState(1);
   const [limit] = useState(9); // fixed page size
   const [totalPages, setTotalPages] = useState(0);
@@ -305,7 +304,7 @@ const ProductDetailPage = () => {
       console.log("ProductDetails - userBuyNow - product:", product);
       console.log("ProductDetails - userBuyNow - product._id:", product?._id);
       console.log("ProductDetails - userBuyNow - product.id:", product?.id);
-      navigate("/checkout", {
+      navigate("/continue-checkout", {
         state: {
           product: product,
         },
@@ -946,11 +945,11 @@ const ProductDetailPage = () => {
               </button>
             )}
             <img
-              src={photos[currentImageIndex]}
+              src={photosSrc[currentImageIndex]}
               alt="Modal View"
               className="w-full max-h-[70vh] object-contain rounded"
             />
-            {currentImageIndex < photos.length - 1 && (
+            {currentImageIndex < photosSrc.length - 1 && (
               <button
                 className="absolute right-4 top-1/2 transform -translate-y-1/2 text-black text-3xl z-10"
                 onClick={() => setCurrentImageIndex((prev) => prev + 1)}>

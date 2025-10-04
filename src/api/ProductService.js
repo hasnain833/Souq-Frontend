@@ -20,7 +20,7 @@ export const deleteProduct = (id) =>
     apiService({
         url: `/api/user/product/${id}`,
         method: 'DELETE',
-        data: payload,
+        // no body for delete
         withAuth: true,
     });
 
@@ -82,13 +82,14 @@ export const addFevProduct = (id) =>
     apiService({
         url: `/api/user/product/${id}/favorite`,
         method: 'POST',
-        data: payload,
+        // no extra payload
         withAuth: true,
     });
 
 export const getAllCategory = () =>
     apiService({
-        url: '/api/user/general/category',
+        // backend route: app/user/general/routes/generalRoutes.js -> '/api/user/general' returns all categories
+        url: '/api/user/general',
         method: 'GET',
         // public endpoint; no auth or credentials needed
     });

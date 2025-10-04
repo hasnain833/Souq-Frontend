@@ -300,7 +300,7 @@ const OfferMessage = ({
                 console.log('Navigating to checkout with offer data:', productForCheckout);
 
                 // Navigate to checkout page with the accepted offer price
-                navigate('/checkout', {
+                navigate('/continue-checkout', {
                   state: { product: productForCheckout }
                 });
               }}

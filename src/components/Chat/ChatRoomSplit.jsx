@@ -748,7 +748,7 @@ const ChatRoomSplit = ({ chat, onBack, getProductDetailsFromChats, onChatDeleted
         chatId: chat?.id
       };
       // console.log(productForCheckout, "productForCheckout")
-      navigate('/checkout', {
+      navigate('/continue-checkout', {
         state: { product: productForCheckout }
       });
     } else {
@@ -783,9 +783,9 @@ const ChatRoomSplit = ({ chat, onBack, getProductDetailsFromChats, onChatDeleted
       // console.log('Navigating to checkout with product data:', productForCheckout);
 
       // Navigate to checkout page with product data
-      navigate('/checkout', {
-        state: { product: productForCheckout }
-      });
+    navigate('/continue-checkout', {
+      state: { product: productForCheckout }
+    });
     }
   };
 

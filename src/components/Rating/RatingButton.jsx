@@ -1,13 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { Star, Eye, Edit3, User, Calendar } from 'lucide-react';
-import { toast } from 'react-toastify';
-import { formatSafeDate } from '../../utils/dateUtils';
-import StarRating from './StarRating';
-import RatingModal from './RatingModal';
-import { getTransactionRating, canRateTransaction } from '../../api/RatingService';
-import { useTranslation } from 'react-i18next';
+import React, { useState, useEffect } from "react";
+import { Star, Eye, Edit3, User, Calendar } from "lucide-react";
+import { toast } from "react-toastify";
+import { formatSafeDate } from "../../utils/dateUtils";
+import StarRating from "./StarRating";
+import RatingModal from "./RatingModal";
+import {
+  getTransactionRating,
+  canRateTransaction,
+} from "../../api/RatingService";
+import { useTranslation } from "react-i18next";
 
-const RatingButton = ({ transactionId, transactionType = 'escrow', onRatingUpdate = null }) => {
+const RatingButton = ({
+  transactionId,
+  transactionType = "escrow",
+  onRatingUpdate = null,
+}) => {
   const [loading, setLoading] = useState(true);
   const [existingRating, setExistingRating] = useState(null);
   const [canRate, setCanRate] = useState(false);
@@ -15,11 +22,10 @@ const RatingButton = ({ transactionId, transactionType = 'escrow', onRatingUpdat
   const [showRatingDetails, setShowRatingDetails] = useState(false);
   const [ratingType, setRatingType] = useState(null);
   const [userRole, setUserRole] = useState(null);
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
-  const baseURL = import.meta.env.VITE_API_BASE_URL?.replace(/\/api$/, '') || '';
-
-
+  const baseURL =
+    import.meta.env.VITE_API_BASE_URL?.replace(/\/api$/, "") || "";
 
   useEffect(() => {
     if (transactionId) {
@@ -32,26 +38,29 @@ const RatingButton = ({ transactionId, transactionType = 'escrow', onRatingUpdat
       setLoading(true);
 
       // Check if user has already rated this transaction
-      const ratingResponse = await getTransactionRating(transactionId, transactionType);
+      const ratingResponse = await getTransactionRating(
+        transactionId,
+        transactionType
+      );
 
-      if (ratingResponse.success && ratingResponse.data.hasRating) {
-        setExistingRating(ratingResponse.data.rating);
-        setCanRate(false);
-      } else {
-        // Check if user can rate this transaction
-        const canRateResponse = await canRateTransaction(transactionId, transactionType);
+      // if (ratingResponse.success && ratingResponse.data.hasRating) {
+      //   setExistingRating(ratingResponse.data.rating);
+      //   setCanRate(false);
+      // } else {
+      //   // Check if user can rate this transaction
+      //   const canRateResponse = await canRateTransaction(transactionId, transactionType);
 
-        if (canRateResponse.success && canRateResponse.data.canRate) {
-          setCanRate(true);
-          setRatingType(canRateResponse.data.ratingType);
-          setUserRole(canRateResponse.data.userRole);
-        } else {
-          setCanRate(false);
-        }
-      }
+      //   if (canRateResponse.success && canRateResponse.data.canRate) {
+      //     setCanRate(true);
+      //     setRatingType(canRateResponse.data.ratingType);
+      //     setUserRole(canRateResponse.data.userRole);
+      //   } else {
+      //     setCanRate(false);
+      //   }
+      // }
     } catch (error) {
-      console.error('Error checking rating status:', error);
-      toast.error('Failed to load rating information');
+      console.error("Error checking rating status:", error);
+      toast.error("Failed to load rating information");
     } finally {
       setLoading(false);
     }
@@ -61,7 +70,7 @@ const RatingButton = ({ transactionId, transactionType = 'escrow', onRatingUpdat
     setExistingRating(newRating);
     setCanRate(false);
     setShowRatingModal(false);
-    toast.success('Rating submitted successfully!');
+    toast.success("Rating submitted successfully!");
 
     if (onRatingUpdate) {
       onRatingUpdate(newRating);
@@ -84,20 +93,23 @@ const RatingButton = ({ transactionId, transactionType = 'escrow', onRatingUpdat
           <h3 className="text-lg font-semibold text-gray-900">Your Rating</h3>
           <button
             onClick={() => setShowRatingDetails(!showRatingDetails)}
-            className="text-gray-500 hover:text-gray-700 transition-colors"
-          >
+            className="text-gray-500 hover:text-gray-700 transition-colors">
             <Eye className="w-5 h-5" />
           </button>
         </div>
 
         <div className="flex items-center space-x-3 mb-3">
           <StarRating rating={existingRating.rating} size="lg" />
-          <span className="text-xl font-bold text-gray-900">{existingRating.rating}/5</span>
+          <span className="text-xl font-bold text-gray-900">
+            {existingRating.rating}/5
+          </span>
         </div>
 
         {existingRating.review && (
           <div className="mb-3">
-            <p className="text-gray-700 text-sm leading-relaxed">"{existingRating.review}"</p>
+            <p className="text-gray-700 text-sm leading-relaxed">
+              "{existingRating.review}"
+            </p>
           </div>
         )}
 
@@ -108,7 +120,9 @@ const RatingButton = ({ transactionId, transactionType = 'escrow', onRatingUpdat
           </div>
           <div className="flex items-center space-x-1">
             <User className="w-4 h-4" />
-            <span className="capitalize">{existingRating.ratingType?.replace('_', ' ')}</span>
+            <span className="capitalize">
+              {existingRating.ratingType?.replace("_", " ")}
+            </span>
           </div>
         </div>
 
@@ -132,30 +146,40 @@ const RatingButton = ({ transactionId, transactionType = 'escrow', onRatingUpdat
                 </div>
                 <div>
                   <p className="font-medium text-gray-900">
-                    {existingRating.ratedUser?.firstName} {existingRating.ratedUser?.lastName}
+                    {existingRating.ratedUser?.firstName}{" "}
+                    {existingRating.ratedUser?.lastName}
                   </p>
                   <p className="text-sm text-gray-500">
-                    {existingRating.ratingType === 'buyer_to_seller' ? 'Seller' : 'Buyer'}
+                    {existingRating.ratingType === "buyer_to_seller"
+                      ? "Seller"
+                      : "Buyer"}
                   </p>
                 </div>
               </div>
 
               {/* Category Ratings */}
-              {existingRating.categories && Object.keys(existingRating.categories).length > 0 && (
-                <div>
-                  <h4 className="text-sm font-medium text-gray-900 mb-2">Category Ratings</h4>
-                  <div className="space-y-2">
-                    {Object.entries(existingRating.categories).map(([category, rating]) => (
-                      <div key={category} className="flex items-center justify-between">
-                        <span className="text-sm text-gray-600 capitalize">
-                          {category.replace(/([A-Z])/g, ' $1').trim()}
-                        </span>
-                        <StarRating rating={rating} size="sm" />
-                      </div>
-                    ))}
+              {existingRating.categories &&
+                Object.keys(existingRating.categories).length > 0 && (
+                  <div>
+                    <h4 className="text-sm font-medium text-gray-900 mb-2">
+                      Category Ratings
+                    </h4>
+                    <div className="space-y-2">
+                      {Object.entries(existingRating.categories).map(
+                        ([category, rating]) => (
+                          <div
+                            key={category}
+                            className="flex items-center justify-between">
+                            <span className="text-sm text-gray-600 capitalize">
+                              {category.replace(/([A-Z])/g, " $1").trim()}
+                            </span>
+                            <StarRating rating={rating} size="sm" />
+                          </div>
+                        )
+                      )}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
             </div>
           </div>
         )}
@@ -164,42 +188,41 @@ const RatingButton = ({ transactionId, transactionType = 'escrow', onRatingUpdat
   }
 
   // Show "Rate Now" button
-  if (canRate) {
-    return (
-      <>
-        <button
-          onClick={() => setShowRatingModal(true)}
-          className="w-full bg-yellow-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-yellow-700 transition-colors flex items-center justify-center gap-2 shadow-sm"
-        >
-          <Star className="w-5 h-5" />
-          {t("rateNow")}
-        </button>
+  // if (canRate) {
+  //   return (
+  //     <>
+  //       <button
+  //         onClick={() => setShowRatingModal(true)}
+  //         className="w-full bg-yellow-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-yellow-700 transition-colors flex items-center justify-center gap-2 shadow-sm">
+  //         <Star className="w-5 h-5" />
+  //         {t("rateNow")}
+  //       </button>
 
-        <RatingModal
-          isOpen={showRatingModal}
-          onClose={() => setShowRatingModal(false)}
-          transactionId={transactionId}
-          transactionType={transactionType}
-          ratingType={ratingType}
-          userRole={userRole}
-          onRatingSubmitted={handleRatingSubmitted}
-        />
-      </>
-    );
-  }
+  //       <RatingModal
+  //         isOpen={showRatingModal}
+  //         onClose={() => setShowRatingModal(false)}
+  //         transactionId={transactionId}
+  //         transactionType={transactionType}
+  //         ratingType={ratingType}
+  //         userRole={userRole}
+  //         onRatingSubmitted={handleRatingSubmitted}
+  //       />
+  //     </>
+  //   );
+  // }
 
-  // Show message when rating is not available
-  return (
-    <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 text-center">
-      <div className="flex items-center justify-center mb-2">
-        <Star className="w-6 h-6 text-gray-400" />
-      </div>
-      <p className="text-sm text-gray-600">Rating not available</p>
-      <p className="text-xs text-gray-500 mt-1">
-        You can only rate completed transactions
-      </p>
-    </div>
-  );
+  // // Show message when rating is not available
+  // return (
+  //   <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 text-center">
+  //     <div className="flex items-center justify-center mb-2">
+  //       <Star className="w-6 h-6 text-gray-400" />
+  //     </div>
+  //     <p className="text-sm text-gray-600">Rating not available</p>
+  //     <p className="text-xs text-gray-500 mt-1">
+  //       You can only rate completed transactions
+  //     </p>
+  //   </div>
+  // );
 };
 
 export default RatingButton;

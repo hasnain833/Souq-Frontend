@@ -29,9 +29,32 @@ const processQueue = (error, token = null) => {
   failedQueue = [];
 };
 
-// ✅ Attach access token to every request
+// ✅ Attach access token to every request and normalize URL
 axiosInstance.interceptors.request.use(
   (config) => {
+    // Normalize path to avoid double '/api' if baseURL already includes it
+    try {
+      const base = axiosInstance.defaults.baseURL || '';
+      let url = config.url || '';
+
+      const baseEndsWithApi = /\/api\/?$/i.test(base);
+      const urlStartsWithApi = /^\/?api\b/i.test(url);
+
+      if (baseEndsWithApi && urlStartsWithApi) {
+        // remove leading '/api' once
+        url = url.replace(/^\/?api\/?/i, '/');
+      }
+
+      // Ensure single leading slash
+      if (typeof url === 'string' && !url.startsWith('/')) {
+        url = '/' + url;
+      }
+
+      config.url = url;
+    } catch (_) {
+      // ignore normalization errors
+    }
+
     if (config.withAuth !== false) {
       const token = getAccessToken();
       if (token) {

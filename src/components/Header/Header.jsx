@@ -98,16 +98,18 @@ const Header = () => {
     setIsNotificationOpen(!isNotificationOpen);
     setShowAllNotifications(false);
   };
-
   const handleToggleShowAll = () => {
     setShowAllNotifications(!showAllNotifications);
   };
 
   useEffect(() => {
-    const savedLang = localStorage.getItem("lang") || "en";
-    setLanguage(savedLang);
-    document.documentElement.lang = savedLang;
-    document.documentElement.dir = savedLang === "ar" ? "rtl" : "ltr";
+    const stored = localStorage.getItem("lang");
+    const normalized = stored === "undefined" || stored === null ? "en" : stored;
+    const initialLang = normalized === "ar" || normalized === "en" ? normalized : "en";
+    setLanguage(initialLang);
+    i18n.changeLanguage(initialLang);
+    document.documentElement.lang = initialLang;
+    document.documentElement.dir = initialLang === "ar" ? "rtl" : "ltr";
   }, []);
 
   const handleLanguageChange = (lang) => {
@@ -524,7 +526,7 @@ const Header = () => {
               aria-expanded={isOpen}
               className="text-gray-600 hover:bg-gray-100 py-2 px-4 rounded-lg flex items-center gap-1"
               onClick={() => setIsOpen((prev) => !prev)}>
-              {language.toUpperCase()}
+              {(language || 'en').toUpperCase()}
               <span className="text-sm">▼</span>
             </button>
 
@@ -569,24 +571,28 @@ const Header = () => {
         </button>
       </div>
 
-      {/* Navigation Categories and Mega Menu - desktop only (always visible on desktop) */}
-      <div className="border-t border-gray-200" />
-      <div
-        className="relative w-full"
-        onMouseEnter={() => setIsMegaMenuOpen(true)}
-        onMouseLeave={() => {
-          setIsMegaMenuOpen(false);
-          setActiveCategory(null);
-        }}>
-        <div className="container mx-auto hidden lg:flex items-center space-x-4 py-2 px-4 w-full overflow-x-auto">
-          <HeaderCategories categoryData={effectiveCategories} />
-        </div>
-        {isMegaMenuOpen && (
-          <div className="absolute top-full left-0 w-full bg-white shadow-lg z-50">
-            <MegaMenu categoryData={effectiveCategories} />
+      {/* Navigation Categories and Mega Menu - show only on homepage */}
+      {location.pathname === '/' && (
+        <>
+          <div className="border-t border-gray-200" />
+          <div
+            className="relative w-full"
+            onMouseEnter={() => setIsMegaMenuOpen(true)}
+            onMouseLeave={() => {
+              setIsMegaMenuOpen(false);
+              setActiveCategory(null);
+            }}>
+            <div className="container mx-auto hidden lg:flex items-center space-x-4 py-2 px-4 w-full overflow-x-auto">
+              <HeaderCategories categoryData={effectiveCategories} />
+            </div>
+            {isMegaMenuOpen && (
+              <div className="absolute top-full left-0 w-full bg-white shadow-lg z-50">
+                <MegaMenu categoryData={effectiveCategories} />
+              </div>
+            )}
           </div>
-        )}
-      </div>
+        </>
+      )}
 
       {/* Mobile menu content - render only when open on small screens */}
       {isMobileMenuOpen && (

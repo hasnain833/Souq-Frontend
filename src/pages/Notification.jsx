@@ -200,7 +200,7 @@ const Notifications = () => {
     }
 
     // Get base URL without /api
-    const baseUrl = import.meta.env.VITE_API_BASE_URL.replace('/api', '');
+    // const baseUrl = import.meta.env.VITE_API_BASE_URL.replace('/api', '');
 
     // Handle different path formats
     if (imagePath.startsWith('/uploads/')) {
@@ -208,7 +208,7 @@ const Notifications = () => {
       return `${baseUrl}${imagePath}`;
     } else if (imagePath.startsWith('uploads/')) {
       // Path without leading slash
-      return `${baseUrl}/${imagePath}`;
+      // return `${baseUrl}/${imagePath}`;
     } else {
       // Other paths - add uploads/ prefix
       return `${baseUrl}/uploads/${imagePath}`;

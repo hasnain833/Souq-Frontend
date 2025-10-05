@@ -107,7 +107,7 @@ class ShippingService {
       params,
       withAuth: true,
     });
-    return res.data;
+    return res; // return wrapper so callers can use res.success and res.data
   }
 
   async getOrderDetails(orderId) {
@@ -116,7 +116,7 @@ class ShippingService {
       method: 'GET',
       withAuth: true,
     });
-    return res.data;
+    return res; // keep success flag
   }
 
   async createOrder(orderData) {
@@ -140,7 +140,7 @@ class ShippingService {
       },
       withAuth: true,
     });
-    return res.data;
+    return res; // keep success flag
   }
 
   async confirmDelivery(orderId, rating = null, feedback = '') {
@@ -153,7 +153,7 @@ class ShippingService {
       },
       withAuth: true,
     });
-    return res.data;
+    return res; // keep success flag
   }
 
   async getOrderStatistics(role = 'buyer') {

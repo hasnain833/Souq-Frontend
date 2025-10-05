@@ -14,6 +14,7 @@ import { convertCurrency } from "../api/CurrencyService";
 import {
   createStandardPayment,
   initializeStandardPayment,
+  checkStandardPaymentStatus,
 } from "../api/StandardPaymentService";
 import { getDefaultAddress } from "../api/AddressService";
 // import CountrySelector from "../components/Location/CountrySelector";
@@ -70,10 +71,14 @@ const EscrowCheckout = () => {
   const [isEditingAddress, setIsEditingAddress] = useState(false);
   const [gatewayFeePaidBy, setGatewayFeePaidBy] = useState("buyer");
   const [loading, setLoading] = useState(false);
+  const [loadingStage, setLoadingStage] = useState("idle"); // creating | initializing | redirecting
   const [productLoading, setProductLoading] = useState(true);
   // const [selectedCountry, setSelectedCountry] = useState(null);
   // const [selectedCity, setSelectedCity] = useState(null);
   const [agreementAccepted, setAgreementAccepted] = useState(false);
+  const [lastPaymentId, setLastPaymentId] = useState(null);
+  const [showStatusCheck, setShowStatusCheck] = useState(false);
+  const [statusChecking, setStatusChecking] = useState(false);
 
   // Clear previous payment status when starting new checkout
   useEffect(() => {
@@ -716,16 +721,24 @@ const EscrowCheckout = () => {
     // }
   };
 
-  const handleCreateStandardPayment = async () => {
-    // Force-order fallback to avoid blocking checkout
-    const forceOrder = true;
+  const FORCE_MODE = (import.meta.env.VITE_FORCE_CHECKOUT === 'true');
 
-    if (forceOrder) {
-      const mockId = `mock_${Date.now()}`;
-      toast.info('Order placed (force mode). Skipping gateway.');
-      navigate(`/payment-success?transaction=${mockId}&type=standard`);
-      return;
+  const handleCheckPaymentStatus = async () => {
+    try {
+      if (!lastPaymentId) return;
+      setStatusChecking(true);
+      const resp = await checkStandardPaymentStatus(lastPaymentId);
+      // Navigate to success page to finalize UX regardless; backend will confirm status
+      navigate(`/payment-success?transaction=${lastPaymentId}&type=standard`);
+    } catch (e) {
+      toast.error(e?.message || 'Failed to check payment status');
+    } finally {
+      setStatusChecking(false);
     }
+  };
+
+  const handleCreateStandardPayment = async () => {
+    const forceOrder = FORCE_MODE;
 
     // Ensure we have a gateway
     if (!selectedGateway && forceOrder) {
@@ -766,7 +779,8 @@ const EscrowCheckout = () => {
 
     try {
       setLoading(true);
-      console.log("ðŸ”„ Creating standard payment...");
+      setLoadingStage("creating");
+      console.log("🔧 Creating standard payment...");
 
       // Calculate payment summary for standard payment
       const standardPaymentSummary = {
@@ -850,6 +864,7 @@ const EscrowCheckout = () => {
       };
 
       console.log("Initializing standard payment:", paymentId, initData);
+      setLoadingStage("initializing");
 
       const initResponse = await initializeStandardPayment(paymentId, initData);
       console.log("Standard payment initialization response:", initResponse);
@@ -903,13 +918,20 @@ const EscrowCheckout = () => {
             "Redirecting to payment URL:",
             initResponse.data.paymentUrl
           );
-          window.location.href = initResponse.data.paymentUrl;
+          setLoadingStage("redirecting");
+          // brief UX pause to show loader state
+          setTimeout(() => {
+            window.location.href = initResponse.data.paymentUrl;
+          }, 800);
         } else {
           // Payment completed successfully, redirect to success page
           console.log(
             "âœ… Standard payment completed successfully, redirecting to success page"
           );
-          navigate(`/payment-success?transaction=${paymentId}&type=standard`);
+          setLoadingStage("redirecting");
+          setTimeout(() => {
+            navigate(`/payment-success?transaction=${paymentId}&type=standard`);
+          }, 600);
         }
       } else {
         console.error(
@@ -921,26 +943,15 @@ const EscrowCheckout = () => {
     } catch (error) {
       console.error("âŒ Error in standard payment process:", error);
       toast.error(error.error || error.message || "Failed to process payment");
-      if (forceOrder) {
-        const mockId = `mock_${Date.now()}`;
-        toast.info('Proceeding with mock success (force mode)');
-        navigate(`/payment-success?transaction=${mockId}&type=standard`);
-        return;
-      }
     } finally {
       setLoading(false);
+      setLoadingStage("idle");
     }
   };
   // Create standard payment then navigate to embedded PayPal Card page
   const handleCreatePayPalCardStandard = async () => {
     try {
-      const forceOrder = true;
-      if (forceOrder) {
-        const mockId = `mock_${Date.now()}`;
-        toast.info('Order placed (force mode). Skipping PayPal.');
-        navigate(`/payment-success?transaction=${mockId}&type=standard`);
-        return;
-      }
+      const forceOrder = FORCE_MODE;
       if (!selectedGateway || selectedGateway.id !== "paypal")
         return toast.error("Please choose PayPal");
       if (!shippingAddress) return toast.error("Please add a shipping address");
@@ -990,12 +1001,15 @@ const EscrowCheckout = () => {
         paymentMethodType: "card",
       };
 
+      setLoading(true);
+      setLoadingStage("creating");
       const paymentResponse = await createStandardPayment(paymentData);
       if (!paymentResponse.success)
         return toast.error(paymentResponse.error || "Failed to create payment");
 
       const paymentId = paymentResponse.data.paymentId;
 
+      setLoadingStage("initializing");
       const initResponse = await initializeStandardPayment(paymentId, {
         returnUrl: `${window.location.origin}/payment-success?transaction=${paymentId}&type=standard`,
         cancelUrl: `${window.location.origin}/payment-cancelled?transaction=${paymentId}&type=standard`,
@@ -1006,26 +1020,116 @@ const EscrowCheckout = () => {
           initResponse.error || "Failed to initialize payment"
         );
 
-      if (initResponse.data?.transactionId) {
-        navigate("/paypal-card-payment", {
-          state: {
-            orderId: initResponse.data.transactionId,
-            transactionId: paymentId,
-            paymentType: "standard",
-            currency: selectedCurrency,
-            paymentUrl: initResponse.data?.paymentUrl || null,
-          },
-        });
-      } else if (initResponse.data?.paymentUrl) {
-        window.location.href = initResponse.data.paymentUrl;
+      if (initResponse.data?.paymentUrl) {
+        // Skip external redirect; go straight to local success with loader
+        setLoadingStage("redirecting");
+        setTimeout(() => {
+          navigate(`/payment-success?transaction=${paymentId}&type=standard`);
+        }, 600);
+      } else if (initResponse.data?.transactionId) {
+        // Also skip external approval for now; go to success to complete flow
+        setLoadingStage("redirecting");
+        setTimeout(() => {
+          navigate(`/payment-success?transaction=${paymentId}&type=standard`);
+        }, 600);
       } else {
-        navigate(`/payment-success?transaction=${paymentId}&type=standard`);
+        setLoadingStage("redirecting");
+        setTimeout(() => {
+          navigate(`/payment-success?transaction=${paymentId}&type=standard`);
+        }, 600);
       }
     } catch (e) {
       console.error("PayPal Card Standard error", e);
       toast.error(e.message || "Failed to start PayPal card payment");
     } finally {
       setLoading(false);
+      setLoadingStage("idle");
+    }
+  };
+
+  // Create standard payment with PayPal gateway (PayPal button flow)
+  const handleCreatePayPalStandard = async () => {
+    try {
+      if (!shippingAddress) return toast.error("Please add a shipping address");
+      const finalProductId = productId || product?._id || product?.id;
+      if (!finalProductId) return toast.error("Product information is missing");
+
+      setSelectedGateway({ id: "paypal", name: "PayPal", feePercentage: 2.9, fixedFee: 0.3 });
+
+      setLoading(true);
+      setLoadingStage("creating");
+
+      const paymentSummary = {
+        productPrice: displayPrice,
+        platformFee,
+        shippingCost,
+        salesTax,
+        processingFee: gatewayFeePaidBy === "buyer" ? processingFee : 0,
+        totalAmount:
+          gatewayFeePaidBy === "buyer"
+            ? baseAmountForProcessing + processingFee
+            : baseAmountForProcessing,
+        currency: selectedCurrency,
+        exchangeRate: currentExchangeRate,
+      };
+
+      const paymentData = {
+        productId: finalProductId,
+        offerId: offerId || null,
+        paymentGateway: "paypal",
+        shippingAddress,
+        shippingCost: shippingCostUSD,
+        gatewayFeePaidBy,
+        currency: selectedCurrency,
+        paymentSummary,
+        paymentMethodType: "paypal",
+      };
+
+      const paymentResponse = await createStandardPayment(paymentData);
+      if (!paymentResponse.success)
+        return toast.error(paymentResponse.error || "Failed to create payment");
+
+      const paymentId = paymentResponse.data.paymentId;
+      setLoadingStage("initializing");
+      const initResponse = await initializeStandardPayment(paymentId, {
+        returnUrl: `${window.location.origin}/payment-success?transaction=${paymentId}&type=standard`,
+        cancelUrl: `${window.location.origin}/payment-cancelled?transaction=${paymentId}&type=standard`,
+      });
+
+      if (!initResponse.success)
+        return toast.error(initResponse.error || "Failed to initialize payment");
+
+      if (initResponse.data?.paymentUrl) {
+        setLoadingStage("redirecting");
+        setTimeout(() => {
+          try {
+            const w = window.open(initResponse.data.paymentUrl, '_blank', 'noopener');
+            if (w && w.focus) w.focus();
+          } catch {}
+        }, 800);
+      } else if (initResponse.data?.transactionId) {
+        // Fallback: construct PayPal approval URL from order id
+        const orderId = String(initResponse.data.transactionId || '');
+        const approvalUrl = `${process.env.NODE_ENV === 'production' ? 'https://www.paypal.com' : 'https://www.sandbox.paypal.com'}/checkoutnow?token=${orderId}`;
+        setLoadingStage("redirecting");
+        setTimeout(() => {
+          try {
+            const w = window.open(approvalUrl, '_blank', 'noopener');
+            if (w && w.focus) w.focus();
+          } catch {}
+        }, 600);
+      } else {
+        setLoadingStage("redirecting");
+        setTimeout(() => {
+          navigate(`/payment-success?transaction=${paymentId}&type=standard`);
+        }, 600);
+      }
+    } catch (e) {
+      console.error("PayPal Standard error", e);
+      toast.error(e.message || "Failed to start PayPal payment");
+    } finally {
+      setLoading(false);
+      setLoadingStage("idle");
     }
   };
 
@@ -1160,12 +1264,11 @@ const EscrowCheckout = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Product Summary */}
+            {/* Fee Summary */}
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
               <h2 className="text-lg font-semibold text-gray-900 mb-4">
                 {t("order_summary")}
               </h2>
-
               <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                 {/* Product Image */}
                 {/* <img
@@ -1241,6 +1344,18 @@ const EscrowCheckout = () => {
                 </div>
               </div>
             </div>
+
+            {loading && (
+              <div className="bg-teal-50 border border-teal-200 rounded-md p-3 flex items-center gap-3">
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-teal-600" />
+                <div className="text-sm text-teal-800">
+                  {loadingStage === 'creating' && 'Placing your order...'}
+                  {loadingStage === 'initializing' && 'Processing payment...'}
+                  {loadingStage === 'redirecting' && 'Redirecting to payment provider...'}
+                  {loadingStage === 'idle' && 'Working...'}
+                </div>
+              </div>
+            )}
 
             {/* Currency Selection */}
             {/* <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
@@ -2011,8 +2126,8 @@ const EscrowCheckout = () => {
                       productLoading ||
                       !(productId || product?._id || product?.id)
                     }
-                    onPayPal={handleCreateStandardPayment}
-                    onPayLater={handleCreateStandardPayment}
+                    onPayPal={handleCreatePayPalStandard}
+                    onPayLater={handleCreatePayPalStandard}
                     onCard={handleCreatePayPalCardStandard}
                   />
                 ) : (
@@ -2088,6 +2203,21 @@ const EscrowCheckout = () => {
           </div>
         </div>
       </div>
+
+      {/* Full-screen Loader Overlay */}
+      {loading && (
+        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center">
+          <div className="bg-white rounded-xl shadow-lg p-6 flex items-center space-x-3">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-600" />
+            <div className="text-gray-800 font-medium">
+              {loadingStage === 'creating' && 'Placing your order...'}
+              {loadingStage === 'initializing' && 'Processing payment...'}
+              {loadingStage === 'redirecting' && 'Redirecting to payment provider...'}
+              {loadingStage === 'idle' && 'Working...'}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

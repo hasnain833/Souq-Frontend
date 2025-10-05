@@ -622,7 +622,10 @@ const PaymentSuccess = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <LoadingSpinner size={60} fullScreen />
+        <div className="flex items-center space-x-3">
+          <LoadingSpinner size={60} />
+          <span className="text-gray-600">Confirming payment...</span>
+        </div>
       </div>
     );
   }

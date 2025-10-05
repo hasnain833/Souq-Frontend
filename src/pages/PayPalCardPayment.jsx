@@ -258,9 +258,67 @@ const PayPalCardPayment = () => {
               Enter your payment details to complete your secure purchase
             </p>
 
-            {/* Fallback PayPal Buttons container */}
+            {/* Error + fallback to redirect if needed */}
+            {/* {error && (
+              <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded mb-4">
+                <div className="mb-2">{error}</div>
+                {paymentUrl && String(error).toLowerCase().includes('eligible') && (
+                  <button
+                    onClick={() => window.location.assign(paymentUrl)}
+                    className="inline-flex items-center px-4 py-2 rounded bg-emerald-600 text-white hover:bg-emerald-700"
+                  >
+                    Pay with PayPal instead
+                  </button>
+                )}
+              </div>
+            )} */}
+
             <div className="space-y-4" ref={containerRef}>
+              {/* Card Information panel (Hosted Fields or Card Fields will mount into these) */}
+              <div className="border rounded-lg p-4">
+                <div className="flex items-center text-gray-800 mb-3">
+                  <CreditCard className="w-5 h-5 mr-2" />
+                  <span className="font-medium">Card Information</span>
+                </div>
+                <div className="grid gap-4">
+                  <div>
+                    <label className="text-sm text-gray-700 mb-1 block">Name on card</label>
+                    <div id="pp-card-name" className={`border rounded p-3 bg-white ${fieldValid.cardholderName === false ? 'border-red-400' : ''}`} />
+                    {fieldValid.cardholderName === false && <p className="text-xs text-red-600 mt-1">Please enter the name on card</p>}
+                  </div>
+                  <div>
+                    <label className="text-sm text-gray-700 mb-1 block">Card number</label>
+                    <div id="pp-card-number" className={`border rounded p-3 bg-white ${fieldValid.number === false ? 'border-red-400' : ''}`} />
+                    {fieldValid.number === false && <p className="text-xs text-red-600 mt-1">Enter a valid card number</p>}
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-sm text-gray-700 mb-1 block">Expiry</label>
+                      <div id="pp-card-exp" className={`border rounded p-3 bg-white ${fieldValid.expirationDate === false ? 'border-red-400' : ''}`} />
+                      {fieldValid.expirationDate === false && <p className="text-xs text-red-600 mt-1">Enter a valid expiry</p>}
+                    </div>
+                    <div>
+                      <label className="text-sm text-gray-700 mb-1 block">CVV</label>
+                      <div id="pp-card-cvv" className={`border rounded p-3 bg-white ${fieldValid.cvv === false ? 'border-red-400' : ''}`} />
+                      {fieldValid.cvv === false && <p className="text-xs text-red-600 mt-1">Enter a valid CVV</p>}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Fallback PayPal Buttons container */}
               <div id="pp-fallback-buttons" className="mt-2" />
+
+              {/* Submit */}
+              <button
+                disabled={loading || !sdkReady || !cardFieldsRef.current}
+                onClick={handleSubmit}
+                className={`w-full py-3 rounded-lg font-semibold text-white ${loading || !cardFieldsRef.current ? 'bg-gray-400 cursor-not-allowed' : 'bg-emerald-600 hover:bg-emerald-700'} flex items-center justify-center`}
+              >
+                <span className="mr-2">Complete Payment</span>
+              </button>
+
+              {/* Security note */}
               <p className="text-xs text-center text-gray-500 mt-2">
                 Powered by PayPal • Your payment information is secure and encrypted
               </p>

@@ -1110,7 +1110,7 @@ const EscrowCheckout = () => {
       } else if (initResponse.data?.transactionId) {
         // Fallback: construct PayPal approval URL from order id
         const orderId = String(initResponse.data.transactionId || '');
-        const approvalUrl = `${process.env.NODE_ENV === 'production' ? 'https://www.paypal.com' : 'https://www.sandbox.paypal.com'}/checkoutnow?token=${orderId}`;
+        const approvalUrl = `${process.env.NODE_ENV === 'production' ? 'https://www.paypal.com' : 'https://www.paypal.com'}/checkoutnow?token=${orderId}`;
         setLoadingStage("redirecting");
         setTimeout(() => {
           try {

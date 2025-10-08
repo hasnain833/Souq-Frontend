@@ -63,6 +63,29 @@ export default function MemberProfile() {
     const rating = profileData?.ratings?.averageRating || 0;
     const totalRatings = profileData?.ratings?.totalRatings || 0;
 
+    // Normalize user profile photo URL (backend may return local filesystem path)
+    const resolveProfileUrl = (val) => {
+        if (!val) return "";
+        const raw = typeof val === "object" && val !== null ? (val.url || val.path || val.filename || "") : String(val);
+        if (!raw) return "";
+        let safe = raw.replace(/\\+/g, "/");
+        // If already absolute http(s) or data URL
+        if (/^(https?:)?\/\//i.test(safe) || safe.startsWith("data:")) return safe;
+        // If contains '/uploads/', slice from there to avoid file://
+        const idx = safe.toLowerCase().indexOf("/uploads/");
+        if (idx >= 0) {
+            const fromUploads = safe.slice(idx);
+            const base = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/$/, "").replace(/\/api\/?$/, "");
+            return base ? `${base}${fromUploads}` : fromUploads;
+        }
+        // Fallback to basename under /uploads/profile/
+        const parts = safe.split("/");
+        const file = parts[parts.length - 1];
+        const base = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/$/, "").replace(/\/api\/?$/, "");
+        const relative = `/uploads/profile/${file}`;
+        return base ? `${base}${relative}` : relative;
+    };
+
     useEffect(() => {
         if (profileData?.id) {
             setIsLoadingProducts(true); // Start loading
@@ -174,7 +197,7 @@ export default function MemberProfile() {
             {/* Header */}
             <div className="flex flex-col md:flex-row items-center md:items-start gap-8">
                 <img
-                    src={profileData.profile ? profileData.profile : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+                    src={profileData.profile ? resolveProfileUrl(profileData.profile) : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
                     alt="Profile"
                     className="w-44 h-44 rounded-full object-cover border-4 border-white shadow-md"
                 />

@@ -38,34 +38,42 @@ export const initializeStandardPayment = async (paymentId, initData) => {
 
 export const getStandardPayment = async (paymentId) => {
     try {
-        console.log('🔄 Getting standard payment details:', paymentId);
-        const response = await axiosInstance.get(`/api/user/payments/${paymentId}`);
-        console.log('✅ Standard payment details retrieved:', response.data);
-        return response.data;
-    } catch (error) {
-        console.error('❌ Failed to get standard payment:', error.response?.data || error.message);
-        throw error.response?.data || { success: false, error: 'Failed to get payment details' };
+      console.log('🔄 Getting standard payment details:', paymentId);
+      const response = await axiosInstance.get(`/api/user/payments/${paymentId}`);
+      console.log('✅ Standard payment details retrieved:', response.data);
+          return response.data;
+      } catch (error) {
+      console.error('❌ Failed to get standard payment:', error.response?.data || error.message);
+      throw error.response?.data || { success: false, error: 'Failed to get payment details' };
     }
-};
+  };
 
 export const checkStandardPaymentStatus = async (paymentId) => {
-    try {
-        console.log('🔍 Checking standard payment status:', paymentId);
-        const response = await axiosInstance.get(`/api/user/payments/${paymentId}/check-payment-status`);
-        console.log('✅ Standard payment status checked:', response.data);
-        return response.data;
-    } catch (error) {
-        console.error('❌ Failed to check standard payment status:', error.response?.data || error.message);
-        throw error.response?.data || { success: false, error: 'Failed to check payment status' };
-    }
+  try {
+    console.log('🔍 Checking standard payment status:', paymentId);
+    const response = await axiosInstance.get(`/api/user/payments/${paymentId}/check-payment-status`);
+    console.log('✅ Standard payment status checked:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('❌ Failed to check standard payment status:', error.response?.data || error.message);
+    throw error.response?.data || { success: false, error: 'Failed to check payment status' };
+  }
 };
 
+export const createPayPalStandardOrder = async ({ transactionId, returnUrl, cancelUrl }) => {
+  try {
+    const response = await axiosInstance.post('/api/user/payments/paypal/orders', { transactionId, returnUrl, cancelUrl });
+    return response.data;
+  } catch (error) {
+    console.error('❌ Failed to create PayPal order:', error.response?.data || error.message);
+    throw error.response?.data || { success: false, error: 'Failed to create PayPal order' };
+  }
+};
 
 export const confirmStandardPayment = async (paymentId, confirmData) => {
     try {
         console.log('🔄 Confirming standard payment:', paymentId, confirmData);
         const response = await axiosInstance.post(`/api/user/payments/${paymentId}/confirm`, confirmData);
-        console.log('✅ Standard payment confirmed:', response.data);
         return response.data;
     } catch (error) {
         console.error('❌ Failed to confirm standard payment:', error.response?.data || error.message);
@@ -79,5 +87,6 @@ export default {
     initializeStandardPayment,
     getStandardPayment,
     checkStandardPaymentStatus,
+    createPayPalStandardOrder,
     confirmStandardPayment
 };

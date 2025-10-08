@@ -1,12 +1,35 @@
 import apiService from './ApiService';
 
 // Create or get chat for a product
-export const createOrGetChat = (productId) =>
-  apiService({
-    url: `/api/user/chat/product/${productId}`,
-    method: 'POST',
-    withAuth: true,
-  });
+// Tries multiple known route patterns to be compatible with different backends
+export const createOrGetChat = async (productId) => {
+  const attempts = [
+    { url: `/api/user/chat/product/${productId}`, method: 'POST' },
+    { url: `/api/user/chat/product`, method: 'POST', data: { productId } },
+    { url: `/api/user/chat/start/${productId}`, method: 'POST' },
+    { url: `/api/user/chat/create/${productId}`, method: 'POST' },
+  ];
+
+  let lastError = null;
+  for (const cfg of attempts) {
+    const res = await apiService({
+      url: cfg.url,
+      method: cfg.method,
+      data: cfg.data,
+      withAuth: true,
+    });
+
+    if (res?.success) return res;
+
+    // only keep specific 404/Not Found style errors to continue trying
+    lastError = res;
+    const msg = (res && (res.error || res.message || '')) + '';
+    const isNotFound = res?.status === 404 || /not\s*found/i.test(msg) || /endpoint/i.test(msg);
+    if (!isNotFound) break; // stop early if error isn't about missing route
+  }
+
+  return lastError || { success: false, error: 'Failed to start chat' };
+};
 
 // Get all chats for the authenticated user
 export const getUserChats = (page = 1, limit = 20) =>

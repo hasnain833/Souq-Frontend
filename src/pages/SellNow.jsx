@@ -195,7 +195,7 @@ const SellNowPage = () => {
           <button
             className="rounded-full hover:bg-gray-100 transition-colors duration-200"
             aria-label="Go back">
-            {/* <ArrowLeft size={24} /> */}
+            <ArrowLeft size={24} />
           </button>
           <h1 className="text-2xl font-semibold">
             {" "}
@@ -225,7 +225,7 @@ const SellNowPage = () => {
             />
           </section>
 
-          {/* <section className="bg-white rounded-xl shadow-sm p-6">
+          <section className="bg-white rounded-xl shadow-sm p-6">
             <h2 className="text-lg font-medium mb-4">{t("category")}</h2>
 
             <CategorySelector
@@ -245,7 +245,7 @@ const SellNowPage = () => {
                 }
               }}
             />
-          </section> */}
+          </section>
 
           {selectedSubcategory?.id && (
             <section className="bg-white rounded-xl shadow-sm p-6">
@@ -295,12 +295,12 @@ const SellNowPage = () => {
               formData.title.length > 0 &&
               formData.product_photos.length > 0 &&
               formData.price !== "" &&
-              // formData.category !== "" &&
-              // formData.condition !== "" &&
-              // formData.size !== "" &&
-              // formData.brand !== "" &&
-              // formData.color !== "" &&
-              // formData.material !== "" &&
+              formData.category !== "" &&
+              formData.condition !== "" &&
+              formData.size !== "" &&
+              formData.brand !== "" &&
+              formData.color !== "" &&
+              formData.material !== "" &&
               formData.packageSize !== ""
             }
           />

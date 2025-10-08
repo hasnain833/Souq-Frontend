@@ -5,6 +5,7 @@ import { useAppContext } from "../../context/AppContext";
 import MegaMenu from "./MegaMenu";
 import HeaderCategories from "./HeaderCategories";
 import Logo from "../common/Logo";
+import { resolveProfileUrl } from "../../utils/urlResolvers";
 import MobileMenu from "./MobileMenu";
 import { categories as localCategories } from "../../data/categories";
 import {
@@ -422,7 +423,7 @@ const Header = () => {
                   <img
                     src={
                       profileImage
-                        ? profileImage
+                        ? resolveProfileUrl(profileImage)
                         : "https://cdn-icons-png.flaticon.com/512/149/149071.png"
                     }
                     alt="Profile"

@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import CountrySelector from "../Location/CountrySelector";
 import CitySelector from "../Location/CitySelector";
+import { resolveProfileUrl } from "../../utils/urlResolvers";
 import {
   getCountryByCode,
   getCityById,
@@ -46,8 +47,8 @@ const ProfileDetails = ({ profileData, apiRefresh, seApiRefresh }) => {
       setShowCity(profileData.cityShow);
 
       if (profileData.profile) {
-        setSelectedImage(`${baseURL}${profileData.profile}`);
-        setSelectedImage(profileData.profile);
+        // Normalize server-provided path to HTTP URL
+        setSelectedImage(resolveProfileUrl(profileData.profile));
       }
 
       // Check if username can be updated
@@ -228,7 +229,7 @@ const ProfileDetails = ({ profileData, apiRefresh, seApiRefresh }) => {
               {selectedImage ? (
                 <>
                   <img
-                    src={selectedImage}
+                    src={selectedImage?.startsWith("blob:") ? selectedImage : resolveProfileUrl(selectedImage)}
                     alt="Preview"
                     className={`w-12 h-12 rounded-full object-cover border border-gray-200 transition duration-300 ${
                       isUploading ? "blur-sm" : ""

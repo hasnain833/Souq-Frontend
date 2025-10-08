@@ -983,7 +983,7 @@ const PaymentSuccess = () => {
           </div>
 
           {/* Action Buttons */}
-          {/* <div className="bg-gray-50 px-6 py-4 space-y-4">
+          <div className="bg-gray-50 px-6 py-4 space-y-4">
             <div>
               <button
                 onClick={handleGoToDashboard}
@@ -1027,7 +1027,7 @@ const PaymentSuccess = () => {
                 </button>
               </div>
             )}
-          </div> */}
+          </div>
         </div>
 
         {/* Automatic rating prompt removed - users can rate manually using the "Rate Transaction" button */}

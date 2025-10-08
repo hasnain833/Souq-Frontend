@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { resolveProfileUrl, resolveImageUrl } from "../../utils/urlResolvers"
 import { useLocation, useNavigate } from "react-router-dom"
 import LoadingSpinner from "../common/LoadingSpinner"
 import { formatDistanceToNowStrict } from 'date-fns'
@@ -36,11 +37,9 @@ function ChatList({
     const otherUser = chat.otherUser
     const lastMessage = chat.lastMessage
 
-    // Debug image URL construction
-    // const imageUrl = chat.product.photos?.[0] ? `${normalizedURL}/${chat.product.photos[0]}` : null;
-    const imageUrl = chat.product.photos?.[0] ? chat.product.photos?.[0] : null;
-    console.log('Chat product photos:', chat.product.photos);
-    console.log('Constructed image URL:', imageUrl);
+    // Resolve product and avatar URLs (avoid file:// and handle /uploads)
+    const firstPhoto = chat.product.photos?.[0] || chat.product.product_photos?.[0] || null;
+    const imageUrl = firstPhoto ? resolveImageUrl(firstPhoto) : null;
 
     return {
       id: chat.id,
@@ -49,8 +48,7 @@ function ChatList({
       user: {
         id: otherUser?.id,
         name: otherUser?.userName || `${otherUser?.firstName} ${otherUser?.lastName}`.trim(),
-        // avatar: otherUser?.profile ? `${normalizedURL}${otherUser.profile}` : null,
-        avatar: otherUser?.profile ? otherUser?.profile : null,
+        avatar: otherUser?.profile ? resolveProfileUrl(otherUser.profile) : null,
       },
       product: {
         id: chat.product.id,

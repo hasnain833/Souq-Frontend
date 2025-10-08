@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { resolveImageUrl } from "../../utils/urlResolvers";
 import { Heart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import PriceBreakdownModal from "./PriceBreakDownModal"; // Make sure the path is correct
@@ -98,13 +99,8 @@ const ProductCard = ({ product, user, apiRefresh, setApiRefresh }) => {
       <div className="group rounded-lg overflow-hidden bg-white border border-gray-200 hover:shadow-md transition-shadow duration-300">
         <div className="relative pb-[125%] overflow-hidden group">
           {(() => {
-            // Support API products (product_photos[]) and local mock products (imageUrl)
-            const photo = product?.product_photos?.[0] || product?.imageUrl || "";
-            const isAbsolute = /^(https?:)?\/\//i.test(photo) || photo.startsWith("data:");
-            const base = import.meta.env.VITE_API_BASE_URL || "";
-            const normalizedBase = base.endsWith("/") ? base.slice(0, -1) : base;
-            const normalizedPhoto = photo.startsWith("/") ? photo : `/${photo}`;
-            const imageSrc = isAbsolute ? photo : `${normalizedBase}${normalizedPhoto}`;
+            const photo = product?.product_photos?.[0] || product?.photos?.[0] || product?.imageUrl || "";
+            const imageSrc = resolveImageUrl(photo);
             return (
               <img
                 src={imageSrc}
@@ -176,9 +172,6 @@ const ProductCard = ({ product, user, apiRefresh, setApiRefresh }) => {
                 <div className="text-base text-gray-500">
                   ${product?.price?.toFixed(2)}
                 </div>
-                <button className="w-full border border-teal-600 text-teal-700 rounded-md py-1 text-sm font-medium hover:bg-teal-50 transition">
-                  {t("bump")}
-                </button>
                 {product?.status && product.status !== 'active' && (
                   <div className={`text-xs px-2 py-1 rounded-full text-center font-medium mb-1 ${product.status === 'sold' ? 'bg-red-100 text-red-700' :
                       product.status === 'reserved' ? 'bg-yellow-100 text-yellow-700' :
@@ -191,15 +184,14 @@ const ProductCard = ({ product, user, apiRefresh, setApiRefresh }) => {
                 )}
                 {/* Action buttons based on product status */}
                 {(!product?.status || product.status === 'active') ? (
-           
                   <button
-                    className="w-full border border-teal-600 text-teal-700 rounded-md py-1 text-sm font-medium hover:bg-teal-50 transition"
+                    className={`w-full border border-teal-600 text-teal-700 rounded-md py-1 text-sm font-medium transition ${product?.hide ? 'opacity-50 cursor-not-allowed' : 'hover:bg-teal-50'}`}
                     onClick={handleBumpProduct}
+                    disabled={!!product?.hide}
                   >
-                    Bump
+                    {t("bump")}
                   </button>
                 ) : (
-               
                   <button
                     className="w-full border border-green-600 text-green-700 rounded-md py-1 text-sm font-medium hover:bg-green-50 transition"
                     onClick={handleReactivateProduct}
@@ -208,20 +200,7 @@ const ProductCard = ({ product, user, apiRefresh, setApiRefresh }) => {
                       product.status === 'reserved' ? 'Mark as Unreserved' :
                         'Mark as Available'}
                   </button>
-              
                 )}
-
-                <button
-                  className={`w-full border border-teal-600 text-teal-700 rounded-md py-1 text-sm font-medium transition
-    ${
-      product.status !== "active" || product?.hide
-        ? "opacity-50 cursor-not-allowed"
-        : "hover:bg-teal-50"
-    }`}
-                  onClick={handleBumpProduct}
-                  disabled={product.status !== "active" || product?.hide}>
-                  {t("bump")}
-                </button>
               </>
             ) : (
               <>

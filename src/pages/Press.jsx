@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Newspaper, Calendar, Download, Mail } from 'lucide-react';
-// import AuthModal from '../components/Auth/AuthModal';
+import AuthModal from '../components/Auth/AuthModal';
 import LoginModal from '../components/Auth/LoginModal';
 import ForgotPasswordModal from '../components/Auth/ForgotPasswordModal';
 import SignUpModal from '../components/Auth/SignUpModal';
@@ -82,13 +82,13 @@ const Press = () => {
               <p className="text-gray-600 mb-4">
                 For media inquiries, interviews, and press materials, please contact our press team.
               </p>
-              <p className="text-teal-600 font-semibold">press@souq.com</p>
+              <p className="text-teal-600 font-semibold">press@habibi.com</p>
               <p className="text-gray-600 mt-2">Response time: 24-48 hours</p>
             </div>
           </div>
         </div>
       </div>
-      {/* <AuthModal /> */}
+      <AuthModal />
       <LoginModal />
       <ForgotPasswordModal />
       <SignUpModal />

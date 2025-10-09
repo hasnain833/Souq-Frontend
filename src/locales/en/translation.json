@@ -1,7 +1,7 @@
 {
   "welcome": "Welcome to our site",
   "language": "Language",
-  "souq": "SOUQ",
+  "souq": "Habibi ماركت",
   "catalog": "Catalog",
   "member": "Members",
   "help_center": "Help Center",
@@ -713,7 +713,7 @@
   "gateway": "Gateway",
   "total": "Total",
   "introduction": "Introduction",
-  "privacy_intro_text": "At SOUQ, we value your privacy and are committed to protecting your personal information. This Privacy Policy explains how we collect, use, and safeguard your data when you use our platform.",
+  "privacy_intro_text": "At Habibi ماركت, we value your privacy and are committed to protecting your personal information. This Privacy Policy explains how we collect, use, and safeguard your data when you use our platform.",
   "information_we_collect": "Information We Collect",
   "information_collect_text": "We may collect the following types of information when you use our services:",
   "personal_info_item": "Personal details such as name, email, phone number, and address",
@@ -732,10 +732,10 @@
   "privacy_contact_text": "If you have questions about this Privacy Policy or how your information is handled, please contact our support team through the Help Center or email us at support@souq.com.",
   "last_updated": "Last Updated",
   "press_center": "Press Center",
-  "press_description": "Find the latest news, media resources, and official updates about SOUQ. Explore press releases, announcements, and stories about our marketplace.",
+  "press_description": "Find the latest news, media resources, and official updates about Habibi ماركت. Explore press releases, announcements, and stories about our marketplace.",
   "howitworks": {
     "hero": {
-      "title": "SOUQ is your platform for",
+      "title": "Habibi ماركت is your platform for",
       "highlight": "pre-owned pieces",
       "subtitle": "One community, thousands of brands, and a whole lot of second-hand style. Ready to get started? Here’s how it works."
     },
@@ -763,7 +763,7 @@
       },
       "step2": {
         "title": "2. Buy it",
-        "desc": "Chat with the seller if needed, then pay securely via card, Apple Pay, Google Pay or SOUQ Wallet."
+        "desc": "Chat with the seller if needed, then pay securely via card, Apple Pay, Google Pay or Habibi ماركت Wallet."
       },
       "step3": {
         "title": "3. Get it",
@@ -847,7 +847,7 @@
   "deleteMyAccount": "Delete my account",
   "helpUsImprove": "Help us improve",
   "confirmOrdersCompleted": "I confirm that all my orders are completed",
-  "deleteAccountNotice": "If you delete your account, it will be deactivated immediately. Deactivated accounts are only visible to Team SOUQ before they are permanently deleted. The deletion takes place within the time frames indicated in SOUQ.",
+  "deleteAccountNotice": "If you delete your account, it will be deactivated immediately. Deactivated accounts are only visible to Team Habibi ماركت before they are permanently deleted. The deletion takes place within the time frames indicated in Habibi ماركت.",
   "reasonForClosing": "Tell us why you’re closing your account",
   "deleteAccount": "Delete account"
 }

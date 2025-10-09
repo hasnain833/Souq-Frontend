@@ -95,7 +95,7 @@ const About = () => {
         <div className="bg-teal-600 text-white py-16">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto text-center">
-              <h1 className="text-4xl md:text-5xl font-bold mb-6">About SOUQ</h1>
+              <h1 className="text-4xl md:text-5xl font-bold mb-6">About Habibi ماركت</h1>
               <p className="text-xl opacity-90 leading-relaxed">
                 Connecting communities through a trusted marketplace where everyone can buy, sell, and discover amazing items with confidence.
               </p>
@@ -126,13 +126,13 @@ const About = () => {
               <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">Our Story</h2>
               <div className="prose prose-lg mx-auto">
                 <p className="text-gray-600 leading-relaxed mb-6">
-                  SOUQ was born from a simple idea: to create a marketplace where people can easily connect, trade, and build meaningful relationships within their communities. Founded in 2020 in Dubai, we started as a small team passionate about bringing the traditional marketplace experience into the digital age.
+                  Habibi ماركت was born from a simple idea: to create a marketplace where people can easily connect, trade, and build meaningful relationships within their communities. Founded in 2020 in Dubai, we started as a small team passionate about bringing the traditional marketplace experience into the digital age.
                 </p>
                 <p className="text-gray-600 leading-relaxed mb-6">
                   What began as a local platform has grown into a thriving marketplace serving millions of users across the Middle East and beyond. We've maintained our core values of trust, community, and accessibility while continuously innovating to meet the evolving needs of our users.
                 </p>
                 <p className="text-gray-600 leading-relaxed">
-                  Today, SOUQ is more than just a marketplace – it's a community where people discover unique items, support local businesses, and contribute to a more sustainable economy through the reuse and resale of goods.
+                  Today, Habibi ماركت is more than just a marketplace – it's a community where people discover unique items, support local businesses, and contribute to a more sustainable economy through the reuse and resale of goods.
                 </p>
               </div>
             </div>
@@ -218,7 +218,7 @@ const About = () => {
             <div className="max-w-4xl mx-auto text-center">
               <h2 className="text-3xl font-bold mb-6">Join Our Journey</h2>
               <p className="text-xl opacity-90 mb-8">
-                Be part of a community that's reshaping how people connect and trade. Whether you're buying, selling, or just exploring, SOUQ is here to support your journey.
+                Be part of a community that's reshaping how people connect and trade. Whether you're buying, selling, or just exploring, Habibi ماركت is here to support your journey.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <button className="bg-teal-600 text-white px-8 py-3 rounded-lg hover:bg-teal-700 transition-colors" onClick={handleLogin}>

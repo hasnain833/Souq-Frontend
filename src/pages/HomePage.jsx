@@ -7,13 +7,13 @@ import { getAllProduct } from "../api/ProductService";
 import LoadingSpinner from "../components/common/LoadingSpinner";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
-import FilterModal from "../components/Filters/FilterModal";
+// import FilterModal from "../components/Filters/FilterModal";
 import { FilterIcon } from "lucide-react";
 import ProductCardSkeleton from "../components/Skeleton/ProductCardSkeleton";
 import SouqBanner from "../public/images/souqbanner.jpg";
 import SouqBannerMobile from "../public/images/souqbanner-1.jpg";
 import { Helmet } from "react-helmet";
-import { products as localProducts } from "../data/products";
+import { resolveImageUrl } from "../utils/urlResolvers";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -21,12 +21,14 @@ const HomePage = () => {
   const { t } = useTranslation();
   const pageRef = useRef(1);
   const isFetching = useRef(false);
-  const [limit] = useState(10);
+  const [limit] = useState(10); // Reduced initial limit for better UX
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [apiRefresh, setApiRefresh] = useState(false);
   const [initialLoad, setInitialLoad] = useState(true);
   const [hasNextPage, setHasNextPage] = useState(true);
+  const [error, setError] = useState(null);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [showLoadMoreButton, setShowLoadMoreButton] = useState(false);
   const { setIsAuthModalOpen, setAuthMode } = useAppContext();
@@ -57,12 +59,9 @@ const HomePage = () => {
     );
   };
 
-  const fetchProducts = async ({ page = 1, limit = 8 }) => {
+  const fetchProducts = async () => {
     try {
       const res = await getAllProduct({
-        page,
-        limit,
-        days: 0, // means no time cutoff
         sortBy: filters.sortBy || "createdAt",
         order: "desc",
         brand: filters.brand || undefined,
@@ -86,11 +85,31 @@ const HomePage = () => {
     }
   };
 
+  const normalizePhotos = (photos) => {
+    if (!Array.isArray(photos)) return [];
+    return photos
+      .map((p) => {
+        if (!p) return null;
+        let safe = String(p).replace(/\\/g, "/");
+        const idx = safe.toLowerCase().indexOf("/uploads/products/");
+        if (idx >= 0) safe = safe.slice(idx);
+        return resolveImageUrl(safe);
+      })
+      .filter(Boolean);
+  };
+
   const loadMoreProducts = async () => {
     if (isFetching.current || !hasNextPage) return;
 
     isFetching.current = true;
-    setIsLoading(true);
+    const isInitialLoad = products.length === 0;
+
+    if (isInitialLoad) {
+      setIsLoading(true);
+    } else {
+      setIsLoadingMore(true);
+    }
+    setError(null);
 
     const currentPage = pageRef.current;
 
@@ -99,14 +118,40 @@ const HomePage = () => {
       limit,
     });
 
-    setProducts((prev) => (currentPage === 1 ? items : [...prev, ...items]));
-    setHasNextPage(next);
+    try {
+      setProducts((prev) =>
+        currentPage === 1
+          ? items.map((item) => ({
+              ...item,
+              normalizedPhotos: normalizePhotos(
+                item?.product_photos || item?.photos || [item?.imageUrl]
+              ),
+            }))
+          : [
+              ...prev,
+              ...items.map((item) => ({
+                ...item,
+                normalizedPhotos: normalizePhotos(
+                  item?.product_photos || item?.photos || [item?.imageUrl]
+                ),
+              })),
+            ]
+      );
 
-    // Increment page only after fetch is complete
-    pageRef.current += 1;
+      setHasNextPage(next);
 
-    setIsLoading(false);
-    isFetching.current = false;
+      // Only increment page if there are more items to load
+      if (items.length > 0) {
+        pageRef.current += 1;
+      }
+    } catch (err) {
+      console.error("Error loading more products:", err);
+      setError("Failed to load more products. Please try again.");
+    } finally {
+      setIsLoading(false);
+      setIsLoadingMore(false);
+      isFetching.current = false;
+    }
   };
 
   const refreshProducts = async () => {
@@ -121,9 +166,17 @@ const HomePage = () => {
       limit,
     });
 
-    setProducts(items);
+    setProducts(
+      items.map((item) => ({
+        ...item,
+        normalizedPhotos: normalizePhotos(
+          item?.product_photos || item?.photos || [item?.imageUrl]
+        ),
+      }))
+    );
+
     setHasNextPage(!!next);
-    pageRef.current = items.length > 0 ? 2 : 2;
+    // pageRef.current = items.length > 0 ? 2 : 2;
 
     setIsLoading(false);
     setInitialLoad(false);
@@ -132,7 +185,20 @@ const HomePage = () => {
 
   // Run only once on mount
   useEffect(() => {
-    refreshProducts();
+    const loadInitialProducts = async () => {
+      await refreshProducts();
+      // Set a small timeout to ensure the DOM is fully rendered
+      setTimeout(() => {
+        setShowLoadMoreButton(true);
+      }, 500);
+    };
+
+    loadInitialProducts();
+
+    // Cleanup function
+    return () => {
+      // Any cleanup if needed
+    };
   }, []);
 
   useEffect(() => {
@@ -151,25 +217,25 @@ const HomePage = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      if (
-        window.innerHeight + window.scrollY >=
-          document.body.offsetHeight - 300 &&
-        !isFetching.current &&
-        !isLoading &&
-        hasNextPage &&
-        pageRef.current <= 5
-      ) {
-        loadMoreProducts();
-      }
+      if (isFetching.current || !hasNextPage) return;
 
-      if (pageRef.current > 5) {
-        setShowLoadMoreButton(true);
+      // Get the scroll position and container height
+      const scrollContainer =
+        scrollContainerRef.current || document.documentElement;
+      const scrollPosition =
+        window.innerHeight + document.documentElement.scrollTop;
+      const containerHeight = scrollContainer.offsetHeight;
+
+      // Load more when we're within 300px of the bottom
+      if (scrollPosition > containerHeight - 300) {
+        loadMoreProducts();
       }
     };
 
-    window.addEventListener("scroll", handleScroll);
+    // Add scroll event listener with passive: true for better performance
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [isLoading, hasNextPage]);
+  }, [isLoadingMore, hasNextPage]);
 
   const handleLoadMore = () => {
     if (hasNextPage && !isFetching.current && !initialLoad) {
@@ -250,45 +316,57 @@ const HomePage = () => {
             )}
             {initialLoad && products.length === 0 ? (
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <ProductCardSkeleton key={i} />
+                {Array.from({ length: 10 }).map((_, index) => (
+                  <ProductCardSkeleton key={index} />
                 ))}
-              </div>
-            ) : products.length === 0 ? (
-              <div className="text-center text-gray-500 py-10">
-                {t("no_products_found")}
               </div>
             ) : (
               <>
-                <ProductGrid
-                  products={products}
-                  apiRefresh={apiRefresh}
-                  setApiRefresh={setApiRefresh}
-                />
-
-                {isLoading && (
-                  <div className="flex justify-center py-4">
-                    <LoadingSpinner />
+                {products.length > 0 ? (
+                  <ProductGrid products={products} />
+                ) : !isLoading && !error ? (
+                  <div className="text-center py-12">
+                    <p className="text-gray-600">No products found</p>
                   </div>
-                )}
-
-                {showLoadMoreButton && hasNextPage && !isLoading && (
-                  <div className="flex justify-center py-4">
-                    <button
-                      onClick={handleLoadMore}
-                      className="bg-teal-600 text-white px-6 py-2 rounded hover:bg-teal-700 transition">
-                      {t("load_more")}
-                    </button>
-                  </div>
-                )}
+                ) : null}
               </>
             )}
+
+            {/* Loading indicator at the bottom */}
+            {isLoadingMore && (
+              <div className="flex justify-center my-8">
+                <LoadingSpinner />
+              </div>
+            )}
+
+            {/* Error message */}
+            {error && (
+              <div className="text-center my-4 text-red-500">
+                {error}
+                <button
+                  onClick={loadMoreProducts}
+                  className="ml-2 text-blue-600 hover:underline">
+                  Retry
+                </button>
+              </div>
+            )}
+
+            {/* Load more button (optional) */}
+            {showLoadMoreButton &&
+              hasNextPage &&
+              !isLoadingMore &&
+              !isLoading && (
+                <div className="flex justify-center mt-8">
+                  <button
+                    onClick={handleLoadMore}
+                    disabled={isLoadingMore}
+                    className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50">
+                    Load More
+                  </button>
+                </div>
+              )}
           </div>
         </div>
-        <FilterModal
-          isOpen={isFilterOpen}
-          onClose={() => setIsFilterOpen(false)}
-        />
       </div>
     </>
   );

@@ -1,5 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
-import { resolveImageUrl as resolveImageUrlUtil, resolveProfileUrl as resolveProfileUrlUtil } from "../utils/urlResolvers";
+import {
+  resolveImageUrl as resolveImageUrlUtil,
+  resolveProfileUrl as resolveProfileUrlUtil,
+} from "../utils/urlResolvers";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   bumpProduct,
@@ -13,7 +16,6 @@ import {
   reactivateProduct,
 } from "../api/ProductService";
 import { Star, X } from "lucide-react";
-// import { formatDistanceToNowStrict } from "date-fns";
 import ProductGrid from "../components/Products/ProductGrid";
 import LoginModal from "../components/Auth/LoginModal";
 import ForgotPasswordModal from "../components/Auth/ForgotPasswordModal";
@@ -22,7 +24,6 @@ import { useAppContext } from "../context/AppContext";
 import DeleteConfirmationModal from "../components/Products/DeleteConfirmation";
 import { toast } from "react-toastify";
 import LoadingSpinner from "../components/common/LoadingSpinner";
-import { FaClock, FaMapMarkerAlt } from "react-icons/fa";
 import PriceBreakdownModal from "../components/Products/PriceBreakDownModal";
 import MakeOfferModal from "../components/Products/MakeOffer";
 import { useTranslation } from "react-i18next";
@@ -70,7 +71,6 @@ const ProductDetailPage = () => {
   const [sortBy, setSortBy] = useState("relevance");
   const [filters, setFilters] = useState({});
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-
   const { setIsAuthModalOpen, setAuthMode } = useAppContext();
 
   // Prime with product from navigation state (e.g., from Home/Product list)
@@ -328,23 +328,40 @@ const ProductDetailPage = () => {
 
   // Build photos array from API (product_photos) or local mock (imageUrl)
   const resolveImageUrl = (url) => resolveImageUrlUtil(url);
+  const normalizePhotos = (photos) => {
+    if (!Array.isArray(photos)) return [];
+    return photos
+      .map((p) => {
+        if (!p) return null;
+        let safe = String(p).replace(/\\/g, "/"); // fix Windows backslashes
+
+        // If path contains /uploads/products/, slice from there
+        const idx = safe.toLowerCase().indexOf("/uploads/products/");
+        if (idx >= 0) {
+          safe = safe.slice(idx);
+        }
+
+        return resolveImageUrl(safe);
+      })
+      .filter(Boolean);
+  };
 
   // Normalize user profile photo URL (backend may return local filesystem path)
   const resolveProfileUrl = (val) => resolveProfileUrlUtil(val);
 
-  const rawPhotos = Array.isArray(product?.product_photos) && product.product_photos.length > 0
-    ? product.product_photos
-    : (Array.isArray(product?.photos) && product.photos.length > 0
-      ? product.photos
-      : (product?.imageUrl ? [product.imageUrl] : []));
+  const rawPhotos =
+    product?.product_photos?.length > 0
+      ? normalizePhotos(product.product_photos)
+      : product?.photos?.length > 0
+      ? normalizePhotos(product.photos)
+      : product?.imageUrl
+      ? [resolveImageUrl(product.imageUrl)]
+      : [];
 
-  const photosSrc = rawPhotos.map(resolveImageUrl);
-  console.debug("ProductDetails photos raw:", rawPhotos);
-  console.debug("ProductDetails photos resolved:", photosSrc);
-
+  const photosSrc = rawPhotos.length > 0 ? rawPhotos : ["/default-product.png"];
   const maxVisibleImages = 3;
-  const visibleImages = photosSrc.slice(0, maxVisibleImages);
-  const hiddenImageCount = photosSrc.length - maxVisibleImages;
+  // const visibleImages = photosSrc.slice(0, maxVisibleImages);
+  // const hiddenImageCount = photosSrc.length - maxVisibleImages;
 
   const handleDelete = async () => {
     try {
@@ -502,61 +519,32 @@ const ProductDetailPage = () => {
       </Helmet>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Image Gallery + Product Grid */}
-        <div
-          // ref={leftColRef}
-          className="md:col-span-2 flex flex-col md:overflow-y-auto md:h-full hide-scrollbar"
-          // onScroll={() => handleScroll("left")}
-        >
+        <div className="md:col-span-2 flex flex-col md:overflow-y-auto md:h-full hide-scrollbar">
           {/* Main Image */}
           {photosSrc.length > 0 && (
             <img
               src={photosSrc[currentImageIndex]}
-              alt="Main"
+              alt={product.title || "Product"}
               className="w-full h-[400px] object-cover rounded border"
-              onClick={() => openModal(currentImageIndex)}
-              onError={(e) => {
-                const src = e.currentTarget.src || "";
-                const idx = src.indexOf("/uploads/");
-                if (idx >= 0) {
-                  const rel = src.slice(idx).replace("/uploads/products/", "/uploads/");
-                  console.warn("Main image failed, retrying with:", rel);
-                  e.currentTarget.src = rel;
-                }
-              }}
             />
           )}
 
-          {/* Thumbnail Row */}
-          <div className="mt-2 flex gap-2">
-            {visibleImages.map((img, idx) => (
-              <div
-                key={idx}
-                className="relative cursor-pointer"
-                onClick={() => openModal(idx)}>
+          {/* Thumbnails */}
+          {photosSrc.length > 0 && (
+            <div className="mt-2 flex gap-2">
+              {photosSrc.map((img, idx) => (
                 <img
+                  key={idx}
                   src={img}
                   alt={`Thumbnail ${idx + 1}`}
-                  className="w-20 h-20 object-cover rounded border border-gray-300"
-                  onError={(e) => {
-                    const src = e.currentTarget.src || "";
-                    const idx = src.indexOf("/uploads/");
-                    if (idx >= 0) {
-                      const rel = src.slice(idx).replace("/uploads/products/", "/uploads/");
-                      console.warn("Thumb image failed, retrying with:", rel);
-                      e.currentTarget.src = rel;
-                    }
-                  }}
+                  onClick={() => setCurrentImageIndex(idx)} // ✅ switch image
+                  className={`w-20 h-20 object-cover rounded border cursor-pointer ${
+                    idx === currentImageIndex ? "ring-2 ring-teal-600" : ""
+                  }`}
                 />
-                {idx === maxVisibleImages - 1 && hiddenImageCount > 0 && (
-                  <div
-                    className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center text-white font-bold text-sm rounded"
-                    onClick={() => openModal(idx)}>
-                    +{hiddenImageCount}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
 
           {/* Breadcrumbs */}
           <div className="mt-4 text-sm text-gray-500">
@@ -683,7 +671,6 @@ const ProductDetailPage = () => {
                 </div>
                 <div className="flex justify-between">
                   <span>{t("uploaded")}</span>
-                  {/* <span>{formatDistanceToNowStrict(new Date(product.createdAt), { addSuffix: true })}</span> */}
                 </div>
               </div>
 
@@ -877,29 +864,6 @@ const ProductDetailPage = () => {
                       )}
                     </div>
                   </div>
-
-                  {/* Location */}
-                  {product?.user?.country && (
-                    <div className="flex items-center gap-1 text-xs text-gray-400 mt-3">
-                      <FaMapMarkerAlt className="text-sm" />
-                      <span>
-                        {/* {product?.user?.city}, {product?.user?.country} */}
-                        {product?.user?.cityShow && `${product?.user.city}, `}
-                        {product?.user?.country}
-                      </span>
-                    </div>
-                  )}
-
-                  {/* Last seen */}
-                  {/* <div className="flex items-center gap-1 text-xs text-gray-400 mt-1">
-                    <FaClock className="text-sm" />
-                    <span>
-                      Last seen{" "}
-                      {formatDistanceToNowStrict(new Date(product?.user?.lastLoginAt), {
-                        addSuffix: true,
-                      })}
-                    </span>
-                  </div> */}
                 </div>
               </div>
             </div>

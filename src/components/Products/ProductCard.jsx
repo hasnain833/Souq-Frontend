@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { resolveImageUrl } from "../../utils/urlResolvers";
 import { Heart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import PriceBreakdownModal from "./PriceBreakDownModal"; // Make sure the path is correct
+import PriceBreakdownModal from "./PriceBreakDownModal";
 import {
   addFevProduct,
   bumpProduct,
@@ -13,24 +13,37 @@ import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import { addPersonalizationFromLikedProduct } from "../../api/Personalization";
 
+// ✅ helper to normalize photos before resolving
+const normalizePhotos = (photos) => {
+  if (!Array.isArray(photos)) return [];
+  return photos
+    .map((p) => {
+      if (!p) return null;
+      let safe = String(p).replace(/\\/g, "/"); // fix Windows backslashes
+
+      // If path contains /uploads/products/, slice from there
+      const idx = safe.toLowerCase().indexOf("/uploads/products/");
+      if (idx >= 0) {
+        safe = safe.slice(idx);
+      }
+
+      return resolveImageUrl(safe);
+    })
+    .filter(Boolean);
+};
+
 const ProductCard = ({ product, user, apiRefresh, setApiRefresh }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [showModal, setShowModal] = useState(false);
   const authUser = JSON.parse(localStorage.getItem("user"));
-
   const { setIsAuthModalOpen, setAuthMode } = useAppContext();
 
   const addFavorites = async (id) => {
     if (authUser) {
       try {
-        // Add to favorites
         await addFevProduct(id);
-
-        // Add to personalization
         await addPersonalizationFromLikedProduct(id);
-
-        // Refresh UI
         setApiRefresh(!apiRefresh);
       } catch (error) {
         console.error("Error adding favorite or personalization:", error);
@@ -42,21 +55,19 @@ const ProductCard = ({ product, user, apiRefresh, setApiRefresh }) => {
   };
 
   const handleBumpProduct = async (e) => {
-    e.stopPropagation(); // Prevent card click navigation
-
+    e.stopPropagation();
     try {
       const response = await bumpProduct(product?.id);
-      const resData = response;
-
-      if (resData?.success) {
-        toast.success(resData?.data?.message || "Product bumped successfully!");
+      if (response?.success) {
+        toast.success(
+          response?.data?.message || "Product bumped successfully!"
+        );
         if (setApiRefresh) {
           setApiRefresh((prev) => prev + 1);
         }
       } else {
-        // Show error if success is false
         toast.error(
-          resData?.error || "Failed to bump product. Please try again."
+          response?.error || "Failed to bump product. Please try again."
         );
       }
     } catch (error) {
@@ -69,7 +80,6 @@ const ProductCard = ({ product, user, apiRefresh, setApiRefresh }) => {
   };
 
   const handleProductClick = async (productId) => {
-    // Save to personalization
     if (authUser) {
       try {
         await addPersonalizationFromLikedProduct(productId);
@@ -81,35 +91,45 @@ const ProductCard = ({ product, user, apiRefresh, setApiRefresh }) => {
   };
 
   const handleReactivateProduct = async (e) => {
-    e.stopPropagation(); // Prevent card click navigation
+    e.stopPropagation();
     try {
       const response = await reactivateProduct(product?.id);
       toast.success(response?.data?.message || "Product marked as available!");
       if (setApiRefresh) {
-        setApiRefresh(prev => prev + 1);
+        setApiRefresh((prev) => prev + 1);
       }
     } catch (error) {
       console.error("Reactivate failed:", error);
-      toast.error(error?.response?.data?.error || "Failed to reactivate product. Please try again.");
+      toast.error(
+        error?.response?.data?.error ||
+          "Failed to reactivate product. Please try again."
+      );
     }
-  }
+  };
+
+  // ✅ Normalize product photos once
+  const photos =
+    product?.product_photos?.length > 0
+      ? normalizePhotos(product.product_photos)
+      : product?.photos?.length > 0
+      ? normalizePhotos(product.photos)
+      : product?.imageUrl
+      ? [resolveImageUrl(product.imageUrl)]
+      : [];
+
+  const imageSrc = photos[0] || "/default-product.png"; // fallback image
 
   return (
     <>
       <div className="group rounded-lg overflow-hidden bg-white border border-gray-200 hover:shadow-md transition-shadow duration-300">
         <div className="relative pb-[125%] overflow-hidden group">
-          {(() => {
-            const photo = product?.product_photos?.[0] || product?.photos?.[0] || product?.imageUrl || "";
-            const imageSrc = resolveImageUrl(photo);
-            return (
-              <img
-                src={imageSrc}
-                alt={product.title}
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 cursor-pointer"
-                onClick={() => handleProductClick(product.id)}
-              />
-            );
-          })()}
+          {/* ✅ Unified image rendering */}
+          <img
+            src={imageSrc}
+            alt={product.title}
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 cursor-pointer"
+            onClick={() => handleProductClick(product.id)}
+          />
 
           {/* Favorite Button */}
           {(!authUser?.id || !user?.id || authUser?.id !== user?.id) && (
@@ -126,7 +146,7 @@ const ProductCard = ({ product, user, apiRefresh, setApiRefresh }) => {
             </button>
           )}
 
-          {/* Hidden label overlay */}
+          {/* Hidden / Status Labels */}
           {product?.hide && (
             <div className="absolute bottom-0 left-0 w-full bg-gray-800 bg-opacity-75 text-white text-center py-1 text-sm font-semibold">
               {t("hidden")}
@@ -155,11 +175,11 @@ const ProductCard = ({ product, user, apiRefresh, setApiRefresh }) => {
           )}
         </div>
 
+        {/* Product Info */}
         <div className="p-3">
           <div className="space-y-1 text-sm text-gray-700">
-            {authUser?.id &&
-            authUser.id === user?.id &&
-            location.pathname !== "/" ? (
+            {/* If viewing own product (profile page) */}
+            {authUser?.id && authUser.id === user?.id ? (
               <>
                 <div className="flex justify-between text-xs text-gray-500">
                   <span>
@@ -172,46 +192,53 @@ const ProductCard = ({ product, user, apiRefresh, setApiRefresh }) => {
                 <div className="text-base text-gray-500">
                   ${product?.price?.toFixed(2)}
                 </div>
-                {product?.status && product.status !== 'active' && (
-                  <div className={`text-xs px-2 py-1 rounded-full text-center font-medium mb-1 ${product.status === 'sold' ? 'bg-red-100 text-red-700' :
-                      product.status === 'reserved' ? 'bg-yellow-100 text-yellow-700' :
-                        'bg-gray-100 text-gray-700'
+                {product?.status && product.status !== "active" && (
+                  <div
+                    className={`text-xs px-2 py-1 rounded-full text-center font-medium mb-1 ${
+                      product.status === "sold"
+                        ? "bg-red-100 text-red-700"
+                        : product.status === "reserved"
+                        ? "bg-yellow-100 text-yellow-700"
+                        : "bg-gray-100 text-gray-700"
                     }`}>
-                    {product.status === 'sold' ? 'SOLD' :
-                      product.status === 'reserved' ? 'RESERVED' :
-                        product.status.toUpperCase()}
+                    {product.status === "sold"
+                      ? "SOLD"
+                      : product.status === "reserved"
+                      ? "RESERVED"
+                      : product.status.toUpperCase()}
                   </div>
                 )}
-                {/* Action buttons based on product status */}
-                {(!product?.status || product.status === 'active') ? (
+                {!product?.status || product.status === "active" ? (
                   <button
-                    className={`w-full border border-teal-600 text-teal-700 rounded-md py-1 text-sm font-medium transition ${product?.hide ? 'opacity-50 cursor-not-allowed' : 'hover:bg-teal-50'}`}
+                    className={`w-full border border-teal-600 text-teal-700 rounded-md py-1 text-sm font-medium transition ${
+                      product?.hide
+                        ? "opacity-50 cursor-not-allowed"
+                        : "hover:bg-teal-50"
+                    }`}
                     onClick={handleBumpProduct}
-                    disabled={!!product?.hide}
-                  >
+                    disabled={!!product?.hide}>
                     {t("bump")}
                   </button>
                 ) : (
                   <button
                     className="w-full border border-green-600 text-green-700 rounded-md py-1 text-sm font-medium hover:bg-green-50 transition"
-                    onClick={handleReactivateProduct}
-                  >
-                    {product.status === 'sold' ? 'Mark as Unsold' :
-                      product.status === 'reserved' ? 'Mark as Unreserved' :
-                        'Mark as Available'}
+                    onClick={handleReactivateProduct}>
+                    {product.status === "sold"
+                      ? "Mark as Unsold"
+                      : product.status === "reserved"
+                      ? "Mark as Unreserved"
+                      : "Mark as Available"}
                   </button>
                 )}
               </>
             ) : (
               <>
+                {/* Public product card */}
                 <div className="flex justify-between text-xs text-gray-500">
                   <h3 className="text-base font-semibold text-gray-900 truncate w-full">
                     {product?.title}
                   </h3>
-                  <span
-                    className="block text-base text-gray-400"
-                    // onClick={() => setShowModal(true)}
-                  >
+                  <span className="block text-base text-gray-400">
                     ${product?.price?.toFixed(2)}
                   </span>
                 </div>

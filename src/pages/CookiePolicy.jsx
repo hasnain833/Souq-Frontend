@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Cookie, Info, Settings, Clock } from 'lucide-react';
-// import AuthModal from '../components/Auth/AuthModal';
+import AuthModal from '../components/Auth/AuthModal';
 import LoginModal from '../components/Auth/LoginModal';
 import ForgotPasswordModal from '../components/Auth/ForgotPasswordModal';
 import SignUpModal from '../components/Auth/SignUpModal';
@@ -157,7 +157,7 @@ const CookiePolicy = () => {
                 If you have any questions about our use of cookies or other technologies, please contact us at:
               </p>
               <div className="bg-gray-50 p-6 rounded-lg mt-4">
-                <p className="text-gray-700 mb-1">Email: cookies@souq.com</p>
+                <p className="text-gray-700 mb-1">Email: cookies@habibi.com</p>
                 <p className="text-gray-700 mb-1">Address: Dubai Internet City, Dubai, UAE</p>
                 <p className="text-gray-700">Phone: +971 4 123 4567</p>
               </div>
@@ -205,7 +205,7 @@ const CookiePolicy = () => {
           </div>
         </div>
       </div>
-      {/* <AuthModal /> */}
+      <AuthModal />
       <LoginModal />
       <ForgotPasswordModal />
       <SignUpModal />

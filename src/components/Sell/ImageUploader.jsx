@@ -3,7 +3,7 @@ import { X, Upload, ImagePlus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 const ImageUploader = ({ images, onChange }) => {
-  const baseURL = import.meta.env.VITE_API_BASE_URL;
+  const baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
   const fileInputRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
   const { t } = useTranslation()
@@ -105,8 +105,8 @@ const ImageUploader = ({ images, onChange }) => {
           {images.map((image, index) => (
             <div key={index} className="relative group aspect-square border border-gray-200 rounded-lg">
               <img
-                // src={typeof image === 'string' ? `${baseURL}/${image}` : URL.createObjectURL(image)}
-                src={typeof image === 'string' ? image : URL.createObjectURL(image)}
+                src={typeof image === 'string' ? `${baseURL}/${image}` : URL.createObjectURL(image)}
+                // src={typeof image === 'string' ? image : URL.createObjectURL(image)}
                 alt={`Preview ${index + 1}`}
                 className="w-full h-full object-cover rounded-lg"
               />

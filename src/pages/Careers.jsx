@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { MapPin, Clock, Users } from 'lucide-react';
-// import AuthModal from '../components/Auth/AuthModal';
+import AuthModal from '../components/Auth/AuthModal';
 import LoginModal from '../components/Auth/LoginModal';
 import ForgotPasswordModal from '../components/Auth/ForgotPasswordModal';
 import SignUpModal from '../components/Auth/SignUpModal';
@@ -29,7 +29,7 @@ const Careers = () => {
       department: 'Customer Success',
       location: 'Remote',
       type: 'Full-time',
-      description: 'Help our users succeed on the SOUQ platform and drive customer satisfaction.'
+      description: 'Help our users succeed on the Habibi ماركت platform and drive customer satisfaction.'
     }
   ];
 
@@ -113,7 +113,7 @@ const Careers = () => {
           </div>
         </div>
       </div>
-      {/* <AuthModal /> */}
+      <AuthModal />
       <LoginModal />
       <ForgotPasswordModal />
       <SignUpModal />

@@ -4,7 +4,6 @@ import useMobile from "../utils/UseMobile";
 import ChatList from "../components/Chat/ChatList";
 import ChatRoomSplit from "../components/Chat/ChatRoomSplit";
 import { getUserChats, createOrGetChat } from "../api/ChatService";
-import LoadingSpinner from "../components/common/LoadingSpinner"
 import { toast } from "react-toastify";
 import { getAccessToken } from "../utils/TokenStorage";
 import ChatSkeleton from "../components/Skeleton/ChatSkeleton";

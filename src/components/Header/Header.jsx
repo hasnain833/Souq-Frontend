@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Search, Menu, X, ChevronDown, ChevronUp, XCircle } from "lucide-react";
-import AuthModal from '../Auth/AuthModal';
 import { useAppContext } from "../../context/AppContext";
 import MegaMenu from "./MegaMenu";
 import HeaderCategories from "./HeaderCategories";

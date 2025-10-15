@@ -90,6 +90,7 @@ const HomePage = () => {
     return photos
       .map((p) => {
         if (!p) return null;
+        // New streamed URLs from backend (absolute http/https) should pass through untouched
         if (typeof p === "object") return resolveImageUrl(p);
         let safe = String(p).replace(/\\/g, "/");
         const idx = safe.toLowerCase().indexOf("/uploads/products/");
@@ -124,8 +125,11 @@ const HomePage = () => {
         currentPage === 1
           ? items.map((item) => ({
               ...item,
+              // Prefer new streamed image URLs, fallback to legacy arrays
               normalizedPhotos: normalizePhotos(
-                item?.product_photos || item?.photos || [item?.imageUrl]
+                (Array.isArray(item?.images) && item.images.length > 0
+                  ? item.images
+                  : item?.product_photos || item?.photos || [item?.imageUrl])
               ),
             }))
           : [
@@ -133,7 +137,9 @@ const HomePage = () => {
               ...items.map((item) => ({
                 ...item,
                 normalizedPhotos: normalizePhotos(
-                  item?.product_photos || item?.photos || [item?.imageUrl]
+                  (Array.isArray(item?.images) && item.images.length > 0
+                    ? item.images
+                    : item?.product_photos || item?.photos || [item?.imageUrl])
                 ),
               })),
             ]
@@ -167,11 +173,13 @@ const HomePage = () => {
       limit,
     });
 
-    setProducts(
+  setProducts(
       items.map((item) => ({
         ...item,
         normalizedPhotos: normalizePhotos(
-          item?.product_photos || item?.photos || [item?.imageUrl]
+          (Array.isArray(item?.images) && item.images.length > 0
+            ? item.images
+            : item?.product_photos || item?.photos || [item?.imageUrl])
         ),
       }))
     );

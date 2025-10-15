@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import ProductGrid from "../components/Products/ProductGrid";
-// import ReviewSection from "../components/Profile/ReviewSection";
+import ReviewSection from "../components/Profile/ReviewSection";
 import {
     FaMapMarkerAlt,
     FaClock,

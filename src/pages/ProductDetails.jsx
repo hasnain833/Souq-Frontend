@@ -347,9 +347,11 @@ const ProductDetailPage = () => {
 
   const rawPhotos = (() => {
     const candidates = [
+      // Prefer new streamed URLs (images)
+      product?.images,
+      // Fallbacks
       product?.product_photos,
       product?.photos,
-      product?.images,
       product?.imageUrls,
     ];
     for (const list of candidates) {

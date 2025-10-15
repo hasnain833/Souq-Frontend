@@ -110,6 +110,8 @@ const ProductCard = ({ product, user, apiRefresh, setApiRefresh }) => {
   const photos =
     product?.normalizedPhotos?.length > 0
       ? product.normalizedPhotos
+      : Array.isArray(product?.images) && product.images.length > 0
+      ? normalizePhotos(product.images)
       : product?.product_photos?.length > 0
       ? normalizePhotos(product.product_photos)
       : product?.photos?.length > 0

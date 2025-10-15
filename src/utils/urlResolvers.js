@@ -59,7 +59,8 @@ export const resolveImageUrl = (url) => {
 export const resolveProfileUrl = (val) => {
   let safe = normalizePath(val);
   if (!safe) return "";
-  if (/^(https?:)?\/\//i.test(safe) || safe.startsWith("data:")) return safe;
+  // New streamed profile image endpoint returned by backend
+  if (/^(https?:)?\/\//i.test(safe) || safe.startsWith("data:") || safe.startsWith("/api/user/profile/image/")) return safe;
 
   const idx = safe.toLowerCase().indexOf("/uploads/");
   if (idx >= 0) {

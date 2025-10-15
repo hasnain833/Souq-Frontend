@@ -19,14 +19,13 @@ const normalizePhotos = (photos) => {
   return photos
     .map((p) => {
       if (!p) return null;
-      let safe = String(p).replace(/\\/g, "/"); // fix Windows backslashes
-
-      // If path contains /uploads/products/, slice from there
-      const idx = safe.toLowerCase().indexOf("/uploads/products/");
-      if (idx >= 0) {
-        safe = safe.slice(idx);
+      // Allow resolver to handle object or string inputs gracefully
+      if (typeof p === "object") {
+        return resolveImageUrl(p);
       }
-
+      let safe = String(p).replace(/\\/g, "/");
+      const idx = safe.toLowerCase().indexOf("/uploads/products/");
+      if (idx >= 0) safe = safe.slice(idx);
       return resolveImageUrl(safe);
     })
     .filter(Boolean);
@@ -107,9 +106,11 @@ const ProductCard = ({ product, user, apiRefresh, setApiRefresh }) => {
     }
   };
 
-  // ✅ Normalize product photos once
+  // ✅ Use pre-normalized photos from HomePage if available, otherwise normalize on-the-fly
   const photos =
-    product?.product_photos?.length > 0
+    product?.normalizedPhotos?.length > 0
+      ? product.normalizedPhotos
+      : product?.product_photos?.length > 0
       ? normalizePhotos(product.product_photos)
       : product?.photos?.length > 0
       ? normalizePhotos(product.photos)

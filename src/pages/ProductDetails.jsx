@@ -333,14 +333,10 @@ const ProductDetailPage = () => {
     return photos
       .map((p) => {
         if (!p) return null;
-        let safe = String(p).replace(/\\/g, "/"); // fix Windows backslashes
-
-        // If path contains /uploads/products/, slice from there
+        if (typeof p === "object") return resolveImageUrl(p);
+        let safe = String(p).replace(/\\/g, "/");
         const idx = safe.toLowerCase().indexOf("/uploads/products/");
-        if (idx >= 0) {
-          safe = safe.slice(idx);
-        }
-
+        if (idx >= 0) safe = safe.slice(idx);
         return resolveImageUrl(safe);
       })
       .filter(Boolean);
@@ -349,14 +345,22 @@ const ProductDetailPage = () => {
   // Normalize user profile photo URL (backend may return local filesystem path)
   const resolveProfileUrl = (val) => resolveProfileUrlUtil(val);
 
-  const rawPhotos =
-    product?.product_photos?.length > 0
-      ? normalizePhotos(product.product_photos)
-      : product?.photos?.length > 0
-      ? normalizePhotos(product.photos)
-      : product?.imageUrl
-      ? [resolveImageUrl(product.imageUrl)]
-      : [];
+  const rawPhotos = (() => {
+    const candidates = [
+      product?.product_photos,
+      product?.photos,
+      product?.images,
+      product?.imageUrls,
+    ];
+    for (const list of candidates) {
+      if (Array.isArray(list) && list.length > 0) {
+        const normalized = normalizePhotos(list);
+        if (normalized.length > 0) return normalized;
+      }
+    }
+    if (product?.imageUrl) return [resolveImageUrl(product.imageUrl)];
+    return [];
+  })();
 
   const photosSrc = rawPhotos.length > 0 ? rawPhotos : ["/default-product.png"];
   const maxVisibleImages = 3;

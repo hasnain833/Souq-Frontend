@@ -32,6 +32,7 @@ const SellNowPage = () => {
     color: "",
     material: "",
     price: "",
+    quantity: "1",
     customShippingCost: "",
     packageSize: "medium",
   });
@@ -49,6 +50,7 @@ const SellNowPage = () => {
         color: product.colors || "",
         material: product.material || "",
         price: product.price?.toString() || "",
+        quantity: (product.quantity ?? 1).toString(),
         customShippingCost:
           product.package_size === "custom"
             ? product.shipping_cost?.toString() || ""
@@ -78,6 +80,7 @@ const SellNowPage = () => {
       if (formData.color) payload.append("colors", formData.color);
       if (formData.material) payload.append("material", formData.material);
       payload.append("price", String(formData.price || "0"));
+      payload.append("quantity", String(Math.max(0, parseInt(formData.quantity || '1', 10))));
       payload.append("package_size", formData.packageSize);
       if (formData.category) payload.append("category", formData.category);
 
@@ -223,6 +226,17 @@ const SellNowPage = () => {
                 updateFormData("description", desc)
               }
             />
+            <div className="mt-4">
+              <label htmlFor="quantity" className="block text-sm font-medium text-gray-700 mb-1">{t("quantity")}</label>
+              <input
+                id="quantity"
+                type="number"
+                min={1}
+                value={formData.quantity}
+                onChange={(e) => updateFormData("quantity", e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none transition-colors duration-200"
+              />
+            </div>
           </section>
 
           <section className="bg-white rounded-xl shadow-sm p-6">

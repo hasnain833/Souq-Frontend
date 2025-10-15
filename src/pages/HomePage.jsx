@@ -90,6 +90,7 @@ const HomePage = () => {
     return photos
       .map((p) => {
         if (!p) return null;
+        if (typeof p === "object") return resolveImageUrl(p);
         let safe = String(p).replace(/\\/g, "/");
         const idx = safe.toLowerCase().indexOf("/uploads/products/");
         if (idx >= 0) safe = safe.slice(idx);

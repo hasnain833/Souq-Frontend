@@ -15,6 +15,7 @@ import {
   createStandardPayment,
   initializeStandardPayment,
   checkStandardPaymentStatus,
+  openPayPalCheckout,
 } from "../api/StandardPaymentService";
 import { getDefaultAddress } from "../api/AddressService";
 // import CountrySelector from "../components/Location/CountrySelector";
@@ -721,7 +722,7 @@ const EscrowCheckout = () => {
     // }
   };
 
-  const FORCE_MODE = (import.meta.env.VITE_FORCE_CHECKOUT === 'true');
+  const FORCE_MODE = import.meta.env.VITE_FORCE_CHECKOUT === "true";
 
   const handleCheckPaymentStatus = async () => {
     try {
@@ -731,7 +732,7 @@ const EscrowCheckout = () => {
       // Navigate to success page to finalize UX regardless; backend will confirm status
       navigate(`/payment-success?transaction=${lastPaymentId}&type=standard`);
     } catch (e) {
-      toast.error(e?.message || 'Failed to check payment status');
+      toast.error(e?.message || "Failed to check payment status");
     } finally {
       setStatusChecking(false);
     }
@@ -742,7 +743,12 @@ const EscrowCheckout = () => {
 
     // Ensure we have a gateway
     if (!selectedGateway && forceOrder) {
-      const fallbackGateway = { id: 'stripe', name: 'Stripe', feePercentage: 0, fixedFee: 0 };
+      const fallbackGateway = {
+        id: "stripe",
+        name: "Stripe",
+        feePercentage: 0,
+        fixedFee: 0,
+      };
       setSelectedGateway(fallbackGateway);
     }
     if (!selectedGateway && !forceOrder) {
@@ -753,14 +759,14 @@ const EscrowCheckout = () => {
     // Ensure we have a shipping address
     if (!shippingAddress && forceOrder) {
       setShippingAddress({
-        fullName: currentUser?.userName || 'Guest User',
-        street1: 'N/A',
-        street2: '',
-        city: 'N/A',
-        state: '',
-        zip: '00000',
-        country: 'N/A',
-        phoneNumber: '',
+        fullName: currentUser?.userName || "Guest User",
+        street1: "N/A",
+        street2: "",
+        city: "N/A",
+        state: "",
+        zip: "00000",
+        country: "N/A",
+        phoneNumber: "",
       });
     }
     if (!shippingAddress && !forceOrder) {
@@ -768,9 +774,14 @@ const EscrowCheckout = () => {
       return;
     }
 
-    let finalProductId = productId || product?._id || product?.id || passedProduct?._id || passedProduct?.id;
+    let finalProductId =
+      productId ||
+      product?._id ||
+      product?.id ||
+      passedProduct?._id ||
+      passedProduct?.id;
     if (!finalProductId && forceOrder) {
-      finalProductId = 'mock-product';
+      finalProductId = "mock-product";
     }
     if (!finalProductId && !forceOrder) {
       toast.error("Product information is missing");
@@ -799,13 +810,19 @@ const EscrowCheckout = () => {
 
       // Map shipping address to backend schema (zip -> zipCode)
       const mappedShippingAddress = {
-        fullName: (shippingAddress && shippingAddress.fullName) || currentUser?.userName || 'Guest User',
-        street1: (shippingAddress && shippingAddress.street1) || 'N/A',
+        fullName:
+          (shippingAddress && shippingAddress.fullName) ||
+          currentUser?.userName ||
+          "Guest User",
+        street1: (shippingAddress && shippingAddress.street1) || "N/A",
         street2: (shippingAddress && shippingAddress.street2) || "",
-        city: (shippingAddress && shippingAddress.city) || 'N/A',
+        city: (shippingAddress && shippingAddress.city) || "N/A",
         state: (shippingAddress && shippingAddress.state) || "",
-        zipCode: (shippingAddress && (shippingAddress.zipCode || shippingAddress.zip)) || "00000",
-        country: (shippingAddress && shippingAddress.country) || 'N/A',
+        zipCode:
+          (shippingAddress &&
+            (shippingAddress.zipCode || shippingAddress.zip)) ||
+          "00000",
+        country: (shippingAddress && shippingAddress.country) || "N/A",
         phoneNumber: (shippingAddress && shippingAddress.phoneNumber) || "",
       };
 
@@ -813,7 +830,7 @@ const EscrowCheckout = () => {
       const paymentData = {
         productId: finalProductId,
         offerId: offerId || null,
-        paymentGateway: (selectedGateway?.id) || 'stripe',
+        paymentGateway: selectedGateway?.id || "stripe",
         shippingAddress: mappedShippingAddress,
         // Ensure backend uses the selected shipping option from checkout
         shippingCost: shippingCostUSD,
@@ -1054,7 +1071,12 @@ const EscrowCheckout = () => {
       const finalProductId = productId || product?._id || product?.id;
       if (!finalProductId) return toast.error("Product information is missing");
 
-      setSelectedGateway({ id: "paypal", name: "PayPal", feePercentage: 2.9, fixedFee: 0.3 });
+      setSelectedGateway({
+        id: "paypal",
+        name: "PayPal",
+        feePercentage: 2.9,
+        fixedFee: 0.3,
+      });
 
       setLoading(true);
       setLoadingStage("creating");
@@ -1097,32 +1119,20 @@ const EscrowCheckout = () => {
       });
 
       if (!initResponse.success)
-        return toast.error(initResponse.error || "Failed to initialize payment");
+        return toast.error(
+          initResponse.error || "Failed to initialize payment"
+        );
 
-      if (initResponse.data?.paymentUrl) {
-        setLoadingStage("redirecting");
-        setTimeout(() => {
-          try {
-            const w = window.open(initResponse.data.paymentUrl, '_blank', 'noopener');
-            if (w && w.focus) w.focus();
-          } catch {}
-        }, 800);
-      } else if (initResponse.data?.transactionId) {
-        // Fallback: construct PayPal approval URL from order id
-        const orderId = String(initResponse.data.transactionId || '');
-        const approvalUrl = `${process.env.NODE_ENV === 'production' ? 'https://www.paypal.com' : 'https://www.paypal.com'}/checkoutnow?token=${orderId}`;
-        setLoadingStage("redirecting");
-        setTimeout(() => {
-          try {
-            const w = window.open(approvalUrl, '_blank', 'noopener');
-            if (w && w.focus) w.focus();
-          } catch {}
-        }, 600);
-      } else {
-        setLoadingStage("redirecting");
-        setTimeout(() => {
-          navigate(`/payment-success?transaction=${paymentId}&type=standard`);
-        }, 600);
+      // Always launch approval in popup (falls back to redirect if blocked)
+      setLoadingStage("redirecting");
+      try {
+        await openPayPalCheckout({
+          transactionId: initResponse.data?.transactionId || paymentId,
+          returnUrl: `${window.location.origin}/payment-success?transaction=${paymentId}&type=standard`,
+          cancelUrl: `${window.location.origin}/payment-cancelled?transaction=${paymentId}&type=standard`,
+        });
+      } catch (e) {
+        console.error("Failed to open PayPal popup", e);
       }
     } catch (e) {
       console.error("PayPal Standard error", e);
@@ -1349,10 +1359,11 @@ const EscrowCheckout = () => {
               <div className="bg-teal-50 border border-teal-200 rounded-md p-3 flex items-center gap-3">
                 <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-teal-600" />
                 <div className="text-sm text-teal-800">
-                  {loadingStage === 'creating' && 'Placing your order...'}
-                  {loadingStage === 'initializing' && 'Processing payment...'}
-                  {loadingStage === 'redirecting' && 'Redirecting to payment provider...'}
-                  {loadingStage === 'idle' && 'Working...'}
+                  {loadingStage === "creating" && "Placing your order..."}
+                  {loadingStage === "initializing" && "Processing payment..."}
+                  {loadingStage === "redirecting" &&
+                    "Redirecting to payment provider..."}
+                  {loadingStage === "idle" && "Working..."}
                 </div>
               </div>
             )}
@@ -2104,17 +2115,6 @@ const EscrowCheckout = () => {
                 </div>
               </div>
 
-              {/* Debug Info */}
-              {/* {process.env.NODE_ENV === 'development' && (
-                <div className="mt-4 p-3 bg-gray-100 rounded-lg text-xs">
-                  <strong>Debug Info:</strong>
-                  <div>selectedGateway: {selectedGateway?.id || 'none'}</div>
-                  <div>agreementAccepted: {agreementAccepted.toString()}</div>
-                  <div>hasShippingAddress: {!!shippingAddress}</div>
-                  <div>hasProductId: {!!(productId || product?._id || product?.id)}</div>
-                </div>
-              )} */}
-
               {/* Payment Buttons */}
               <div className="mt-6 space-y-3">
                 {/* If PayPal is selected, show the PayPal button stack */}
@@ -2210,10 +2210,11 @@ const EscrowCheckout = () => {
           <div className="bg-white rounded-xl shadow-lg p-6 flex items-center space-x-3">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-600" />
             <div className="text-gray-800 font-medium">
-              {loadingStage === 'creating' && 'Placing your order...'}
-              {loadingStage === 'initializing' && 'Processing payment...'}
-              {loadingStage === 'redirecting' && 'Redirecting to payment provider...'}
-              {loadingStage === 'idle' && 'Working...'}
+              {loadingStage === "creating" && "Placing your order..."}
+              {loadingStage === "initializing" && "Processing payment..."}
+              {loadingStage === "redirecting" &&
+                "Redirecting to payment provider..."}
+              {loadingStage === "idle" && "Working..."}
             </div>
           </div>
         </div>

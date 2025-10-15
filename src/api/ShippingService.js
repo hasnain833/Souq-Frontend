@@ -107,7 +107,8 @@ class ShippingService {
       params,
       withAuth: true,
     });
-    return res; // return wrapper so callers can use res.success and res.data
+    // Return backend payload so callers can use response.success and response.data.orders
+    return res.data;
   }
 
   async getOrderDetails(orderId) {

@@ -70,6 +70,25 @@ export const createPayPalStandardOrder = async ({ transactionId, returnUrl, canc
   }
 };
 
+// Opens PayPal approval flow in a popup window
+export const openPayPalCheckout = async ({ transactionId, returnUrl, cancelUrl, windowFeatures }) => {
+  const result = await createPayPalStandardOrder({ transactionId, returnUrl, cancelUrl });
+  if (!result?.success || !result?.data?.approvalUrl) {
+    throw new Error(result?.error || 'Unable to start PayPal checkout');
+  }
+  const features = windowFeatures || 'width=520,height=720,menubar=no,toolbar=no,location=no,status=no,resizable=yes,scrollbars=yes';
+  const approvalUrl = result.data.approvalUrl;
+  const popup = window.open(approvalUrl, 'PayPalCheckout', features);
+
+  // Optional: monitor if popup is blocked
+  if (!popup || popup.closed || typeof popup.closed === 'undefined') {
+    window.location.href = approvalUrl; // fallback redirect
+    return { popup: null, orderId: result.data.orderId, approvalUrl };
+  }
+
+  return { popup, orderId: result.data.orderId, approvalUrl };
+};
+
 export const confirmStandardPayment = async (paymentId, confirmData) => {
     try {
         console.log('🔄 Confirming standard payment:', paymentId, confirmData);
@@ -88,5 +107,6 @@ export default {
     getStandardPayment,
     checkStandardPaymentStatus,
     createPayPalStandardOrder,
+  openPayPalCheckout,
     confirmStandardPayment
 };

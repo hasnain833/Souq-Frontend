@@ -25,7 +25,7 @@ import LoadingSpinner from "../components/common/LoadingSpinner";
 import { useTranslation } from "react-i18next";
 import MemberProfileSkeleton from "../components/Skeleton/MemberProfileSkeleton";
 // import RateProductModal from "../components/Profile/RateProductModal";
-import { blockUser, reportUser } from "../api/ChatService";
+// import { blockUser, reportUser } from "../api/ChatService";
 import { X, User, Shield, Flag, Trash2 } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { Helmet } from "react-helmet";

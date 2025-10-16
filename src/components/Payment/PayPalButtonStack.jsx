@@ -25,7 +25,7 @@ const PayPalButtonStack = ({
       <button
         type="button"
         disabled={disabled || loading}
-        onClick={onCard}
+        onClick={onPayPal}
         className={`${commonBtn} ${disabled || loading
           ? 'bg-yellow-300 cursor-not-allowed'
           : 'bg-[#FFC439] hover:brightness-95'

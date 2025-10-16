@@ -435,14 +435,14 @@ const Orders = () => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
                   {/* Product Info */}
                   <div className="flex gap-3">
-                    <img
+                    {/* <img
                       src={order?.product?.product_photos?.[0] || 'https://via.placeholder.com/64x64?text=No+Image'}
                       alt={order?.product?.title || 'Product'}
                       className="w-16 h-16 object-cover rounded-md flex-shrink-0"
                       onError={(e) => {
                         e.target.src = 'https://via.placeholder.com/64x64?text=No+Image';
                       }}
-                    />
+                    /> */}
                     <div className="flex-1">
                       <h4 className="font-medium text-gray-900 mb-1 text-sm sm:text-base">{order?.product?.title || 'Product'}</h4>
                       <p className="text-xs text-gray-600">{order?.product?.brand || 'N/A'} • {order?.product?.size || 'N/A'}</p>

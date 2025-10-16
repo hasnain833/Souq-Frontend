@@ -81,6 +81,8 @@ const EscrowCheckout = () => {
   const [showStatusCheck, setShowStatusCheck] = useState(false);
   const [statusChecking, setStatusChecking] = useState(false);
 
+  const FRONTEND_BASE_URL = "https://www.sandbox.paypal.com";
+
   // Clear previous payment status when starting new checkout
   useEffect(() => {
     startNewCheckout();
@@ -180,48 +182,48 @@ const EscrowCheckout = () => {
   // };
 
   // Function to populate selectors when editing existing address
-  const populateSelectorsFromAddress = async (address) => {
-    // UI minimized: skip expensive country/city lookups
-    return;
-  };
+  // const populateSelectorsFromAddress = async (address) => {
+  //   // UI minimized: skip expensive country/city lookups
+  //   return;
+  // };
 
   // Save address changes
-  const saveAddressChanges = async () => {
-    try {
-      if (!shippingAddress) {
-        toast.error("Please fill in all required address fields");
-        return;
-      }
+  // const saveAddressChanges = async () => {
+  //   try {
+  //     if (!shippingAddress) {
+  //       toast.error("Please fill in all required address fields");
+  //       return;
+  //     }
 
-      // Validate required fields (form uses 'zip', backend expects 'zipCode' which we map on submit)
-      const requiredFields = [
-        "fullName",
-        "street1",
-        "city",
-        "state",
-        "zip",
-        "country",
-      ];
-      const missingFields = requiredFields.filter(
-        (field) => !shippingAddress[field]?.toString().trim()
-      );
+  //     // Validate required fields (form uses 'zip', backend expects 'zipCode' which we map on submit)
+  //     const requiredFields = [
+  //       "fullName",
+  //       "street1",
+  //       "city",
+  //       "state",
+  //       "zip",
+  //       "country",
+  //     ];
+  //     const missingFields = requiredFields.filter(
+  //       (field) => !shippingAddress[field]?.toString().trim()
+  //     );
 
-      if (missingFields.length > 0) {
-        toast.error(`Please fill in: ${missingFields.join(", ")}`);
-        return;
-      }
+  //     if (missingFields.length > 0) {
+  //       toast.error(`Please fill in: ${missingFields.join(", ")}`);
+  //       return;
+  //     }
 
-      console.log("ðŸ’¾ Saving address changes:", shippingAddress);
+  //     console.log("ðŸ’¾ Saving address changes:", shippingAddress);
 
-      // Here you could add API call to save the address if needed
-      // For now, just close the edit mode
-      setIsEditingAddress(false);
-      toast.success("Address updated successfully");
-    } catch (error) {
-      console.error("âŒ Failed to save address:", error);
-      toast.error("Failed to save address changes");
-    }
-  };
+  //     // Here you could add API call to save the address if needed
+  //     // For now, just close the edit mode
+  //     setIsEditingAddress(false);
+  //     toast.success("Address updated successfully");
+  //   } catch (error) {
+  //     console.error("âŒ Failed to save address:", error);
+  //     toast.error("Failed to save address changes");
+  //   }
+  // };
 
   const loadDefaultAddress = async () => {
     try {
@@ -722,7 +724,7 @@ const EscrowCheckout = () => {
     // }
   };
 
-  const FORCE_MODE = import.meta.env.VITE_FORCE_CHECKOUT === "true";
+  const FORCE_MODE = import.meta.env.VITE_FORCE_CHECKOUT === "false";
 
   const handleCheckPaymentStatus = async () => {
     try {
@@ -876,8 +878,8 @@ const EscrowCheckout = () => {
 
       // Initialize payment with gateway
       const initData = {
-        returnUrl: `${window.location.origin}/payment-success?transaction=${paymentId}&type=standard`,
-        cancelUrl: `${window.location.origin}/payment-cancelled?transaction=${paymentId}&type=standard`,
+        returnUrl: `${FRONTEND_BASE_URL}/payment-success?transaction=${paymentId}&type=standard`,
+        cancelUrl: `${FRONTEND_BASE_URL}/payment-cancelled?transaction=${paymentId}&type=standard`,
       };
 
       console.log("Initializing standard payment:", paymentId, initData);
@@ -966,103 +968,103 @@ const EscrowCheckout = () => {
     }
   };
   // Create standard payment then navigate to embedded PayPal Card page
-  const handleCreatePayPalCardStandard = async () => {
-    try {
-      const forceOrder = FORCE_MODE;
-      if (!selectedGateway || selectedGateway.id !== "paypal")
-        return toast.error("Please choose PayPal");
-      if (!shippingAddress) return toast.error("Please add a shipping address");
+  // const handleCreatePayPalCardStandard = async () => {
+  //   try {
+  //     const forceOrder = FORCE_MODE;
+  //     if (!selectedGateway || selectedGateway.id !== "paypal")
+  //       return toast.error("Please choose PayPal");
+  //     if (!shippingAddress) return toast.error("Please add a shipping address");
 
-      const finalProductId = productId || product?._id || product?.id;
-      if (!finalProductId) return toast.error("Product information is missing");
+  //     const finalProductId = productId || product?._id || product?.id;
+  //     if (!finalProductId) return toast.error("Product information is missing");
 
-      setLoading(true);
-      // TEMP: map shipping address and fallback country to avoid blocking checkout when Country UI is hidden
-      const mappedShippingAddress = {
-        fullName: shippingAddress.fullName,
-        street1: shippingAddress.street1,
-        street2: shippingAddress.street2 || "",
-        city: shippingAddress.city,
-        state: shippingAddress.state || "",
-        zipCode: shippingAddress.zipCode || shippingAddress.zip || "",
-        country:
-          shippingAddress.country ||
-          (selectedCountry && selectedCountry.name) ||
-          "N/A",
-        phoneNumber: shippingAddress.phoneNumber || "",
-      };
+  //     setLoading(true);
+  //     // TEMP: map shipping address and fallback country to avoid blocking checkout when Country UI is hidden
+  //     const mappedShippingAddress = {
+  //       fullName: shippingAddress.fullName,
+  //       street1: shippingAddress.street1,
+  //       street2: shippingAddress.street2 || "",
+  //       city: shippingAddress.city,
+  //       state: shippingAddress.state || "",
+  //       zipCode: shippingAddress.zipCode || shippingAddress.zip || "",
+  //       country:
+  //         shippingAddress.country ||
+  //         (selectedCountry && selectedCountry.name) ||
+  //         "N/A",
+  //       phoneNumber: shippingAddress.phoneNumber || "",
+  //     };
 
-      const paymentSummary = {
-        productPrice: displayPrice,
-        platformFee,
-        shippingCost,
-        salesTax,
-        processingFee: gatewayFeePaidBy === "buyer" ? processingFee : 0,
-        totalAmount:
-          gatewayFeePaidBy === "buyer"
-            ? baseAmountForProcessing + processingFee
-            : baseAmountForProcessing,
-        currency: selectedCurrency,
-        exchangeRate: currentExchangeRate,
-      };
+  //     const paymentSummary = {
+  //       productPrice: displayPrice,
+  //       platformFee,
+  //       shippingCost,
+  //       salesTax,
+  //       processingFee: gatewayFeePaidBy === "buyer" ? processingFee : 0,
+  //       totalAmount:
+  //         gatewayFeePaidBy === "buyer"
+  //           ? baseAmountForProcessing + processingFee
+  //           : baseAmountForProcessing,
+  //       currency: selectedCurrency,
+  //       exchangeRate: currentExchangeRate,
+  //     };
 
-      const paymentData = {
-        productId: finalProductId,
-        offerId: offerId || null,
-        paymentGateway: "paypal",
-        shippingAddress,
-        shippingCost: shippingCostUSD,
-        gatewayFeePaidBy,
-        currency: selectedCurrency,
-        paymentSummary,
-        paymentMethodType: "card",
-      };
+  //     const paymentData = {
+  //       productId: finalProductId,
+  //       offerId: offerId || null,
+  //       paymentGateway: "paypal",
+  //       shippingAddress,
+  //       shippingCost: shippingCostUSD,
+  //       gatewayFeePaidBy,
+  //       currency: selectedCurrency,
+  //       paymentSummary,
+  //       paymentMethodType: "card",
+  //     };
 
-      setLoading(true);
-      setLoadingStage("creating");
-      const paymentResponse = await createStandardPayment(paymentData);
-      if (!paymentResponse.success)
-        return toast.error(paymentResponse.error || "Failed to create payment");
+  //     setLoading(true);
+  //     setLoadingStage("creating");
+  //     const paymentResponse = await createStandardPayment(paymentData);
+  //     if (!paymentResponse.success)
+  //       return toast.error(paymentResponse.error || "Failed to create payment");
 
-      const paymentId = paymentResponse.data.paymentId;
+  //     const paymentId = paymentResponse.data.paymentId;
 
-      setLoadingStage("initializing");
-      const initResponse = await initializeStandardPayment(paymentId, {
-        returnUrl: `${window.location.origin}/payment-success?transaction=${paymentId}&type=standard`,
-        cancelUrl: `${window.location.origin}/payment-cancelled?transaction=${paymentId}&type=standard`,
-      });
+  //     setLoadingStage("initializing");
+  //     const initResponse = await initializeStandardPayment(paymentId, {
+  //       returnUrl: `${FRONTEND_BASE_URL}/payment-success?transaction=${paymentId}&type=standard`,
+  //       cancelUrl: `${FRONTEND_BASE_URL}/payment-cancelled?transaction=${paymentId}&type=standard`,
+  //     });
 
-      if (!initResponse.success)
-        return toast.error(
-          initResponse.error || "Failed to initialize payment"
-        );
+  //     if (!initResponse.success)
+  //       return toast.error(
+  //         initResponse.error || "Failed to initialize payment"
+  //       );
 
-      if (initResponse.data?.paymentUrl) {
-        // Skip external redirect; go straight to local success with loader
-        setLoadingStage("redirecting");
-        setTimeout(() => {
-          navigate(`/payment-success?transaction=${paymentId}&type=standard`);
-        }, 600);
-      } else if (initResponse.data?.transactionId) {
-        // Also skip external approval for now; go to success to complete flow
-        setLoadingStage("redirecting");
-        setTimeout(() => {
-          navigate(`/payment-success?transaction=${paymentId}&type=standard`);
-        }, 600);
-      } else {
-        setLoadingStage("redirecting");
-        setTimeout(() => {
-          navigate(`/payment-success?transaction=${paymentId}&type=standard`);
-        }, 600);
-      }
-    } catch (e) {
-      console.error("PayPal Card Standard error", e);
-      toast.error(e.message || "Failed to start PayPal card payment");
-    } finally {
-      setLoading(false);
-      setLoadingStage("idle");
-    }
-  };
+  //     if (initResponse.data?.paymentUrl) {
+  //       // Skip external redirect; go straight to local success with loader
+  //       setLoadingStage("redirecting");
+  //       setTimeout(() => {
+  //         navigate(`/payment-success?transaction=${paymentId}&type=standard`);
+  //       }, 600);
+  //     } else if (initResponse.data?.transactionId) {
+  //       // Also skip external approval for now; go to success to complete flow
+  //       setLoadingStage("redirecting");
+  //       setTimeout(() => {
+  //         navigate(`/payment-success?transaction=${paymentId}&type=standard`);
+  //       }, 600);
+  //     } else {
+  //       setLoadingStage("redirecting");
+  //       setTimeout(() => {
+  //         navigate(`/payment-success?transaction=${paymentId}&type=standard`);
+  //       }, 600);
+  //     }
+  //   } catch (e) {
+  //     console.error("PayPal Card Standard error", e);
+  //     toast.error(e.message || "Failed to start PayPal card payment");
+  //   } finally {
+  //     setLoading(false);
+  //     setLoadingStage("idle");
+  //   }
+  // };
 
   // Create standard payment with PayPal gateway (PayPal button flow)
   const handleCreatePayPalStandard = async () => {
@@ -1113,9 +1115,10 @@ const EscrowCheckout = () => {
 
       const paymentId = paymentResponse.data.paymentId;
       setLoadingStage("initializing");
+
       const initResponse = await initializeStandardPayment(paymentId, {
-        returnUrl: `${window.location.origin}/payment-success?transaction=${paymentId}&type=standard`,
-        cancelUrl: `${window.location.origin}/payment-cancelled?transaction=${paymentId}&type=standard`,
+        returnUrl: `${FRONTEND_BASE_URL}/payment-success?transaction=${paymentId}&type=standard`,
+        cancelUrl: `${FRONTEND_BASE_URL}/payment-cancelled?transaction=${paymentId}&type=standard`,
       });
 
       if (!initResponse.success)
@@ -1128,8 +1131,8 @@ const EscrowCheckout = () => {
       try {
         await openPayPalCheckout({
           transactionId: initResponse.data?.transactionId || paymentId,
-          returnUrl: `${window.location.origin}/payment-success?transaction=${paymentId}&type=standard`,
-          cancelUrl: `${window.location.origin}/payment-cancelled?transaction=${paymentId}&type=standard`,
+          returnUrl: `${FRONTEND_BASE_URL}/payment-success?transaction=${paymentId}&type=standard`,
+          cancelUrl: `${FRONTEND_BASE_URL}/payment-cancelled?transaction=${paymentId}&type=standard`,
         });
       } catch (e) {
         console.error("Failed to open PayPal popup", e);
@@ -1250,14 +1253,6 @@ const EscrowCheckout = () => {
             ) : (
               <>
                 <Shield className="w-8 h-8 text-teal-600" />
-                {/* <div>
-                                    <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900">
-                                        {t("secure_escrow_checkout")}
-                                    </h1>
-                                    <p className="text-sm sm:text-base text-gray-600">
-                                        {t("paymentProtectedUntilDelivery")}
-                                    </p>
-                                </div> */}
                 <div>
                   <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900">
                     {t("secure_escrow_checkout")}
@@ -1281,7 +1276,7 @@ const EscrowCheckout = () => {
               </h2>
               <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                 {/* Product Image */}
-                {/* <img
+                <img
                   src={product.product_photos[0]}
                   alt={product.title}
                   className="w-20 h-20 object-cover rounded-lg flex-shrink-0"
@@ -1299,7 +1294,7 @@ const EscrowCheckout = () => {
                       productImage
                     );
                   }}
-                /> */}
+                />
 
                 {/* Product Info */}
                 <div className="flex-1">
@@ -1788,7 +1783,7 @@ const EscrowCheckout = () => {
             </div>
 
             {/* Payment Method Selection - Always show for Stripe escrow payments */}
-            {/* {(selectedGateway?.id === "stripe" ||
+            {(selectedGateway?.id === "stripe" ||
               (!selectedCard && !selectedBankAccount)) && (
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
@@ -1820,11 +1815,11 @@ const EscrowCheckout = () => {
                     </div>
                   </div>
                 </div>
-              )} */}
+              )}
 
             {/* Selected Payment Method */}
 
-            {/* {(selectedCard || selectedBankAccount) && (
+            {(selectedCard || selectedBankAccount) && (
               <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                   <CreditCard className="w-5 h-5 mr-2" />
@@ -1887,9 +1882,9 @@ const EscrowCheckout = () => {
                   </div>
                 </div>
               </div>
-            )} */}
+            )}
 
-            {/* Gateway Fee Options
+            {/* Gateway Fee Options */}
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
                 {t("payment_processing_fee")}
@@ -1922,10 +1917,10 @@ const EscrowCheckout = () => {
                   </span>
                 </label>
               </div>
-            </div> */}
+            </div>
 
             {/* Escrow Agreement - Only show for escrow payments */}
-            {/* {paymentType !== "standard" && (
+            {paymentType !== "standard" && (
               <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">
                   {t("escrow_protection_agreement")}
@@ -1961,7 +1956,7 @@ const EscrowCheckout = () => {
                   </span>
                 </label>
               </div>
-            )} */}
+            )}
           </div>
 
           {/* Sidebar */}
@@ -2127,8 +2122,6 @@ const EscrowCheckout = () => {
                       !(productId || product?._id || product?.id)
                     }
                     onPayPal={handleCreatePayPalStandard}
-                    onPayLater={handleCreatePayPalStandard}
-                    onCard={handleCreatePayPalCardStandard}
                   />
                 ) : (
                   // Default buttons for other gateways (Stripe/PayTabs)
@@ -2184,21 +2177,6 @@ const EscrowCheckout = () => {
                   </>
                 )}
               </div>
-
-              {/* Debug Section */}
-              {/* <div className="mt-4 p-3 bg-gray-100 rounded-lg">
-                <h4 className="text-sm font-medium text-gray-700 mb-2">Debug Tools</h4>
-                <button
-                  onClick={handleTestStandardPaymentAPI}
-                  className="w-full px-3 py-2 bg-gray-600 text-white text-sm rounded hover:bg-gray-700 transition-colors"
-                >
-                  Test Standard Payment API
-                </button>
-              </div> */}
-
-              {/* <div className="mt-4 text-xs text-gray-500 text-center">
-                ðŸ”’ {t("payment_info_secure")}
-              </div> */}
             </div>
           </div>
         </div>

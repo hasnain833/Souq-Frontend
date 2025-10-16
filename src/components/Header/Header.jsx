@@ -394,7 +394,8 @@ const Header = () => {
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
-                  onClick={() => navigate("/chat-layout")}>
+                  // onClick={() => navigate("/chat-layout")}
+                  >
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"

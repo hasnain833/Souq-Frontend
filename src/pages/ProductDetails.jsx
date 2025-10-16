@@ -795,7 +795,7 @@ const ProductDetailPage = () => {
                   <button
                     className={`text-teal-700 rounded-md font-semibold border border-teal-600 w-full py-2 mb-2 transition
     ${product.status === "sold" ? "opacity-50 cursor-not-allowed" : ""}`}
-                    onClick={makeOfferOpen}
+                    // onClick={makeOfferOpen}
                     disabled={product.status === "sold"}>
                     {t("makeAnOffer")}
                   </button>
@@ -803,7 +803,7 @@ const ProductDetailPage = () => {
                   <button
                     className={`text-teal-700 rounded-md font-semibold border border-teal-600 w-full py-2 mb-2 transition
     ${product.status === "sold" ? "opacity-50 cursor-not-allowed" : ""}`}
-                    onClick={messageToSeller}
+                    // onClick={messageToSeller}
                     disabled={product.status === "sold"}>
                     {t("messageSeller")}
                   </button>
